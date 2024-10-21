@@ -16,7 +16,7 @@ NAME					=	a.out
 
 CC						=	gcc
 
-CFLAGS				=	-Wall -Wextra
+CFLAGS					=	-Wall -Wextra
 
 VALARGS					=	-g3
 
@@ -48,6 +48,7 @@ TESTOBJ					=	$(addprefix $(TEST_DIR), $(SRC:.c=.o))
 
 $(NAME):				$(OBJ) | $(PROD_DIR)
 	$(CC) -o $(PROD_DIR)$(NAME) $(OBJ)
+	ln -f $(PROD_DIR)$(NAME) .
 
 all:					$(NAME)
 
@@ -86,7 +87,7 @@ $(VAL_DIR)$(NAME):		$(VALOBJ) | $(VAL_DIR)
 	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ)
 
 $(ASAN_DIR)$(NAME):		$(ASANOBJ) | $(ASAN_DIR)
-	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ)
+	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ) $(ASANARGS)
 
 $(TEST_DIR)$(NAME):		$(TESTOBJ) | $(TEST_DIR)
 	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ)
@@ -106,7 +107,11 @@ clean:
 
 fclean: clean
 	rm -rf $(BUILD_DIR)
+	rm -rf $(NAME)
 
 re: fclean all
+
+do_grind:		grind
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(VAL_DIR)$(NAME)
 
 .PHONY: all clean fclean re grind sanitize unit_tests
