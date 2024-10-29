@@ -7,3 +7,6 @@
 [submodule "lib/linked"]
 	path = lib/linked
 	url = https://github.com/alexishachemi/linked.git
+[submodule "lib/cvec"]
+	path = lib/cvec
+	url = https://github.com/alexishachemi/cvec.git

@@ -8,7 +8,7 @@ NAME					=	my_village
 
 CC						=	gcc
 
-LIBS					=	raylib linked
+LIBS					=	raylib linked cvec
 
 CFLAGS					=	-Wall -Wextra
 
