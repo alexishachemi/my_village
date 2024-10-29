@@ -1,0 +1,12 @@
+[submodule "lib/raylib/raylib"]
+	path = lib/raylib/raylib
+	url = https://github.com/raysan5/raylib
+[submodule "lib/raylib/raygui"]
+	path = lib/raylib/raygui
+	url = https://github.com/raysan5/raygui
+[submodule "lib/linked"]
+	path = lib/linked
+	url = https://github.com/alexishachemi/linked.git
+[submodule "lib/cvec"]
+	path = lib/cvec
+	url = https://github.com/alexishachemi/cvec.git
