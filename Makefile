@@ -1,20 +1,14 @@
-##
-## EPITECH PROJECT, 2024
-## CPP-ECS
-## File description:
-## Makefile
-##
-
 # Variables
 
 SRC						=	main.c
 
-
 SRC_DIR					=	./src/
 
-NAME					=	a.out
+NAME					=	my_village
 
 CC						=	gcc
+
+LIBS					=	raylib
 
 CFLAGS					=	-Wall -Wextra
 
@@ -34,6 +28,14 @@ ASAN_DIR				=	$(BUILD_DIR)asan/
 
 TEST_DIR				=	$(BUILD_DIR)tests/
 
+LIB_DIR					=	./lib/
+
+LDFLAGS					+=	$(foreach lib,$(LIBS),-L$(LIB_DIR)$(lib)/ -l$(lib))
+
+CFLAGS					+=	$(foreach lib,$(LIBS),-I$(LIB_DIR)$(lib)/include/)
+
+LDFLAGS 				+=	-lm
+
 # Generated
 
 OBJ						=	$(addprefix $(PROD_DIR), $(SRC:.c=.o))
@@ -46,51 +48,54 @@ TESTOBJ					=	$(addprefix $(TEST_DIR), $(SRC:.c=.o))
 
 # Targets
 
-$(NAME):				$(OBJ) | $(PROD_DIR)
-	$(CC) -o $(PROD_DIR)$(NAME) $(OBJ)
+$(NAME): 			lib $(OBJ) | $(PROD_DIR)
+	$(CC) -o $(PROD_DIR)$(NAME) $(OBJ) $(CFLAGS) $(LDFLAGS)
 	ln -f $(PROD_DIR)$(NAME) .
 
-all:					$(NAME)
+all:			$(NAME)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(PROD_DIR): | $(BUILD_DIR)
+$(PROD_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(PROD_DIR)
 	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(PROD_DIR)
 
-$(VAL_DIR): | $(BUILD_DIR)
+$(VAL_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(VAL_DIR)
 	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(VAL_DIR)
 
-$(ASAN_DIR): | $(BUILD_DIR)
+$(ASAN_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(ASAN_DIR)
 	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(ASAN_DIR)
 
-$(TEST_DIR): | $(BUILD_DIR)
+$(TEST_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(TEST_DIR)
 	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(TEST_DIR)
 
 $(PROD_DIR)%.o:		$(SRC_DIR)%.c | $(PROD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
-$(VAL_DIR)%.o:			$(SRC_DIR)%.c | $(VAL_DIR)
-	$(CC) $(CFLAGS) $(VALARGS) -c $< -o $@
+$(VAL_DIR)%.o:		$(SRC_DIR)%.c | $(VAL_DIR)
+	$(CC) $(VALARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
-$(ASAN_DIR)%.o:			$(SRC_DIR)%.c | $(ASAN_DIR)
-	$(CC) $(CFLAGS) $(ASANARGS) -c $< -o $@
+$(ASAN_DIR)%.o:		$(SRC_DIR)%.c | $(ASAN_DIR)
+	$(CC) $(ASANARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
-$(TEST_DIR)%.o:			$(SRC_DIR)%.c | $(TEST_DIR)
-	$(CC) $(CFLAGS) $(TESTARGS) -c $< -o $@
+$(TEST_DIR)%.o:		$(SRC_DIR)%.c | $(TEST_DIR)
+	$(CC) $(TESTARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
-$(VAL_DIR)$(NAME):		$(VALOBJ) | $(VAL_DIR)
+$(VAL_DIR)$(NAME):	$(VALOBJ) | $(VAL_DIR)
 	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ)
 
-$(ASAN_DIR)$(NAME):		$(ASANOBJ) | $(ASAN_DIR)
+$(ASAN_DIR)$(NAME):	$(ASANOBJ) | $(ASAN_DIR)
 	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ) $(ASANARGS)
 
-$(TEST_DIR)$(NAME):		$(TESTOBJ) | $(TEST_DIR)
+$(TEST_DIR)$(NAME):	$(TESTOBJ) | $(TEST_DIR)
 	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ)
+
+lib:
+	for lib in $(LIBS); do make -C $(LIB_DIR)$$lib; done
 
 grind:				$(VAL_DIR)$(NAME)
 
@@ -105,13 +110,16 @@ clean:
 	rm -f $(ASANOBJ)
 	rm -f $(TESTOBJ)
 
-fclean: clean
+lclean:
+	for lib in $(LIBS); do make -C $(LIB_DIR)$$lib fclean; done
+
+fclean: 			clean lclean
 	rm -rf $(BUILD_DIR)
 	rm -rf $(NAME)
 
-re: fclean all
+re: 				fclean all
 
-do_grind:		grind
+do_grind:			grind
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(VAL_DIR)$(NAME)
 
-.PHONY: all clean fclean re grind sanitize unit_tests
+.PHONY: all clean fclean re lib grind sanitize unit_tests

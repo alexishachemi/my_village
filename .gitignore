@@ -2,3 +2,6 @@
 *.gc*
 .vscode/
 *.a
+.obsidian/
+my_village
+lib/*/include/
