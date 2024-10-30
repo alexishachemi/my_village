@@ -1,6 +1,8 @@
 # Variables
 
-SRC						=	main.c
+SRC						=	main.c 						\
+							assets/assets_factory.c		\
+							assets/assets_handling.c	\
 
 SRC_DIR					=	./src/
 
@@ -10,7 +12,7 @@ CC						=	gcc
 
 LIBS					=	raylib linked cvec
 
-CFLAGS					=	-Wall -Wextra
+CFLAGS					=	-Wall -Wextra -Iinclude
 
 VALARGS					=	-g3
 
@@ -86,13 +88,13 @@ $(TEST_DIR)%.o:		$(SRC_DIR)%.c | $(TEST_DIR)
 	$(CC) $(TESTARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
 $(VAL_DIR)$(NAME):	$(VALOBJ) | $(VAL_DIR)
-	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ)
+	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ) $(CFLAGS) $(LDFLAGS)
 
 $(ASAN_DIR)$(NAME):	$(ASANOBJ) | $(ASAN_DIR)
-	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ) $(ASANARGS)
+	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ) $(ASANARGS) $(CFLAGS) $(LDFLAGS)
 
 $(TEST_DIR)$(NAME):	$(TESTOBJ) | $(TEST_DIR)
-	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ)
+	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ) $(CFLAGS) $(LDFLAGS)
 
 lib:
 	for lib in $(LIBS); do make -C $(LIB_DIR)$$lib; done
@@ -113,7 +115,7 @@ clean:
 lclean:
 	for lib in $(LIBS); do make -C $(LIB_DIR)$$lib fclean; done
 
-fclean: 			clean lclean
+fclean: 			clean
 	rm -rf $(BUILD_DIR)
 	rm -rf $(NAME)
 
