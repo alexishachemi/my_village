@@ -4,7 +4,11 @@ SRC						=	main.c 						\
 							assets/assets_factory.c		\
 							assets/assets_handling.c	\
 
-SRC_DIR					=	./src/
+TSRC					=	
+
+SRC_ROOT				=	./src/
+
+TSRC_ROOT				=	./tests/src/
 
 NAME					=	my_village
 
@@ -18,7 +22,7 @@ VALARGS					=	-g3
 
 ASANARGS				=	-fsanitize=address -g3
 
-TESTARGS				=	-fprofile-arcs -ftest-coverage
+TESTARGS				=	-fprofile-arcs -ftest-coverage --coverage -lcriterion
 
 BUILD_DIR				=	./build/
 
@@ -46,7 +50,8 @@ VALOBJ					=	$(addprefix $(VAL_DIR), $(SRC:.c=.o))
 
 ASANOBJ					=	$(addprefix $(ASAN_DIR), $(SRC:.c=.o))
 
-TESTOBJ					=	$(addprefix $(TEST_DIR), $(SRC:.c=.o))
+TESTOBJ					=	$(addprefix $(TEST_DIR), $(SRC:.c=.o))	\
+							$(addprefix $(TEST_DIR), $(TSRC:.c=.o))
 
 # Targets
 
@@ -61,40 +66,44 @@ $(BUILD_DIR):
 
 $(PROD_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(PROD_DIR)
-	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(PROD_DIR)
+	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(PROD_DIR)
 
 $(VAL_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(VAL_DIR)
-	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(VAL_DIR)
+	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(VAL_DIR)
 
 $(ASAN_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(ASAN_DIR)
-	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(ASAN_DIR)
+	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(ASAN_DIR)
 
 $(TEST_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(TEST_DIR)
-	rsync -a -f"+ */" -f"- *" $(SRC_DIR) $(TEST_DIR)
+	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(TEST_DIR)
+	rsync -a -f"+ */" -f"- *" $(TSRC_ROOT) $(TEST_DIR)
 
-$(PROD_DIR)%.o:		$(SRC_DIR)%.c | $(PROD_DIR)
+$(PROD_DIR)%.o:		$(SRC_ROOT)%.c | $(PROD_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
-$(VAL_DIR)%.o:		$(SRC_DIR)%.c | $(VAL_DIR)
-	$(CC) $(VALARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
+$(VAL_DIR)%.o:		$(SRC_ROOT)%.c | $(VAL_DIR)
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(VALARGS)
 
-$(ASAN_DIR)%.o:		$(SRC_DIR)%.c | $(ASAN_DIR)
-	$(CC) $(ASANARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
+$(ASAN_DIR)%.o:		$(SRC_ROOT)%.c | $(ASAN_DIR)
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(ASANARGS)
 
-$(TEST_DIR)%.o:		$(SRC_DIR)%.c | $(TEST_DIR)
-	$(CC) $(TESTARGS) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
+$(TEST_DIR)%.o:		$(SRC_ROOT)%.c | $(TEST_DIR)
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(TESTARGS)
+
+$(TEST_DIR)%.o:		$(TSRC_ROOT)%.c | $(TEST_DIR)
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(TESTARGS)
 
 $(VAL_DIR)$(NAME):	$(VALOBJ) | $(VAL_DIR)
-	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ) $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ) $(CFLAGS) $(LDFLAGS) $(VALARGS)
 
 $(ASAN_DIR)$(NAME):	$(ASANOBJ) | $(ASAN_DIR)
-	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ) $(ASANARGS) $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $(ASAN_DIR)$(NAME) $(ASANOBJ) $(CFLAGS) $(LDFLAGS) $(ASANARGS)
 
 $(TEST_DIR)$(NAME):	$(TESTOBJ) | $(TEST_DIR)
-	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ) $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ) $(CFLAGS) $(LDFLAGS) $(TESTARGS)
 
 lib:
 	for lib in $(LIBS); do make -C $(LIB_DIR)$$lib; done
@@ -103,6 +112,7 @@ grind:				$(VAL_DIR)$(NAME)
 
 sanitize:			$(ASAN_DIR)$(NAME)
 
+unit_tests:			SRC := $(filter-out main.c, $(SRC))
 unit_tests:			$(TEST_DIR)$(NAME)
 
 clean:
@@ -123,5 +133,8 @@ re: 				fclean all
 
 do_grind:			grind
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(VAL_DIR)$(NAME)
+
+tests_run:			unit_tests
+	./$(TEST_DIR)$(NAME)
 
 .PHONY: all clean fclean re lib grind sanitize unit_tests
