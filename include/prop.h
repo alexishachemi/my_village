@@ -40,8 +40,10 @@ void propm_deinit(prop_manager_t *pm);
 /// @brief Creates a new prop in the prop manager
 /// @param pm the prop manager to add the props to
 /// @param name the name of the prop
+/// @param asset_map the asset map of the prop
 /// @return the newly added prop
-prop_t *propm_new(prop_manager_t *pm, const char *name);
+prop_t *propm_new(prop_manager_t *pm, const char *name,
+    const prop_asset_map_t *asset_map);
 
 // Usage
 

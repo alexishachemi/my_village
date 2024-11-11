@@ -17,15 +17,13 @@ int main(void)
     prop_manager_t pm;
 
     propm_init(&pm);
-    prop_t *prop = propm_new(&pm, "my_prop");
-
-    prop->asset_map = (prop_asset_map_t){
+    prop_t *prop = propm_new(&pm, "my_prop", &(prop_asset_map_t){
         .asset_mode = MULTI_ASSET,
         .asset_id_up = up_id,
         .asset_id_down = down_id,
         .asset_id_left = left_id,
         .asset_id_right = right_id
-    };
+    });
 
     printf("prop up -> %ld\n", prop_get_asset_id(prop, ORIENT_UP));
     printf("prop down -> %ld\n", prop_get_asset_id(prop, ORIENT_DOWN));
