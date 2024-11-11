@@ -7,7 +7,7 @@
 #define PROP_NAME_SIZE 32
 #define PROP_MANAGER_BASE_SIZE 128
 
-typedef enum { MONO_ASSET, MULTI_ASSET } prop_asset_mode_t;
+typedef enum { NO_ASSET_MODE, MONO_ASSET, MULTI_ASSET } prop_asset_mode_t;
 
 typedef struct {
     prop_asset_mode_t asset_mode;

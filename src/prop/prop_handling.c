@@ -2,7 +2,7 @@
 
 ssize_t prop_get_asset_id(const prop_t *prop, orient_t orient)
 {
-    if (!prop)
+    if (!prop || prop->asset_map.asset_mode == NO_ASSET_MODE)
         return -1;
     if (prop->asset_map.asset_mode == MONO_ASSET)
         return prop->asset_map.asset_id;
