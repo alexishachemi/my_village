@@ -11,7 +11,7 @@ SRC						=	main.c 						\
 							prop/prop_factory.c			\
 							prop/prop_handling.c		\
 
-TSRC					=	
+TSRC					=	prop_tests.c				\
 
 SRC_ROOT				=	./src/
 
