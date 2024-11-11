@@ -5,3 +5,5 @@
 .obsidian/
 my_village
 lib/*/include/
+compile_commands.json
+.cache/
