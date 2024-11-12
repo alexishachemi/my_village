@@ -1,10 +1,17 @@
 # Variables
 
+NAME					=	my_village
+
+CC						=	gcc
+
+
 SRC						=	main.c 						\
 							assets/assets_factory.c		\
 							assets/assets_handling.c	\
+							prop/prop_factory.c			\
+							prop/prop_handling.c		\
 
-TSRC					=	
+TSRC					=	prop_tests.c				\
 
 SRC_ROOT				=	./src/
 
@@ -25,6 +32,8 @@ ASANARGS				=	-fsanitize=address -g3
 TESTARGS				=	-fprofile-arcs -ftest-coverage --coverage -lcriterion
 
 BUILD_DIR				=	./build/
+
+SRC_DIR					=	./src/
 
 PROD_DIR				=	$(BUILD_DIR)prod/
 
