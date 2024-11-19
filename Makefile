@@ -6,13 +6,13 @@ CC						=	gcc
 
 
 SRC						=	main.c 						\
-							assets/assets_factory.c		\
-							assets/assets_handling.c	\
-							prop/prop_factory.c			\
-							prop/prop_handling.c		\
+							utils/str.c					\
 							utils/registry.c			\
+							world/world_factory.c		\
+							asset.c						\
+							world/world_asset.c			\
 
-TSRC					=	prop_tests.c				\
+TSRC					=	
 
 SRC_ROOT				=	./src/
 
@@ -30,7 +30,7 @@ VALARGS					=	-g3
 
 ASANARGS				=	-fsanitize=address -g3
 
-TESTARGS				=	-fprofile-arcs -ftest-coverage --coverage -lcriterion
+TESTARGS				=	-DTEST -fprofile-arcs -ftest-coverage --coverage -lcriterion
 
 BUILD_DIR				=	./build/
 
@@ -122,7 +122,6 @@ grind:				$(VAL_DIR)$(NAME)
 
 sanitize:			$(ASAN_DIR)$(NAME)
 
-unit_tests:			SRC := $(filter-out main.c, $(SRC))
 unit_tests:			$(TEST_DIR)$(NAME)
 
 clean:

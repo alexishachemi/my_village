@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include "name.h"
+#include "str.h"
 
 #define ASSET_REGISTRY_BASE_SIZE 128
 
