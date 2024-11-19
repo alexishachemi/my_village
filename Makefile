@@ -11,6 +11,8 @@ SRC						=	main.c 						\
 							world/world_factory.c		\
 							asset.c						\
 							world/world_asset.c			\
+							prop.c						\
+							world/world_prop.c			\
 
 TSRC					=	
 
