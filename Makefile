@@ -10,6 +10,7 @@ SRC						=	main.c 						\
 							assets/assets_handling.c	\
 							prop/prop_factory.c			\
 							prop/prop_handling.c		\
+							utils/registry.c			\
 
 TSRC					=	prop_tests.c				\
 
