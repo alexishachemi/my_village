@@ -21,6 +21,7 @@ void world_deinit(world_t *world);
 ssize_t world_new_asset(world_t *world, const char *name, const char *path);
 ssize_t world_get_asset(world_t *world, const char *name);
 char *world_get_asset_path(world_t *world, const char *name);
+asset_t *world_get_asset_ptr(world_t *world, ssize_t asset_id);
 
 // Prop
 
