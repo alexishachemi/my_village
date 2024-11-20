@@ -13,6 +13,8 @@ SRC						=	main.c 						\
 							world/world_asset.c			\
 							prop.c						\
 							world/world_prop.c			\
+							terrain.c					\
+							world/world_terrain.c		\
 
 TSRC					=	
 

@@ -20,18 +20,18 @@ ssize_t world_get_prop(world_t *world, const char *name)
     if (!world || !name)
         return -1;
     for (size_t i = 0; i < reg_size(&world->prop_reg); i++) {
-        prop = (prop_t *)vec_fast_at(&world->prop_reg.vec, i);
+        prop = vec_fast_at(&world->prop_reg.vec, i);
         if (prop && STR_EQ(prop->name, name))
             return i;
     }
     return -1;
 }
 
-prop_t *world_get_prop_ptr(world_t *world, ssize_t prop_id)
+prop_t *world_get_prop_ptr(world_t *world, size_t prop_id)
 {
     if (!world || prop_id < 0 || (size_t)prop_id >= reg_size(&world->prop_reg))
         return NULL;
-    return (prop_t *)vec_fast_at(&world->prop_reg.vec, prop_id);
+    return vec_fast_at(&world->prop_reg.vec, prop_id);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ prop_t *world_get_prop_ptr(world_t *world, ssize_t prop_id)
 Test(world, new_prop)
 {
     world_t world = {0};
-    ssize_t prop_id;
+    ssize_t prop_id = -1;
 
     cr_assert(world_init(&world));
     prop_id = world_new_prop(&world, "name");
@@ -54,7 +54,7 @@ Test(world, new_prop)
 Test(world, duplicate_prop)
 {
     world_t world = {0};
-    ssize_t prop_id;
+    ssize_t prop_id = -1;
 
     cr_assert(world_init(&world));
     prop_id = world_new_prop(&world, "name");
@@ -67,7 +67,7 @@ Test(world, duplicate_prop)
 Test(world, get_props)
 {
     world_t world = {0};
-    ssize_t prop_id;
+    ssize_t prop_id = -1;
 
     cr_assert(world_init(&world));
     prop_id = world_new_prop(&world, "name");

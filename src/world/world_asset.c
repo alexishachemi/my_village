@@ -20,7 +20,7 @@ ssize_t world_get_asset(world_t *world, const char *name)
     if (!world || !name)
         return -1;
     for (size_t i = 0; i < reg_size(&world->asset_reg); i++) {
-        asset = (asset_t *)vec_fast_at(&world->asset_reg.vec, i);
+        asset = vec_fast_at(&world->asset_reg.vec, i);
         if (asset && STR_EQ(asset->name, name))
             return i;
     }
@@ -36,11 +36,11 @@ char *world_get_asset_path(world_t *world, const char *name)
     return ((asset_t *)vec_fast_at(&world->asset_reg.vec, asset_id))->path;
 }
 
-asset_t *world_get_asset_ptr(world_t *world, ssize_t asset_id)
+asset_t *world_get_asset_ptr(world_t *world, size_t asset_id)
 {
-    if (asset_id < 0)
+    if (!world || asset_id >= reg_size(&world->asset_reg))
         return NULL;
-    return (asset_t *)vec_fast_at(&world->asset_reg.vec, asset_id);
+    return vec_fast_at(&world->asset_reg.vec, asset_id);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ asset_t *world_get_asset_ptr(world_t *world, ssize_t asset_id)
 Test(world, new_asset)
 {
     world_t world = {0};
-    ssize_t asset_id;
+    ssize_t asset_id = -1;
 
     cr_assert(world_init(&world));
     asset_id = world_new_asset(&world, "name", "path");
@@ -63,7 +63,7 @@ Test(world, new_asset)
 Test(world, duplicate_asset)
 {
     world_t world = {0};
-    ssize_t asset_id;
+    ssize_t asset_id = -1;
 
     cr_assert(world_init(&world));
     asset_id = world_new_asset(&world, "name", "path");
@@ -76,7 +76,7 @@ Test(world, duplicate_asset)
 Test(world, get_assets)
 {
     world_t world = {0};
-    ssize_t asset_id;
+    ssize_t asset_id = -1;
 
     cr_assert(world_init(&world));
     asset_id = world_new_asset(&world, "name", "path");
@@ -90,7 +90,7 @@ Test(world, get_assets)
 Test(world, get_asset_ptr)
 {
     world_t world = {0};
-    asset_t *asset;
+    asset_t *asset = NULL;
 
     cr_assert(world_init(&world));
     world_new_asset(&world, "name", "path");
