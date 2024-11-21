@@ -1,67 +1,58 @@
+# My Village
 
+**Note**: This readme may not reflect the current state of the project and might be subject to changes as it is still in development. Please see [Milestones](https://github.com/alexishachemi/my_village/milestones?direction=asc&sort=due_date&state=open) for more information about the current and projected state of MyVillage.
 
-# Technologies
+---
+<br>
+MyVillage is a procedural generator that creates a random, natural-looking world containing a village that is also randomly generated.
 
-Project in C, Raylib
+The world itself is set in a classic fantasy setting with villages composed of buildings such as smithies, inns, shops and more on top of standard villager houses.
 
-# Goals
+The goal of the project is to experiment with multiple procedural generation algorithm and combine them to create a nice looking world.
 
-- Generate mini map of a small world + village
+Some of the algorithms are:
 
-# Inputs
+- [Wave Function Collapse](https://en.wikipedia.org/wiki/Wave_function_collapse)
+- [Binary Space Partitioning](https://en.wikipedia.org/wiki/Binary_space_partitioning)
+- [Constraint Satisfaction Problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem)
 
-- configurated tilemap
-- parameters
-- Pre-generated structures/sections ? (opt)
+## Dependencies
+
+- [Raylib](https://www.raylib.com/) (v5.5, fetched automatically)
+- [Raygui](https://github.com/raysan5/raygui) (v4.5, fetched automatically)
+- [CVEC](https://github.com/alexishachemi/cvec) (any, fetched automatically)
+- [Linked](https://github.com/alexishachemi/linked) (any, fetched automatically)
+
+## Inputs
+
+The program needs 2 files provided by the user to run a generation:
+
+- **Config File**: Dictates the settings of the generation such as the size of the map and how many structures to generate.
+- **Tileset File**: Dictates which assets to use like terrain, props etc ... And how they interact with each other.
 
 ## Outputs
 
-- Image?
-- File '.mvm' / '.csv' or other related to the tileset creator (mvm = myvillagemap)
+The program can output the generated map in several formats:
 
-# Usage
+- **Rendered image**
+- **CSV file**
+- **MVM file** (See *Extras*)
 
-via the use of a lib in a bin, or the included generator bin for output files
+## Usage
 
-program help :
 ```
-usage ./myVillage -c CONFIG -t TILEMAP -o OUTPUT_TYPE -f OUTPUT_FILE
-    -c CONFIG : path to the configuration file
-    -t TILEMAP : path to the tilemap file
+./my_village -t TILESET -o OUTPUT_TYPE -f OUTPUT_FILE
+    -t TILESET : path to the tileset file
     -o OUTPUT_TYPE : type of output file (image, mvm, csv)
     -f OUTPUT_FILE : path to the output file
 ```
 
-An amazing loading bar will show you the progress of the generation
+## Extras
 
-# Extras
+#### Tileset Creator
 
-## Tileset Creator
+To facilitate the creation of tileset files, a GUI application allows you to create and edit tilesets.
 
-Allows to create and configure a tilemap to generate with it
-- Relationships wfc + auto-tiling
-- 'Types' of tiles :
-    - Terrain params (i.e. grass + tree)
-    - Props params (i.e. table + lamp)
-- Collections for thematic based buildings (i.e. farmers, blacksmiths, etc)
-...
+#### MVM File
 
-# Technical
-
-WFC + BSP + CSP (terrain, buildings, interior)
-
-```c
-typedef struct {
-
-
-
-} tile_t;
-```
-
-```c
-typedef struct {
-
-    
-
-} prop_t;
-```
+The MVM file is a custom file format that stores the generated map. It can be used to load the map in the future without having to regenerate it.
