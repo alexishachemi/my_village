@@ -8,6 +8,7 @@ CC						=	gcc
 SRC						=	main.c 						\
 							utils/str.c					\
 							utils/registry.c			\
+							utils/rect.c				\
 							world/world_factory.c		\
 							asset.c						\
 							world/world_asset.c			\
