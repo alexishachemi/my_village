@@ -84,7 +84,7 @@ bool biome_add_prop_by_name(biome_t *biome, reg_t *props, const char *name)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// #ifdef TEST
+#ifdef TEST
 #include <criterion/criterion.h>
 #include "world.h"
 
@@ -162,4 +162,4 @@ Test(biome, add_prop_by_name)
     world_deinit(&world);
 }
 
-// #endif
+#endif
