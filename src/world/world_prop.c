@@ -1,4 +1,5 @@
 #include "prop.h"
+#include "registry.h"
 #include "world.h"
 
 ssize_t world_new_prop(world_t *world, const char *name)
@@ -29,7 +30,7 @@ ssize_t world_get_prop(world_t *world, const char *name)
 
 prop_t *world_get_prop_ptr(world_t *world, size_t prop_id)
 {
-    if (!world || prop_id < 0 || (size_t)prop_id >= reg_size(&world->prop_reg))
+    if (!world || prop_id > reg_last_idx(&world->prop_reg))
         return NULL;
     return vec_fast_at(&world->prop_reg.vec, prop_id);
 }

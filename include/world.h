@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sys/types.h>
+#include "biome.h"
 #include "registry.h"
 #include "asset.h"
 #include "prop.h"
@@ -10,9 +11,10 @@
 #define W_DEINIT_REG(wp, t) (reg_deinit(&wp->t##_reg))
 
 typedef struct {
-    reg_t asset_reg; // asset_t
-    reg_t prop_reg; // prop_t
-    reg_t terrain_reg; // terrain_t
+    reg_t asset_reg;    // asset_t
+    reg_t prop_reg;     // prop_t
+    reg_t terrain_reg;  // terrain_t
+    reg_t biome_reg ;   // biome_t
 } world_t;
 
 bool world_init(world_t *world);
@@ -36,3 +38,9 @@ prop_t *world_get_prop_ptr(world_t *world, size_t prop_id);
 ssize_t world_new_terrain(world_t *world, const char *name, size_t asset_id);
 ssize_t world_get_terrain(world_t *world, const char *name);
 terrain_t *world_get_terrain_ptr(world_t *world, size_t terrain_id);
+
+// Biome
+
+ssize_t world_add_biome(world_t *world, const char *name);
+ssize_t world_get_biome(world_t *world, const char *name);
+biome_t *world_get_biome_ptr(world_t *world, size_t biome_id);
