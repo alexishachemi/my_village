@@ -15,6 +15,8 @@ SRC						=	main.c 						\
 							world/world_prop.c			\
 							terrain.c					\
 							world/world_terrain.c		\
+							biome.c						\
+							world/world_biome.c			\
 
 TSRC					=	
 
@@ -29,8 +31,6 @@ CC						=	gcc
 LIBS					=	raylib linked cvec
 
 CFLAGS					=	-Wall -Wextra -Iinclude
-
-VALARGS					=	-g3
 
 ASANARGS				=	-fsanitize=address -g3
 

@@ -32,3 +32,20 @@ size_t reg_size(reg_t *reg)
 {
     return reg ? reg->last_free_index : 0;
 }
+
+bool reg_map(reg_t *reg, reg_callback_t func)
+{
+    if (!reg || !func)
+        return false;
+    for (size_t i = 0; i < reg_size(reg); i++) {
+        func(vec_fast_at(&reg->vec, i));
+    }
+    return true;
+}
+
+size_t reg_last_idx(reg_t *reg)
+{
+    if (!reg)
+        return 0;
+    return reg->last_free_index - 1;
+}
