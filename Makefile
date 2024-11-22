@@ -19,6 +19,7 @@ SRC						=	main.c 						\
 							biome.c						\
 							world/world_biome.c			\
 							tile.c						\
+							chunk.c						\
 
 TSRC					=	
 
