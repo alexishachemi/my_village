@@ -53,7 +53,7 @@ Test(world, new_asset)
     world_t world = {0};
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "name", "path");
     cr_assert_neq(asset_id, -1);
     cr_assert_str_eq(world_get_asset_path(&world, "name"), "path");
@@ -65,7 +65,7 @@ Test(world, duplicate_asset)
     world_t world = {0};
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "name", "path");
     cr_assert_neq(asset_id, -1);
     asset_id = world_new_asset(&world, "name", "path");
@@ -78,7 +78,7 @@ Test(world, get_assets)
     world_t world = {0};
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "name", "path");
     cr_assert_neq(asset_id, -1);
     asset_id = world_get_asset(&world, "name");
@@ -92,7 +92,7 @@ Test(world, get_asset_ptr)
     world_t world = {0};
     asset_t *asset = NULL;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     world_new_asset(&world, "name", "path");
     asset = world_get_asset_ptr(&world, 0);
     cr_assert_not_null(asset);

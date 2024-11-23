@@ -103,7 +103,7 @@ Test(biome, add_terrain)
     world_t world = {0};
     biome_t biome = {0};
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     cr_assert(biome_init(&biome, "test_biome"));
     asset_id = world_new_asset(&world, "test_image", "path/to/image");
     cr_assert(asset_id >= 0);
@@ -121,7 +121,7 @@ Test(biome, add_terrain_by_name)
     world_t world = {0};
     biome_t biome = {0};
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     cr_assert(biome_init(&biome, "test_biome"));
     asset_id = world_new_asset(&world, "test_image", "path/to/image");
     cr_assert(asset_id >= 0);
@@ -138,7 +138,7 @@ Test(biome, add_prop)
     world_t world = {0};
     biome_t biome = {0};
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     cr_assert(biome_init(&biome, "test_biome"));
     prop_id = world_new_prop(&world, "test_prop");
     cr_assert(prop_id >= 0);
@@ -153,7 +153,7 @@ Test(biome, add_prop_by_name)
     world_t world = {0};
     biome_t biome = {0};
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     cr_assert(biome_init(&biome, "test_biome"));
     prop_id = world_new_prop(&world, "test_prop");
     cr_assert(prop_id >= 0);

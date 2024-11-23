@@ -48,7 +48,7 @@ Test(world, new_terrain)
     ssize_t terrain_id = -1;
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "asset", "path");
     cr_assert_neq(asset_id, -1);
     terrain_id = world_new_terrain(&world, "name", asset_id);
@@ -64,7 +64,7 @@ Test(world, duplicate_terrain)
     ssize_t terrain_id = -1;
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "asset", "path");
     cr_assert_neq(asset_id, -1);
     terrain_id = world_new_terrain(&world, "name", asset_id);
@@ -79,7 +79,7 @@ Test(world, invalid_asset_id)
     world_t world = {0};
     ssize_t terrain_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     terrain_id = world_new_terrain(&world, "name", 0);
     cr_assert_eq(terrain_id, -1, "Invalid asset id should return -1 but got %ld", terrain_id);
     world_deinit(&world);
@@ -91,7 +91,7 @@ Test(world, get_terrains)
     ssize_t terrain_id = -1;
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "asset", "path");
     cr_assert_neq(asset_id, -1);
     terrain_id = world_new_terrain(&world, "name", asset_id);
@@ -106,7 +106,7 @@ Test(world, get_terrain_ptr)
     terrain_t *terrain = NULL;
     ssize_t asset_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     asset_id = world_new_asset(&world, "asset", "path");
     cr_assert_neq(asset_id, -1);
     world_new_terrain(&world, "name", asset_id);

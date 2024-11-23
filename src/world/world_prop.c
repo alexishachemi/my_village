@@ -45,7 +45,7 @@ Test(world, new_prop)
     world_t world = {0};
     ssize_t prop_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     prop_id = world_new_prop(&world, "name");
     cr_assert_neq(prop_id, -1);
     cr_assert_str_eq(world_get_prop_ptr(&world, prop_id)->name, "name");
@@ -57,7 +57,7 @@ Test(world, duplicate_prop)
     world_t world = {0};
     ssize_t prop_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     prop_id = world_new_prop(&world, "name");
     cr_assert_neq(prop_id, -1);
     prop_id = world_new_prop(&world, "name");
@@ -70,7 +70,7 @@ Test(world, get_props)
     world_t world = {0};
     ssize_t prop_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     prop_id = world_new_prop(&world, "name");
     cr_assert_neq(prop_id, -1);
     cr_assert_eq(world_get_prop(&world, "name"), prop_id);
