@@ -21,6 +21,9 @@ SRC						=	main.c 						\
 							world/world_tile.c			\
 							chunk.c						\
 							world/world_chunk.c			\
+							renderer/renderer.c			\
+							renderer/renderer_load.c	\
+							renderer/renderer_display.c	\
 
 TSRC					=	
 
