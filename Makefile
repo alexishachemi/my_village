@@ -18,6 +18,7 @@ SRC						=	main.c 						\
 							biome.c						\
 							world/world_biome.c			\
 							tile.c						\
+							world/world_tile.c			\
 							chunk.c						\
 							world/world_chunk.c			\
 

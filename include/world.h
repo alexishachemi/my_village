@@ -7,6 +7,7 @@
 #include "asset.h"
 #include "prop.h"
 #include "terrain.h"
+#include "tile.h"
 
 #define W_INIT_REG(wp, t, s) (reg_init(&wp->t##_reg, sizeof(t##_t), s))
 #define W_DEINIT_REG(wp, t) (reg_deinit(&wp->t##_reg))
@@ -47,6 +48,10 @@ terrain_t *world_get_terrain_ptr(world_t *world, size_t terrain_id);
 ssize_t world_add_biome(world_t *world, const char *name);
 ssize_t world_get_biome(world_t *world, const char *name);
 biome_t *world_get_biome_ptr(world_t *world, size_t biome_id);
+
+// Tile
+
+tile_t *world_get_tile(world_t *world, size_t x, size_t y);
 
 // Chunk
 
