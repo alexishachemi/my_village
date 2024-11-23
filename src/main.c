@@ -36,14 +36,13 @@ int MAIN(void)
 {
     world_t world = {0};
 
-    world_init(&world, 10, 10);
+    world_init(&world, 100, 10);
     setup_debug_map(&world);
     render(&world, &(display_settings_t){
         .screen_width = 800,
         .screen_height = 600,
         .tile_size_px = 32
     });
-    // reg_map(&world.chunk_reg, (reg_callback_t)chunk_print);
     world_deinit(&world);
     return 0;
 }
