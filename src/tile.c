@@ -1,4 +1,5 @@
 #include "tile.h"
+#include "orientation.h"
 
 bool tile_init(tile_t *tile)
 {
@@ -7,6 +8,7 @@ bool tile_init(tile_t *tile)
     tile->terrain_id = -1;
     tile->prop_id = -1;
     tile->biome_id = -1;
+    tile->prop_orient = ORIENT_DOWN;
     return true;
 }
 
