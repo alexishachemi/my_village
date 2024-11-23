@@ -182,7 +182,6 @@ Test(chunk, get_tile_relative_bad)
     chunk_t chunk = {0};
 
     cr_assert(chunk_init(&chunk, &(chunk_bounds_t){10, 10, 19, 19}));
-    chunk_print(&chunk);
     cr_assert_eq(chunk_get_tile_relative(&chunk, 11, 11), NULL);
     cr_assert_eq(chunk_get_tile_relative(&chunk, 10, 11), NULL);
     cr_assert_eq(chunk_get_tile_relative(&chunk, 11, 10), NULL);

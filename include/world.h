@@ -2,6 +2,7 @@
 
 #include <sys/types.h>
 #include "biome.h"
+#include "chunk.h"
 #include "registry.h"
 #include "asset.h"
 #include "prop.h"
@@ -11,6 +12,7 @@
 #define W_DEINIT_REG(wp, t) (reg_deinit(&wp->t##_reg))
 
 typedef struct {
+    size_t size;
     reg_t asset_reg;    // asset_t
     reg_t prop_reg;     // prop_t
     reg_t terrain_reg;  // terrain_t
@@ -49,3 +51,4 @@ biome_t *world_get_biome_ptr(world_t *world, size_t biome_id);
 // Chunk
 
 bool world_init_chunks(world_t *world, size_t size, size_t chunk_size);
+chunk_t *world_get_chunk(world_t *world, size_t x, size_t y);

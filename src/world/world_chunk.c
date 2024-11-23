@@ -40,6 +40,28 @@ bool world_init_chunks(world_t *world, size_t size, size_t chunk_size)
     return init_chunk_line(world, size, size_rest, size - size_rest, 0);
 }
 
+static bool is_in_bounds(const chunk_bounds_t *b, size_t x, size_t y)
+{
+    return b->from_x <= x && x <= b->to_x
+        && b->from_y <= y && y <= b->to_y;
+}
+
+chunk_t *world_get_chunk(world_t *world, size_t x, size_t y)
+{
+    chunk_t *chunk = NULL;
+
+    if (!world || x >= world->size || y >= world->size)
+        return NULL;
+    for (size_t i = 0; i < world->chunk_reg.last_free_index; i++) {
+        chunk = REG_AT(chunk_t, &world->chunk_reg, i);
+        if (chunk && is_in_bounds(&chunk->bounds, x, y))
+            return chunk;
+    }
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 #ifdef TEST
 #include <criterion/criterion.h>
 
@@ -58,6 +80,54 @@ Test(world, chunk_init_too_big)
 
     cr_assert(world_init(&world, 50, 100));
     cr_assert_eq(REG_AT(chunk_t, &world.chunk_reg, 0)->bounds.to_x, 49);
+}
+
+Test(world, get_chunk_single_chunk)
+{
+    world_t world = {0};
+
+    cr_assert(world_init(&world, 10, 10));
+    cr_assert_eq(world_get_chunk(&world, 0, 0),
+        REG_AT(chunk_t, &world.chunk_reg, 0));
+    cr_assert_eq(world_get_chunk(&world, 9, 9),
+        REG_AT(chunk_t, &world.chunk_reg, 0));
+    cr_assert_eq(world_get_chunk(&world, 10, 10), NULL);
+}
+
+Test(world, get_chunk_multiple_chunks)
+{
+    world_t world = {0};
+
+    cr_assert(world_init(&world, 10, 5));
+    cr_assert_eq(world_get_chunk(&world, 0, 0),
+        REG_AT(chunk_t, &world.chunk_reg, 0));
+    cr_assert_eq(world_get_chunk(&world, 4, 4),
+        REG_AT(chunk_t, &world.chunk_reg, 0));
+    cr_assert_eq(world_get_chunk(&world, 5, 0),
+        REG_AT(chunk_t, &world.chunk_reg, 1));
+    cr_assert_eq(world_get_chunk(&world, 9, 9),
+        REG_AT(chunk_t, &world.chunk_reg, 3));
+    cr_assert_eq(world_get_chunk(&world, 10, 10), NULL);
+}
+
+Test(world, get_chunk_lots_of_chunks)
+{
+    world_t world = {0};
+
+    cr_assert(world_init(&world, 100, 10));
+    cr_assert_eq(world_get_chunk(&world, 0, 0),
+        REG_AT(chunk_t, &world.chunk_reg, 0));
+    cr_assert_eq(world_get_chunk(&world, 9, 9),
+        REG_AT(chunk_t, &world.chunk_reg, 0));
+    cr_assert_eq(world_get_chunk(&world, 10, 10),
+        REG_AT(chunk_t, &world.chunk_reg, 11));
+    cr_assert_eq(world_get_chunk(&world, 19, 19),
+        REG_AT(chunk_t, &world.chunk_reg, 11));
+    cr_assert_eq(world_get_chunk(&world, 20, 20),
+        REG_AT(chunk_t, &world.chunk_reg, 22));
+    cr_assert_eq(world_get_chunk(&world, 99, 99),
+        REG_AT(chunk_t, &world.chunk_reg, 99));
+    cr_assert_eq(world_get_chunk(&world, 100, 100), NULL);
 }
 
 #endif

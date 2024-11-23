@@ -6,6 +6,7 @@ bool world_init(world_t *world, size_t size, size_t chunk_size)
 {
     if (!world || size == 0 || chunk_size == 0)
         return false;
+    world->size = size;
     return W_INIT_REG(world, asset, ASSET_REGISTRY_BASE_SIZE)
         && W_INIT_REG(world, prop, PROP_REGISTRY_BASE_SIZE)
         && W_INIT_REG(world, terrain, TERRAIN_REGISTRY_BASE_SIZE)
