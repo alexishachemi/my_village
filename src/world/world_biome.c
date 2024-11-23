@@ -44,7 +44,7 @@ Test(world, add_biome)
     world_t world = {0};
     ssize_t biome_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     biome_id = world_add_biome(&world, "test_biome");
     cr_assert_neq(biome_id, -1);
     cr_assert_eq(world_get_biome(&world, "test_biome"), biome_id);
@@ -56,7 +56,7 @@ Test(world, get_biome_)
     world_t world = {0};
     ssize_t biome_id = -1;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     biome_id = world_add_biome(&world, "test_biome");
     cr_assert(biome_id >= 0);
     cr_assert_eq(world_get_biome(&world, "test_biome"), biome_id);
@@ -70,7 +70,7 @@ Test(world, get_biome_ptr_)
     ssize_t biome_id = -1;
     biome_t *biome = NULL;
 
-    cr_assert(world_init(&world));
+    cr_assert(world_init(&world, 10, 10));
     biome_id = world_add_biome(&world, "test_biome");
     cr_assert(biome_id >= 0);
     biome = world_get_biome_ptr(&world, biome_id);

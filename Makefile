@@ -8,7 +8,6 @@ CC						=	gcc
 SRC						=	main.c 						\
 							utils/str.c					\
 							utils/registry.c			\
-							utils/rect.c				\
 							world/world_factory.c		\
 							asset.c						\
 							world/world_asset.c			\
@@ -20,6 +19,7 @@ SRC						=	main.c 						\
 							world/world_biome.c			\
 							tile.c						\
 							chunk.c						\
+							world/world_chunk.c			\
 
 TSRC					=	
 

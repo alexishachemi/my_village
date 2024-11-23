@@ -15,9 +15,10 @@ typedef struct {
     reg_t prop_reg;     // prop_t
     reg_t terrain_reg;  // terrain_t
     reg_t biome_reg ;   // biome_t
+    reg_t chunk_reg;    // chunk_t
 } world_t;
 
-bool world_init(world_t *world);
+bool world_init(world_t *world, size_t size, size_t chunk_size);
 void world_deinit(world_t *world);
 
 // Asset
@@ -44,3 +45,7 @@ terrain_t *world_get_terrain_ptr(world_t *world, size_t terrain_id);
 ssize_t world_add_biome(world_t *world, const char *name);
 ssize_t world_get_biome(world_t *world, const char *name);
 biome_t *world_get_biome_ptr(world_t *world, size_t biome_id);
+
+// Chunk
+
+bool world_init_chunks(world_t *world, size_t size, size_t chunk_size);
