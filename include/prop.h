@@ -6,6 +6,7 @@
 #include "orientation.h"
 #include "str.h"
 #include "registry.h"
+#include "v2.h"
 
 #define PROP_REGISTRY_BASE_SIZE 128
 #define PROP_CHILD_REGISTRY_BASE_SIZE 1
@@ -42,8 +43,7 @@ struct prop_s {
         };
         struct { //PTYPE_CHILD
             prop_t *parent;
-            u_int8_t offx;
-            u_int8_t offy;
+            v2_t offset;
         };
     };
 };
@@ -63,6 +63,5 @@ bool prop_set_multi_asset(
 asset_t *prop_get_asset(const prop_t *prop, orient_t orient);
 
 bool prop_has_child(const prop_t *prop);
-prop_t *prop_add_child(prop_t *prop, const prop_asset_map_t *map,
-    u_int8_t x, u_int8_t y);
-prop_t *prop_get_child(prop_t *prop, u_int8_t x, u_int8_t y);
+prop_t *prop_add_child(prop_t *prop, const prop_asset_map_t *map, v2_t offset);
+prop_t *prop_get_child(prop_t *prop, v2_t offset);
