@@ -26,6 +26,7 @@ SRC						=	main.c 								\
 							render/renderer/renderer_factory.c	\
 							render/renderer/renderer_display.c	\
 							render/texture.c					\
+							render/draw_queue.c					\
 
 TSRC					=	
 
