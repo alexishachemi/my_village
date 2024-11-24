@@ -1,3 +1,4 @@
+#include "asset.h"
 #include "chunk.h"
 #include "prop.h"
 #include "render.h"
@@ -5,31 +6,32 @@
 #include "terrain.h"
 #include "world.h"
 
-static Rectangle get_texture_draw_rect(const Texture2D *texture,
+static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
     Rectangle tile_rect)
 {
-    size_t offw = texture->width - (size_t)tile_rect.width;
-    size_t offh = texture->height - (size_t)tile_rect.height;
+    size_t offw = texture_rect.width - (size_t)tile_rect.width;
+    size_t offh = texture_rect.height - (size_t)tile_rect.height;
 
     return (Rectangle){
         tile_rect.x - (float)offw / 2,
         tile_rect.y - offh,
-        texture->width,
-        texture->height
+        texture_rect.width,
+        texture_rect.height
     };
 }
 
-static void draw_texture(Texture2D *texture, Rectangle tile_rect, bool fit)
+static void draw_texture(Texture2D *texture, Rectangle texture_rect,
+    Rectangle tile_rect, bool fit)
 {
     Rectangle draw_rect = tile_rect;
 
     if (!texture)
         return;
     if (!fit)
-        draw_rect = get_texture_draw_rect(texture, tile_rect);
+        draw_rect = get_texture_draw_rect(texture_rect, tile_rect);
     DrawTexturePro(
         *texture,
-        (Rectangle){0, 0, texture->width, texture->height},
+        texture_rect,
         draw_rect,
         (Vector2){0, 0},
         0,
@@ -43,13 +45,23 @@ static void draw_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     Rectangle tile_rect = {x * tile_size, y * tile_size, tile_size, tile_size};
     terrain_t *terrain = tile->terrain;
     prop_t *prop = tile->prop;
+    asset_t *asset = NULL;
 
     if (terrain) {
-        draw_texture(&terrain->asset->texture->rtexture, tile_rect, true);
+        draw_texture(
+            &terrain->asset->texture->rtexture,
+            terrain->asset->draw_rect,
+            tile_rect,
+            true
+        );
     }
     if (prop) {
+        asset = prop_get_asset(prop, tile->prop_orient);
+        if (!asset)
+            return;
         draw_texture(
-            &prop_get_asset(prop, tile->prop_orient)->texture->rtexture,
+            &asset->texture->rtexture,
+            asset->draw_rect,
             tile_rect,
             false
         );
