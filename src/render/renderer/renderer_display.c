@@ -9,11 +9,11 @@
 static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
     Rectangle tile_rect)
 {
-    size_t offw = texture_rect.width - (size_t)tile_rect.width;
-    size_t offh = texture_rect.height - (size_t)tile_rect.height;
+    float offw = texture_rect.width - tile_rect.width;
+    float offh = texture_rect.height - tile_rect.height;
 
     return (Rectangle){
-        tile_rect.x - (float)offw / 2,
+        tile_rect.x - offw / 2,
         tile_rect.y - offh,
         texture_rect.width,
         texture_rect.height
