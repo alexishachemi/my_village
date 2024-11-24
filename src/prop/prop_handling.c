@@ -1,23 +1,13 @@
 #include "prop.h"
-#include "asset.h"
-#include <string.h>
-
-bool prop_init(prop_t *prop, const char *name)
-{
-    if (!prop || !name)
-        return false;
-    memset(prop, 0, sizeof(prop_t));
-    namecpy(prop->name, name);
-    prop->asset_map.asset_mode = AMODE_NONE;
-    prop->z_index = 0;
-    return true;
-}
 
 bool prop_set_z_index(prop_t *prop, z_index_t z_index)
 {
-    if (!prop)
+    if (!prop || (prop->type == PTYPE_CHILD && !prop->parent))
         return false;
-    prop->z_index = z_index;
+    if (prop->type == PTYPE_PARENT)
+        prop->z_index = z_index;
+    else
+        prop->parent->z_index = z_index;
     return true;
 }
 
@@ -67,16 +57,6 @@ asset_t *prop_get_asset(const prop_t *prop, orient_t orient)
 
 #ifdef TEST
 #include <criterion/criterion.h>
-
-Test(prop, init)
-{
-    prop_t prop = {0};
-
-    cr_assert(prop_init(&prop, "name"));
-    cr_assert_str_eq(prop.name, "name");
-    cr_assert_eq(prop.asset_map.asset_mode, AMODE_NONE);
-    cr_assert_eq(prop.z_index, 0);
-}
 
 Test(prop, set_mono_asset)
 {

@@ -21,6 +21,7 @@ void world_deinit(world_t *world)
     if (!world)
         return;
     W_DEINIT_REG(world, asset);
+    reg_map(&world->prop_reg, (reg_callback_t)prop_deinit);
     W_DEINIT_REG(world, prop);
     W_DEINIT_REG(world, terrain);
     reg_map(&world->biome_reg, (reg_callback_t)biome_deinit);

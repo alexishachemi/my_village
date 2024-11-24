@@ -11,7 +11,9 @@ SRC						=	main.c 								\
 							world/world_factory.c				\
 							asset.c								\
 							world/world_asset.c					\
-							prop.c								\
+							prop/prop_factory.c					\
+							prop/prop_handling.c				\
+							prop/prop_child.c					\
 							world/world_prop.c					\
 							terrain.c							\
 							world/world_terrain.c				\
