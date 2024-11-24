@@ -7,6 +7,7 @@
 #include "asset.h"
 #include "prop.h"
 #include "terrain.h"
+#include "texture.h"
 #include "tile.h"
 
 #define W_INIT_REG(wp, t, s) (reg_init(&wp->t##_reg, sizeof(t##_t), s))
@@ -26,28 +27,24 @@ void world_deinit(world_t *world);
 
 // Asset
 
-ssize_t world_new_asset(world_t *world, const char *name, const char *path);
-ssize_t world_get_asset(world_t *world, const char *name);
-char *world_get_asset_path(world_t *world, const char *name);
-asset_t *world_get_asset_ptr(world_t *world, size_t asset_id);
+asset_t *world_new_asset(world_t *world, const char *name,
+    texture_t *texture, Rectangle draw_rect);
+asset_t *world_get_asset(world_t *world, const char *name);
 
 // Prop
 
-ssize_t world_new_prop(world_t *world, const char *name);
-ssize_t world_get_prop(world_t *world, const char *name);
-prop_t *world_get_prop_ptr(world_t *world, size_t prop_id);
+prop_t *world_new_prop(world_t *world, const char *name);
+prop_t *world_get_prop(world_t *world, const char *name);
 
 // Terrain
 
-ssize_t world_new_terrain(world_t *world, const char *name, size_t asset_id);
-ssize_t world_get_terrain(world_t *world, const char *name);
-terrain_t *world_get_terrain_ptr(world_t *world, size_t terrain_id);
+terrain_t *world_new_terrain(world_t *world, const char *name, asset_t *asset);
+terrain_t *world_get_terrain(world_t *world, const char *name);
 
 // Biome
 
-ssize_t world_add_biome(world_t *world, const char *name);
-ssize_t world_get_biome(world_t *world, const char *name);
-biome_t *world_get_biome_ptr(world_t *world, size_t biome_id);
+biome_t *world_new_biome(world_t *world, const char *name);
+biome_t *world_get_biome(world_t *world, const char *name);
 
 // Tile
 

@@ -1,13 +1,16 @@
 #pragma once
 
-#include "orientation.h"
 #include <stdbool.h>
 #include <sys/types.h>
+#include "biome.h"
+#include "orientation.h"
+#include "prop.h"
+#include "terrain.h"
 
 typedef struct {
-    ssize_t terrain_id;
-    ssize_t prop_id;
-    ssize_t biome_id;
+    terrain_t *terrain;
+    prop_t *prop;
+    biome_t *biome;
     orient_t prop_orient;
 } tile_t;
 

@@ -1,11 +1,13 @@
 #include "asset.h"
 
-bool asset_init(asset_t *asset, const char *name, const char *path)
+bool asset_init(asset_t *asset, const char *name,
+    texture_t *texture, Rectangle draw_rect)
 {
-    if (!asset || !name || !path)
+    if (!asset || !name || !texture)
         return false;
     namecpy(asset->name, name);
-    pathcpy(asset->path, path);
+    asset->texture = texture;
+    asset->draw_rect = draw_rect;
     return true;
 }
 
@@ -17,10 +19,13 @@ bool asset_init(asset_t *asset, const char *name, const char *path)
 Test(asset, init)
 {
     asset_t asset = {0};
+    texture_t texture = {0};
+    Rectangle r = {12, 34, 56, 78};
  
-    cr_assert_eq(asset_init(&asset, "name", "path"), true);
-    cr_assert_str_eq(asset.name, "name");
-    cr_assert_str_eq(asset.path, "path");
+    cr_assert_eq(asset_init(&asset, "my_asset", &texture, r), true);
+    cr_assert_str_eq(asset.name, "my_asset");
+    cr_assert_not_null(asset.texture);
+    cr_assert_eq(asset.draw_rect.x, 12);
 }
 
 #endif

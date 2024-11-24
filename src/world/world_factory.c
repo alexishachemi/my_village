@@ -1,4 +1,5 @@
 #include "biome.h"
+#include "registry.h"
 #include "world.h"
 #include "chunk.h"
 
@@ -22,7 +23,8 @@ void world_deinit(world_t *world)
     W_DEINIT_REG(world, asset);
     W_DEINIT_REG(world, prop);
     W_DEINIT_REG(world, terrain);
+    reg_map(&world->biome_reg, (reg_callback_t)biome_deinit);
     W_DEINIT_REG(world, biome);
-    reg_map(&world->chunk_reg, (void (*)(void *))chunk_deinit);
+    reg_map(&world->chunk_reg, (reg_callback_t)chunk_deinit);
     W_DEINIT_REG(world, chunk);
 }
