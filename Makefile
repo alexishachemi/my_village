@@ -5,25 +5,25 @@ NAME					=	my_village
 CC						=	gcc
 
 
-SRC						=	main.c 						\
-							utils/str.c					\
-							utils/registry.c			\
-							world/world_factory.c		\
-							asset.c						\
-							world/world_asset.c			\
-							prop.c						\
-							world/world_prop.c			\
-							terrain.c					\
-							world/world_terrain.c		\
-							biome.c						\
-							world/world_biome.c			\
-							tile.c						\
-							world/world_tile.c			\
-							chunk.c						\
-							world/world_chunk.c			\
-							renderer/renderer.c			\
-							renderer/renderer_load.c	\
-							renderer/renderer_display.c	\
+SRC						=	main.c 								\
+							utils/str.c							\
+							utils/registry.c					\
+							world/world_factory.c				\
+							asset.c								\
+							world/world_asset.c					\
+							prop.c								\
+							world/world_prop.c					\
+							terrain.c							\
+							world/world_terrain.c				\
+							biome.c								\
+							world/world_biome.c					\
+							tile.c								\
+							world/world_tile.c					\
+							chunk.c								\
+							world/world_chunk.c					\
+							render/renderer/renderer_factory.c	\
+							render/renderer/renderer_display.c	\
+							render/texture.c					\
 
 TSRC					=	
 

@@ -122,9 +122,9 @@ Test(chunk, init)
     cr_assert_eq(chunk.bounds.to_y, 10);
     cr_assert_eq(vec_size(&chunk.tiles), 121);
     for (size_t i = 0; i < vec_size(&chunk.tiles); i++) {
-        cr_assert_eq(VEC_FAST_AT(tile_t, &chunk.tiles, i).terrain_id, -1);
-        cr_assert_eq(VEC_FAST_AT(tile_t, &chunk.tiles, i).prop_id, -1);
-        cr_assert_eq(VEC_FAST_AT(tile_t, &chunk.tiles, i).biome_id, -1);
+        cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).terrain);
+        cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).prop);
+        cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).biome);
     }
 }
 

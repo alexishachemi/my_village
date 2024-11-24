@@ -1,4 +1,5 @@
 #include "biome.h"
+#include "asset.h"
 #include "cvec.h"
 #include "registry.h"
 #include "str.h"
@@ -11,9 +12,9 @@ bool biome_init(biome_t *biome, const char *name)
     if (!biome || !name)
         return false;
     namecpy(biome->name, name);
-    reg_init(&biome->heritage, sizeof(size_t), BIOME_HERITAGE_BASE_SIZE);
-    reg_init(&biome->terrains, sizeof(size_t), BIOME_TERRAIN_BASE_SIZE);
-    reg_init(&biome->props, sizeof(size_t), BIOME_PROPS_BASE_SIZE);
+    reg_init(&biome->parents, sizeof(biome_t*), BIOME_HERITAGE_BASE_SIZE);
+    reg_init(&biome->terrains, sizeof(terrain_t *), BIOME_TERRAIN_BASE_SIZE);
+    reg_init(&biome->props, sizeof(prop_t*), BIOME_PROPS_BASE_SIZE);
     return true;
 }
 
@@ -21,65 +22,30 @@ void biome_deinit(biome_t *biome)
 {
     if (!biome)
         return;
-    reg_deinit(&biome->heritage);
+    reg_deinit(&biome->parents);
     reg_deinit(&biome->terrains);
     reg_deinit(&biome->props);
 }
 
-bool biome_add_terrain(biome_t *biome, size_t terrain_id)
+bool biome_add_terrain(biome_t *biome, terrain_t *terrain)
 {
-    size_t *id = NULL;
-
-    if (!biome)
+    if (!biome || !terrain)
         return false;
-    id = reg_new_elem(&biome->terrains);
-    if (!id)
-        return false;
-    *id = terrain_id;
-    return true;
+    return REG_ADD(&biome->terrains, &terrain, sizeof(terrain_t*));
 }
 
-bool biome_add_terrain_by_name(biome_t *biome, reg_t *terrains, const char *name)
+bool biome_add_prop(biome_t *biome, prop_t *prop)
 {
-    ssize_t terrain_id = -1;
-
-    if (!biome || !terrains || !name)
+    if (!biome || !prop)
         return false;
-    for (size_t i = 0; i < terrains->last_free_index; i++) {
-        if (STR_EQ(VEC_FAST_AT(terrain_t, &terrains->vec, i).name, name)) {
-            terrain_id = i;
-            break;
-        }
-    }
-    return terrain_id >= 0 && biome_add_terrain(biome, terrain_id);
+    return REG_ADD(&biome->props, &prop, sizeof(prop_t*));
 }
 
-bool biome_add_prop(biome_t *biome, size_t prop_id)
+bool biome_add_parent(biome_t *biome, biome_t *parent)
 {
-    size_t *id = NULL;
-
-    if (!biome)
+    if (!biome || !parent)
         return false;
-    id = reg_new_elem(&biome->props);
-    if (!id)
-        return false;
-    *id = prop_id;
-    return true;
-}
-
-bool biome_add_prop_by_name(biome_t *biome, reg_t *props, const char *name)
-{
-    ssize_t prop_id = -1;
-
-    if (!biome || !props || !name)
-        return false;
-    for (size_t i = 0; i < props->last_free_index; i++) {
-        if (STR_EQ(VEC_FAST_AT(prop_t, &props->vec, i).name, name)) {
-            prop_id = i;
-            break;
-        }
-    }
-    return prop_id >= 0 && biome_add_prop(biome, prop_id);
+    return REG_ADD(&biome->parents, &parent, sizeof(biome_t*));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -98,67 +64,55 @@ Test(biome, init)
 
 Test(biome, add_terrain)
 {
-    ssize_t asset_id = -1;
-    ssize_t terrain_id = -1;
+    asset_t *asset = NULL;
+    terrain_t *terrain = NULL;
     world_t world = {0};
     biome_t biome = {0};
+    texture_t texture = {0};
 
     cr_assert(world_init(&world, 10, 10));
     cr_assert(biome_init(&biome, "test_biome"));
-    asset_id = world_new_asset(&world, "test_image", "path/to/image");
-    cr_assert(asset_id >= 0);
-    terrain_id = world_new_terrain(&world, "test_terrain", asset_id);
-    cr_assert(terrain_id >= 0);
-    cr_assert(biome_add_terrain(&biome, terrain_id));
-    biome_deinit(&biome);
-    world_deinit(&world);
-}
-
-Test(biome, add_terrain_by_name)
-{
-    ssize_t asset_id = -1;
-    ssize_t terrain_id = -1;
-    world_t world = {0};
-    biome_t biome = {0};
-
-    cr_assert(world_init(&world, 10, 10));
-    cr_assert(biome_init(&biome, "test_biome"));
-    asset_id = world_new_asset(&world, "test_image", "path/to/image");
-    cr_assert(asset_id >= 0);
-    terrain_id = world_new_terrain(&world, "test_terrain", asset_id);
-    cr_assert(terrain_id >= 0);
-    cr_assert(biome_add_terrain_by_name(&biome, &world.terrain_reg, "test_terrain"));
+    asset = world_new_asset(&world, "test_image", &texture, (Rectangle){0, 0, 0, 0});
+    cr_assert_not_null(asset);
+    terrain = world_new_terrain(&world, "test_terrain", asset);
+    cr_assert(terrain != NULL);
+    cr_assert(biome_add_terrain(&biome, terrain));
     biome_deinit(&biome);
     world_deinit(&world);
 }
 
 Test(biome, add_prop)
 {
-    ssize_t prop_id = -1;
+    prop_t *prop = NULL;
     world_t world = {0};
     biome_t biome = {0};
 
     cr_assert(world_init(&world, 10, 10));
     cr_assert(biome_init(&biome, "test_biome"));
-    prop_id = world_new_prop(&world, "test_prop");
-    cr_assert(prop_id >= 0);
-    cr_assert(biome_add_prop(&biome, prop_id));
+    prop = world_new_prop(&world, "test_prop");
+    cr_assert(prop != NULL);
+    cr_assert(biome_add_prop(&biome, prop));
     biome_deinit(&biome);
     world_deinit(&world);
 }
 
-Test(biome, add_prop_by_name)
+Test(biome, add_parent)
 {
-    ssize_t prop_id = -1;
     world_t world = {0};
-    biome_t biome = {0};
+    biome_t *biome = NULL;
+    biome_t *parent = NULL;
+    biome_t **biome_pp = NULL;
 
     cr_assert(world_init(&world, 10, 10));
-    cr_assert(biome_init(&biome, "test_biome"));
-    prop_id = world_new_prop(&world, "test_prop");
-    cr_assert(prop_id >= 0);
-    cr_assert(biome_add_prop_by_name(&biome, &world.prop_reg, "test_prop"));
-    biome_deinit(&biome);
+    biome = world_new_biome(&world, "test_biome");
+    cr_assert_not_null(biome);
+    parent = world_new_biome(&world, "test_parent");
+    cr_assert_not_null(parent);
+    cr_assert(biome_add_parent(biome, parent));
+    cr_assert_eq(REG_SIZE(biome->parents), 1);
+    biome_pp = REG_AT(biome_t*, &biome->parents, 0);
+    cr_assert_not_null(biome_pp);
+    cr_assert_eq(*biome_pp, parent);
     world_deinit(&world);
 }
 

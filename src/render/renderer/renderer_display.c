@@ -19,10 +19,8 @@ static Rectangle get_texture_draw_rect(const Texture2D *texture,
     };
 }
 
-static void draw_texture(renderer_t *renderer, size_t id, Rectangle tile_rect,
-    bool fit)
+static void draw_texture(Texture2D *texture, Rectangle tile_rect, bool fit)
 {
-    Texture2D *texture = REG_AT(Texture2D, &renderer->textures, id);
     Rectangle draw_rect = tile_rect;
 
     if (!texture)
@@ -43,15 +41,18 @@ static void draw_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
 {
     size_t tile_size = renderer->settings.tile_size_px;
     Rectangle tile_rect = {x * tile_size, y * tile_size, tile_size, tile_size};
-    terrain_t *terrain = world_get_terrain_ptr(renderer->world, tile->terrain_id);
-    prop_t *prop = world_get_prop_ptr(renderer->world, tile->prop_id);
+    terrain_t *terrain = tile->terrain;
+    prop_t *prop = tile->prop;
 
     if (terrain) {
-        draw_texture(renderer, terrain->asset_id, tile_rect, true);
+        draw_texture(&terrain->asset->texture->rtexture, tile_rect, true);
     }
     if (prop) {
-        draw_texture(renderer,
-            prop_get_asset_id(prop, tile->prop_orient), tile_rect, false);
+        draw_texture(
+            &prop_get_asset(prop, tile->prop_orient)->texture->rtexture,
+            tile_rect,
+            false
+        );
     }
 }
 
@@ -70,29 +71,50 @@ static void draw_chunk(renderer_t *renderer, chunk_t *chunk)
     }
 }
 
-static void draw(renderer_t *renderer)
+static void draw(renderer_t *renderer, world_t *world)
 {
     BeginDrawing();
     // BeginMode2D(renderer->camera);
     ClearBackground(BG_COLOR);
-    for (size_t i = 0; i < renderer->world->chunk_reg.last_free_index; i++) {
-        draw_chunk(renderer, REG_AT(chunk_t, &renderer->world->chunk_reg, i));
+    for (size_t i = 0; i < world->chunk_reg.last_free_index; i++) {
+        draw_chunk(renderer, REG_AT(chunk_t, &world->chunk_reg, i));
     }
     // EndMode2D();
     EndDrawing();
 }
 
-static void mainloop(renderer_t *renderer)
+static void mainloop(renderer_t *renderer, world_t *world)
 {
     while (!WindowShouldClose()) {
-        draw(renderer);
+        draw(renderer, world);
     }
 }
 
-bool renderer_display(renderer_t *renderer)
+bool renderer_display(renderer_t *renderer, world_t *world)
 {
-    if (!renderer)
+    if (!renderer || !world)
         return false;
-    mainloop(renderer);
+    mainloop(renderer, world);
     return true;
+}
+
+bool render(renderer_t *renderer, world_t *world)
+{
+    bool status = false;
+
+    if (!renderer || !world)
+        return false;
+    InitWindow(
+        renderer->settings.screen_width,
+        renderer->settings.screen_height,
+        "MyVillage"
+    );
+    if (!renderer_load(renderer)) {
+        CloseWindow();
+        return false;
+    }
+    status = renderer_display(renderer, world);
+    renderer_unload(renderer);
+    CloseWindow();
+    return status;
 }

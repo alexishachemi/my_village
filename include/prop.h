@@ -2,6 +2,7 @@
 
 #include <sys/types.h>
 #include <stdbool.h>
+#include "asset.h"
 #include "orientation.h"
 #include "str.h"
 
@@ -13,12 +14,12 @@ typedef int8_t z_index_t;
 typedef struct {
     prop_asset_mode_t asset_mode;
     union {
-        size_t asset_id;
+        asset_t *asset;
         struct {
-            size_t asset_id_up;
-            size_t asset_id_down;
-            size_t asset_id_left;
-            size_t asset_id_right;
+            asset_t *asset_up;
+            asset_t *asset_down;
+            asset_t *asset_left;
+            asset_t *asset_right;
         };
     };
 } prop_asset_map_t;
@@ -31,12 +32,12 @@ typedef struct {
 
 bool prop_init(prop_t *prop, const char *name);
 bool prop_set_z_index(prop_t *prop, z_index_t z_index);
-bool prop_set_mono_asset(prop_t *prop, size_t asset_id);
+bool prop_set_mono_asset(prop_t *prop, asset_t *asset);
 bool prop_set_multi_asset(
     prop_t *prop,
-    size_t asset_id_up,
-    size_t asset_id_down,
-    size_t asset_id_left,
-    size_t asset_id_right
+    asset_t *asset_up,
+    asset_t *asset_down,
+    asset_t *asset_left,
+    asset_t *asset_right
 );
-ssize_t prop_get_asset_id(const prop_t *prop, orient_t orient);
+asset_t *prop_get_asset(const prop_t *prop, orient_t orient);

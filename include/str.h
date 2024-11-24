@@ -11,3 +11,4 @@ typedef char path_t[PATH_SIZE];
 
 char *namecpy(char *dest, const char *src);
 char *pathcpy(char *dest, const char *src);
+char *path_find_filename(const char *path);
