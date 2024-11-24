@@ -1,6 +1,5 @@
 #include "biome.h"
 #include "asset.h"
-#include "cvec.h"
 #include "registry.h"
 #include "str.h"
 #include "terrain.h"

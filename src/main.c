@@ -15,7 +15,7 @@ static void setup_debug_map(renderer_t *r, world_t *world)
     texture_t *terrain_texture = renderer_new_texture(r, "terrain", "tests/assets/test_terrain.png");
     texture_t *prop_texture = renderer_new_texture(r, "prop", "tests/assets/test_prop.png");
     asset_t *terrain_asset = world_new_asset(world, "terrain", terrain_texture, (Rectangle){0, 0, 32, 32});
-    asset_t *prop_asset = world_new_asset(world, "prop", prop_texture, (Rectangle){0, 0, 32, 32});
+    asset_t *prop_asset = world_new_asset(world, "prop", prop_texture, (Rectangle){0, 0, 48, 64});
     terrain_t *terrain = world_new_terrain(world, "terrain", terrain_asset);
     prop_t *prop = world_new_prop(world, "prop");
 
