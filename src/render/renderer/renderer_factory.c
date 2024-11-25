@@ -1,3 +1,4 @@
+#include "draw_queue.h"
 #include "registry.h"
 #include "render.h"
 #include "texture.h"
@@ -7,6 +8,7 @@ bool renderer_init(renderer_t *renderer, const display_settings_t *settings)
     if (!renderer || !settings)
         return false;
     memcpy(&renderer->settings, settings, sizeof(display_settings_t));
+    draw_queue_init(&renderer->draw_queue);
     return reg_init(&renderer->textures, sizeof(texture_t), TEXTURE_REGISTRY_BASE_SIZE);
 }
 
@@ -14,6 +16,7 @@ void renderer_deinit(renderer_t *renderer)
 {
     if (!renderer)
         return;
+    draw_queue_deinit(&renderer->draw_queue);
     reg_deinit(&renderer->textures);
 }
 

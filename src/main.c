@@ -12,23 +12,28 @@
 
 static void setup_debug_map(renderer_t *r, world_t *world)
 {
-    texture_t *terrain_texture = renderer_new_texture(r, "terrain", "tests/assets/test_terrain.png");
-    texture_t *prop_texture = renderer_new_texture(r, "prop", "tests/assets/test_prop.png");
-    asset_t *terrain_asset = world_new_asset(world, "terrain", terrain_texture, (Rectangle){0, 0, 32, 32});
-    asset_t *prop_asset = world_new_asset(world, "prop", prop_texture, (Rectangle){0, 0, 48, 64});
-    terrain_t *terrain = world_new_terrain(world, "terrain", terrain_asset);
-    prop_t *prop = world_new_prop(world, "prop");
+    texture_t *grass_texture = renderer_new_texture(r, "grass", "tests/assets/test_terrain.png");
+    texture_t *tree_texture = renderer_new_texture(r, "tree", "tests/assets/test_prop.png");
+
+    asset_t *grass_asset = world_new_asset(world, "grass", grass_texture, (Rectangle){0, 0, 32, 32});
+    asset_t *tree_asset = world_new_asset(world, "tree", tree_texture, (Rectangle){0, 0, 32, 48});
+    asset_t *big_tree_asset = world_new_asset(world, "big_tree", tree_texture, (Rectangle){32, 0, 64, 96});
+
+    terrain_t *grass_terrain = world_new_terrain(world, "grass", grass_asset);
+    prop_t *tree_prop = world_new_prop(world, "tree");
+    prop_t *big_tree_prop = world_new_prop(world, "big_tree");
 
     srand(time(NULL));
-    prop_set_mono_asset(prop, prop_asset);
+    prop_set_mono_asset(tree_prop, tree_asset);
+    prop_set_mono_asset(big_tree_prop, big_tree_asset);
     for (size_t y = 0; y < world->size; y++) {
         for (size_t x = 0; x < world->size; x++) {
             tile_t *tile = world_get_tile(world, x, y);
             if (!tile)
                 return;
-            tile->terrain = terrain;
+            tile->terrain = grass_terrain;
             if (rand() % 10 == 0)
-                tile->prop = prop;
+                tile->prop = big_tree_prop;
         }
     }
 }

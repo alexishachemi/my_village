@@ -11,7 +11,9 @@ SRC						=	main.c 								\
 							world/world_factory.c				\
 							asset.c								\
 							world/world_asset.c					\
-							prop.c								\
+							prop/prop_factory.c					\
+							prop/prop_handling.c				\
+							prop/prop_child.c					\
 							world/world_prop.c					\
 							terrain.c							\
 							world/world_terrain.c				\
@@ -24,6 +26,7 @@ SRC						=	main.c 								\
 							render/renderer/renderer_factory.c	\
 							render/renderer/renderer_display.c	\
 							render/texture.c					\
+							render/draw_queue.c					\
 
 TSRC					=	
 

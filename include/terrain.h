@@ -6,6 +6,7 @@
 #include "str.h"
 
 #define TERRAIN_REGISTRY_BASE_SIZE 128
+#define TERRAIN_Z_INDEX -128
 
 typedef struct {
     name_t name;

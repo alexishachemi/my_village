@@ -1,6 +1,8 @@
 #include "asset.h"
 #include "chunk.h"
+#include "draw_queue.h"
 #include "prop.h"
+#include "registry.h"
 #include "render.h"
 #include "raylib.h"
 #include "terrain.h"
@@ -9,29 +11,26 @@
 static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
     Rectangle tile_rect)
 {
-    size_t offw = texture_rect.width - (size_t)tile_rect.width;
-    size_t offh = texture_rect.height - (size_t)tile_rect.height;
+    float offw = texture_rect.width - tile_rect.width;
+    float offh = texture_rect.height - tile_rect.height;
 
     return (Rectangle){
-        tile_rect.x - (float)offw / 2,
+        tile_rect.x - offw / 2,
         tile_rect.y - offh,
         texture_rect.width,
         texture_rect.height
     };
 }
 
-static void draw_texture(Texture2D *texture, Rectangle texture_rect,
-    Rectangle tile_rect, bool fit)
+static void draw_action(draw_action_t *action)
 {
-    Rectangle draw_rect = tile_rect;
+    Rectangle draw_rect = action->dest_rect;
 
-    if (!texture)
-        return;
-    if (!fit)
-        draw_rect = get_texture_draw_rect(texture_rect, tile_rect);
+    if (!action->fit)
+        draw_rect = get_texture_draw_rect(action->src_rect, action->dest_rect);
     DrawTexturePro(
-        *texture,
-        texture_rect,
+        action->texture->rtexture,
+        action->src_rect,
         draw_rect,
         (Vector2){0, 0},
         0,
@@ -39,7 +38,7 @@ static void draw_texture(Texture2D *texture, Rectangle texture_rect,
     );
 }
 
-static void draw_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
+static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
 {
     size_t tile_size = renderer->settings.tile_size_px;
     Rectangle tile_rect = {x * tile_size, y * tile_size, tile_size, tile_size};
@@ -47,66 +46,73 @@ static void draw_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     prop_t *prop = tile->prop;
     asset_t *asset = NULL;
 
-    if (terrain) {
-        draw_texture(
-            &terrain->asset->texture->rtexture,
-            terrain->asset->draw_rect,
-            tile_rect,
-            true
-        );
+    if (terrain && !draw_queue_add(&renderer->draw_queue, terrain->asset->texture,
+        terrain->asset->draw_rect, tile_rect, TERRAIN_Z_INDEX, true)) {
+        return false;
     }
-    if (prop) {
-        asset = prop_get_asset(prop, tile->prop_orient);
-        if (!asset)
-            return;
-        draw_texture(
-            &asset->texture->rtexture,
-            asset->draw_rect,
-            tile_rect,
-            false
-        );
-    }
+    if (!prop)
+        return true;
+    asset = prop_get_asset(prop, tile->prop_orient);
+    if (!asset)
+        return false;
+    return draw_queue_add(
+        &renderer->draw_queue,
+        asset->texture,
+        asset->draw_rect,
+        tile_rect,
+        prop->z_index,
+        false
+    );
 }
 
-static void draw_chunk(renderer_t *renderer, chunk_t *chunk)
+static bool queue_chunk(renderer_t *renderer, chunk_t *chunk)
 {
     size_t offx = chunk->bounds.from_x;
     size_t offy = chunk->bounds.from_y;
+    bool success = true;
 
-    for (size_t i = 0; i < chunk->tiles.size; i++) {
-        draw_tile(
+    for (size_t i = 0; success && i < chunk->tiles.size; i++) {
+        success = queue_tile(
             renderer,
             vec_fast_at(&chunk->tiles, i),
             offx + i % (chunk->bounds.to_x - chunk->bounds.from_x + 1),
             offy + i / (chunk->bounds.to_x - chunk->bounds.from_x + 1)
         );
     }
+    return success;
 }
 
-static void draw(renderer_t *renderer, world_t *world)
+static bool queue(renderer_t *renderer, world_t *world)
+{
+    for (size_t i = 0; i < REG_SIZE(world->chunk_reg); i++) {
+        if (!queue_chunk(renderer, REG_AT(chunk_t, &world->chunk_reg, i)))
+            return false;
+    }
+    return true;
+}
+
+static void draw(renderer_t *renderer)
 {
     BeginDrawing();
     // BeginMode2D(renderer->camera);
     ClearBackground(BG_COLOR);
-    for (size_t i = 0; i < world->chunk_reg.last_free_index; i++) {
-        draw_chunk(renderer, REG_AT(chunk_t, &world->chunk_reg, i));
-    }
+    list_map(&renderer->draw_queue, (callback_t)draw_action);
     // EndMode2D();
     EndDrawing();
 }
 
-static void mainloop(renderer_t *renderer, world_t *world)
+static void mainloop(renderer_t *renderer)
 {
     while (!WindowShouldClose()) {
-        draw(renderer, world);
+        draw(renderer);
     }
 }
 
-bool renderer_display(renderer_t *renderer, world_t *world)
+bool renderer_display(renderer_t *renderer)
 {
-    if (!renderer || !world)
+    if (!renderer)
         return false;
-    mainloop(renderer, world);
+    mainloop(renderer);
     return true;
 }
 
@@ -125,7 +131,12 @@ bool render(renderer_t *renderer, world_t *world)
         CloseWindow();
         return false;
     }
-    status = renderer_display(renderer, world);
+    if (!queue(renderer, world)) {
+        renderer_unload(renderer);
+        CloseWindow();
+        return false;
+    }
+    status = renderer_display(renderer);
     renderer_unload(renderer);
     CloseWindow();
     return status;
