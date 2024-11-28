@@ -45,6 +45,7 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     terrain_t *terrain = tile->terrain;
     prop_t *prop = tile->prop;
     asset_t *asset = NULL;
+    z_index_t z_index = 0;
 
     if (terrain && !draw_queue_add(&renderer->draw_queue, terrain->asset->texture,
         terrain->asset->draw_rect, tile_rect, TERRAIN_Z_INDEX, true)) {
@@ -52,6 +53,7 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     }
     if (!prop)
         return true;
+    z_index = prop->type == PTYPE_PARENT ? prop->z_index : prop->parent->z_index;
     asset = prop_get_asset(prop, tile->prop_orient);
     if (!asset)
         return false;
@@ -60,7 +62,7 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
         asset->texture,
         asset->draw_rect,
         tile_rect,
-        prop->z_index,
+        z_index,
         false
     );
 }
@@ -120,6 +122,7 @@ bool render(renderer_t *renderer, world_t *world)
 {
     bool status = false;
 
+    SetTraceLogLevel(LOG_NONE);
     if (!renderer || !world)
         return false;
     InitWindow(

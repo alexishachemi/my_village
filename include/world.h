@@ -3,12 +3,14 @@
 #include <sys/types.h>
 #include "biome.h"
 #include "chunk.h"
+#include "orientation.h"
 #include "registry.h"
 #include "asset.h"
 #include "prop.h"
 #include "terrain.h"
 #include "texture.h"
 #include "tile.h"
+#include "v2.h"
 
 #define W_INIT_REG(wp, t, s) (reg_init(&wp->t##_reg, sizeof(t##_t), s))
 #define W_DEINIT_REG(wp, t) (reg_deinit(&wp->t##_reg))
@@ -48,9 +50,12 @@ biome_t *world_get_biome(world_t *world, const char *name);
 
 // Tile
 
-tile_t *world_get_tile(world_t *world, size_t x, size_t y);
+tile_t *world_get_tile(world_t *world, v2_t pos);
+bool world_place_terrain(world_t *world, v2_t pos, terrain_t *terrain);
+bool world_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orientation, bool force);
+bool world_can_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orientation);
 
 // Chunk
 
 bool world_init_chunks(world_t *world, size_t size, size_t chunk_size);
-chunk_t *world_get_chunk(world_t *world, size_t x, size_t y);
+chunk_t *world_get_chunk(world_t *world, v2_t pos);
