@@ -10,11 +10,12 @@
 #include "texture.h"
 #include "tile.h"
 
-#define W_INIT_REG(wp, t, s) (reg_init(&wp->t##_reg, sizeof(t##_t), s))
-#define W_DEINIT_REG(wp, t) (reg_deinit(&wp->t##_reg))
+#define WORLD_INIT_REGISTRY(wp, t, s) (reg_init(&wp->t##_reg, sizeof(t##_t), s))
+#define WORLD_DEINIT_REGISTRY(wp, t) (reg_deinit(&wp->t##_reg))
 
 typedef struct {
     size_t size;
+    size_t chunk_size;
     reg_t asset_reg;    // asset_t
     reg_t prop_reg;     // prop_t
     reg_t terrain_reg;  // terrain_t
