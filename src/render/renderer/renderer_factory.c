@@ -1,4 +1,6 @@
+#include <string.h>
 #include "draw_queue.h"
+#include "raylib.h"
 #include "registry.h"
 #include "render.h"
 #include "texture.h"
@@ -7,8 +9,9 @@ bool renderer_init(renderer_t *renderer, const display_settings_t *settings)
 {
     if (!renderer || !settings)
         return false;
-    renderer->debug_mode = false;
+    renderer->camera = (Camera2D){{0, 0}, {0 , 0}, 0, 1.0};
     memcpy(&renderer->settings, settings, sizeof(display_settings_t));
+    memset(&renderer->debug, 0, sizeof(display_debug_setting_t));
     draw_queue_init(&renderer->draw_queue);
     return reg_init(&renderer->textures, sizeof(texture_t), TEXTURE_REGISTRY_BASE_SIZE);
 }

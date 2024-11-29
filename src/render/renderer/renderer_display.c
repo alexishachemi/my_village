@@ -94,18 +94,12 @@ static bool queue(renderer_t *renderer, world_t *world)
 static void draw(renderer_t *renderer, world_t *world)
 {
     BeginDrawing();
-    // BeginMode2D(renderer->camera);
+    BeginMode2D(renderer->camera);
     ClearBackground(BG_COLOR);
     list_map(&renderer->draw_queue, (callback_t)draw_action);
     renderer_draw_overlay(renderer, world);
-    // EndMode2D();
+    EndMode2D();
     EndDrawing();
-}
-
-static void update(renderer_t *renderer)
-{
-    if (IsKeyPressed(KEY_X))
-        renderer->debug_mode = !renderer->debug_mode;
 }
 
 bool renderer_display(renderer_t *renderer, world_t *world)
@@ -113,7 +107,6 @@ bool renderer_display(renderer_t *renderer, world_t *world)
     if (!renderer)
         return false;
     while (!WindowShouldClose()) {
-        update(renderer);
         draw(renderer, world);
     }
     return true;

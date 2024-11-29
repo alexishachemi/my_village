@@ -20,11 +20,15 @@ typedef struct {
 } display_settings_t;
 
 typedef struct {
+    bool grid;
+} display_debug_setting_t;
+
+typedef struct {
     reg_t textures; // texture_t
     Camera2D camera;
-    display_settings_t settings;
     draw_queue_t draw_queue;
-    bool debug_mode;
+    display_settings_t settings;
+    display_debug_setting_t debug;
 } renderer_t;
 
 bool renderer_init(renderer_t *renderer, const display_settings_t *settings);
