@@ -1,6 +1,3 @@
-#include "orientation.h"
-#include "prop.h"
-#include "v2.h"
 #ifndef TEST
 #define MAIN main
 #else
@@ -10,6 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "orientation.h"
+#include "prop.h"
+#include "v2.h"
 #include "world.h"
 #include "render.h"
 
@@ -45,9 +45,9 @@ static void setup_debug_map(renderer_t *r, world_t *world)
             if (rand() % 5 == 0)
                 world_place_prop(world, sofa_prop, (v2_t){x, y}, ORIENT_RIGHT, false);
             else if (rand() % 5 == 0)
-                world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_RIGHT, false);
+                world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_LEFT, false);
             else if (rand() % 7 == 0)
-                world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_RIGHT, false);
+                world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_LEFT, false);
         
         }
     }

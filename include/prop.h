@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include "asset.h"
 #include "orientation.h"
-#include "rect.h"
 #include "str.h"
 #include "registry.h"
 #include "v2.h"
