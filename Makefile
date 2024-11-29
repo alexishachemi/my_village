@@ -26,6 +26,7 @@ SRC						=	main.c 								\
 							world/world_chunk.c					\
 							render/renderer/renderer_factory.c	\
 							render/renderer/renderer_display.c	\
+							render/renderer/renderer_debug.c	\
 							render/texture.c					\
 							render/draw_queue.c					\
 

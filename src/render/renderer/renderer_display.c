@@ -93,32 +93,28 @@ static bool queue(renderer_t *renderer, world_t *world)
     return true;
 }
 
-static void draw(renderer_t *renderer)
+static void draw(renderer_t *renderer, world_t *world)
 {
     BeginDrawing();
-    // BeginMode2D(renderer->camera);
+    BeginMode2D(renderer->camera);
     ClearBackground(BG_COLOR);
     list_map(&renderer->draw_queue, (callback_t)draw_action);
-    // EndMode2D();
+    renderer_draw_overlay(renderer, world);
+    EndMode2D();
     EndDrawing();
 }
 
-static void mainloop(renderer_t *renderer)
-{
-    while (!WindowShouldClose()) {
-        draw(renderer);
-    }
-}
-
-bool renderer_display(renderer_t *renderer)
+bool renderer_display(renderer_t *renderer, world_t *world)
 {
     if (!renderer)
         return false;
-    mainloop(renderer);
+    while (!WindowShouldClose()) {
+        draw(renderer, world);
+    }
     return true;
 }
 
-bool render(renderer_t *renderer, world_t *world)
+bool render_and_display(renderer_t *renderer, world_t *world)
 {
     bool status = false;
 
@@ -139,7 +135,7 @@ bool render(renderer_t *renderer, world_t *world)
         CloseWindow();
         return false;
     }
-    status = renderer_display(renderer);
+    status = renderer_display(renderer, world);
     renderer_unload(renderer);
     CloseWindow();
     return status;
