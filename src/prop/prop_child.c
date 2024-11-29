@@ -38,15 +38,15 @@ static const char *generate_child_name(const prop_t *parent, char *buf,
 
 static bool offset_valid(v2_t offset)
 {
-    return offset.x > 0 && offset.y > 0;
+    return offset.x >= 0 && offset.y >= 0 && !(offset.x == 0 && offset.y == 0);
 }
 
-prop_t *prop_add_child(prop_t *prop, const prop_asset_map_t *map, v2_t offset)
+prop_t *prop_add_child(prop_t *prop, v2_t offset)
 {
     name_t child_name = {0};
     prop_t *child = NULL;
 
-    if (!prop || !map || !offset_valid(offset) || prop_get_child(prop, offset))
+    if (!prop || !offset_valid(offset) || prop_get_child(prop, offset))
         return NULL;
     child = new_child(prop);
     if (!prop_init(child, generate_child_name(prop, child_name, offset)))
@@ -86,15 +86,14 @@ Test(prop, add_child)
     prop_t prop = {0};
     prop_t *child = NULL;
     prop_t *child2 = NULL;
-    prop_asset_map_t map = {0};
 
     cr_assert(prop_init(&prop, LONG_NAME));
-    child = prop_add_child(&prop, &map, (v2_t){1, 1});
+    child = prop_add_child(&prop, (v2_t){1, 1});
     cr_assert_not_null(child);
-    cr_assert_null(prop_add_child(&prop, &map, (v2_t){1, 1}));
+    cr_assert_null(prop_add_child(&prop, (v2_t){1, 1}));
     cr_assert_eq(REG_SIZE(prop.childs), 1);
     cr_assert_eq(child, REG_AT(prop_t, &prop.childs, 0));
-    child2 = prop_add_child(&prop, &map, (v2_t){1, 2});
+    child2 = prop_add_child(&prop, (v2_t){1, 2});
     cr_assert_not_null(child2);
     cr_assert_eq(REG_SIZE(prop.childs), 2);
     cr_assert_str_eq(child->name, "Child prop of ["LONG_NAME"] at [1,1]");
@@ -109,10 +108,9 @@ Test(prop, get_child)
 {
     prop_t prop = {0};
     prop_t *child = NULL;
-    prop_asset_map_t map = {0};
 
     cr_assert(prop_init(&prop, "name"));
-    cr_assert(prop_add_child(&prop, &map, (v2_t){1, 1}));
+    cr_assert(prop_add_child(&prop, (v2_t){1, 1}));
     cr_assert_eq(REG_SIZE(prop.childs), 1);
     child = prop_get_child(&prop, (v2_t){1, 1});
     cr_assert(child);

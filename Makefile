@@ -7,6 +7,7 @@ CC						=	gcc
 
 SRC						=	main.c 								\
 							utils/str.c							\
+							utils/v2.c							\
 							utils/registry.c					\
 							world/world_factory.c				\
 							asset.c								\
