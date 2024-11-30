@@ -63,6 +63,8 @@ static void draw_top_bar(renderer_t *renderer, world_t *world)
     GuiLabel(top_bar, buf);
     GuiToggle((Rectangle){top_bar.width - 54, top_bar.y + 3, 50, top_bar.height - 6},
         "Grid", &renderer->debug.grid);
+    if (GuiButton((Rectangle){top_bar.width - 138, top_bar.y + 3, 80, top_bar.height - 6}, "Center"))
+        renderer_center_camera(renderer, world);
 }
 
 void renderer_draw_overlay(renderer_t *renderer, world_t *world)

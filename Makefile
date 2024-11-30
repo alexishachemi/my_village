@@ -27,6 +27,7 @@ SRC						=	main.c 								\
 							render/renderer/renderer_factory.c	\
 							render/renderer/renderer_display.c	\
 							render/renderer/renderer_debug.c	\
+							render/renderer/renderer_camera.c	\
 							render/texture.c					\
 							render/draw_queue.c					\
 
