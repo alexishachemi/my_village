@@ -58,8 +58,14 @@ int MAIN(void)
     world_t world = {0};
     renderer_t renderer = {0};
 
-    world_init(&world, 100, 10);
-    renderer_init(&renderer, &(display_settings_t){800, 600, 32});
+    if (!world_init(&world, 3, 2)) {
+        dprintf(2, "ERROR: Failed to initialize world\n");
+    }
+    renderer_init(&renderer, &(display_settings_t){
+        .screen_width=800,
+        .screen_height=600,
+        .tile_size_px=32
+    });
     setup_debug_map(&renderer, &world);
     render_and_display(&renderer, &world);
     renderer_deinit(&renderer);

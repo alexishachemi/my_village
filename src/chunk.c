@@ -10,8 +10,12 @@ bool chunk_bounds_size(const chunk_bounds_t *bounds, v2_t *pos_buf)
 {
     if (!bounds || !pos_buf)
         return false;
-    pos_buf->x = bounds->to_x - bounds->from_x + 1;
-    pos_buf->y = bounds->to_y - bounds->from_y + 1;
+    pos_buf->x = bounds->to_x - bounds->from_x;
+    pos_buf->y = bounds->to_y - bounds->from_y;
+    if (pos_buf->x == 0 && pos_buf->y == 0)
+        return true;
+    pos_buf->x++;
+    pos_buf->y++;
     return true;
 }
 
@@ -27,19 +31,22 @@ int chunk_bounds_area(const chunk_bounds_t *bounds)
 static bool bounds_are_valid(const chunk_bounds_t *bounds)
 {
     return bounds
-        && bounds->from_x < bounds->to_x
-        && bounds->from_y < bounds->to_y
-        && bounds->to_x - bounds->from_x > 0
-        && bounds->to_y - bounds->from_y > 0;
+        && bounds->from_x <= bounds->to_x
+        && bounds->from_y <= bounds->to_y;
 }
 
 bool chunk_init(chunk_t *chunk, const chunk_bounds_t *bounds)
 {
+    int area = 0;
+
     if (!chunk || !bounds_are_valid(bounds))
         return false;
     memcpy(&chunk->bounds, bounds, sizeof(chunk_bounds_t));
     chunk->tiles = vec_create(sizeof(tile_t));
-    vec_resize(&chunk->tiles, chunk_bounds_area(&chunk->bounds));
+    area = chunk_bounds_area(bounds);
+    if (area <= 0)
+        return false;
+    vec_resize(&chunk->tiles, area);
     for (size_t i = 0; i < vec_size(&chunk->tiles); i++) {
         if (!tile_init(vec_fast_at(&chunk->tiles, i)))
             return false;
@@ -133,8 +140,8 @@ Test(chunk, bad_init)
     chunk_t chunk = {0};
 
     cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){0, 0, 0, 0}));
-    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){0, 0, 10, 0}));
-    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){0, 0, 0, 10}));
+    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){10, 10, 10, 10}));
+    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){-1, -1, -1, -1}));
 }
 
 Test(chunk, get_tile_absolute)

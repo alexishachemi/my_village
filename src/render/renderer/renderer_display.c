@@ -128,6 +128,7 @@ bool render_and_display(renderer_t *renderer, world_t *world)
 
     if (!renderer || !world)
         return false;
+    SetTraceLogLevel(LOG_NONE);
     InitWindow(
         renderer->settings.screen_width,
         renderer->settings.screen_height,
