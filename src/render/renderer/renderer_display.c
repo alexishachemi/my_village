@@ -4,6 +4,7 @@
 #include "prop.h"
 #include "registry.h"
 #include "render.h"
+#include "raymath.h"
 #include "raylib.h"
 #include "terrain.h"
 #include "world.h"
@@ -45,7 +46,6 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     terrain_t *terrain = tile->terrain;
     prop_t *prop = tile->prop;
     asset_t *asset = NULL;
-    z_index_t z_index = 0;
 
     if (terrain && !draw_queue_add(&renderer->draw_queue, terrain->asset->texture,
         terrain->asset->draw_rect, tile_rect, TERRAIN_Z_INDEX, true)) {
@@ -53,7 +53,6 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     }
     if (!prop)
         return true;
-    z_index = prop->type == PTYPE_PARENT ? prop->z_index : prop->parent->z_index;
     asset = prop_get_asset(prop, tile->prop_orient);
     if (!asset)
         return false;
@@ -62,7 +61,7 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
         asset->texture,
         asset->draw_rect,
         tile_rect,
-        z_index,
+        prop->type == PTYPE_PARENT ? prop->z_index : prop->parent->z_index,
         false
     );
 }
@@ -104,11 +103,34 @@ static void draw(renderer_t *renderer, world_t *world)
     EndDrawing();
 }
 
+static Vector2 get_input_axis()
+{
+    Vector2 input = {0};
+
+    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_Z))
+        input.y -= 1;
+    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))
+        input.y += 1;
+    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
+        input.x -= 1;
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
+        input.x += 1;
+    return input;
+}
+
+static void update(renderer_t *renderer)
+{
+    Vector2 velocity = Vector2Scale(get_input_axis(), CAMERA_SCROLL_SPEED);
+    velocity = Vector2Scale(velocity, GetFrameTime());
+    renderer->camera.target = Vector2Add(renderer->camera.target, velocity);
+}
+
 bool renderer_display(renderer_t *renderer, world_t *world)
 {
     if (!renderer)
         return false;
     while (!WindowShouldClose()) {
+        update(renderer);
         draw(renderer, world);
     }
     return true;
@@ -118,7 +140,6 @@ bool render_and_display(renderer_t *renderer, world_t *world)
 {
     bool status = false;
 
-    SetTraceLogLevel(LOG_NONE);
     if (!renderer || !world)
         return false;
     InitWindow(

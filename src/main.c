@@ -58,7 +58,7 @@ int MAIN(void)
     world_t world = {0};
     renderer_t renderer = {0};
 
-    world_init(&world, 30, 3);
+    world_init(&world, 100, 10);
     renderer_init(&renderer, &(display_settings_t){800, 600, 32});
     setup_debug_map(&renderer, &world);
     render_and_display(&renderer, &world);
