@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "render.h"
+#include "world.h"
 
 static Vector2 get_input_axis()
 {
@@ -34,8 +35,6 @@ static void drag_camera(Camera2D *camera)
     }
     diff = Vector2Scale(Vector2Subtract(drag_start, mouse), camera->zoom);
     camera->offset = Vector2Subtract(camera->offset, diff);
-    // camera->offset.x = Clamp(camera->offset.x, 0, GetScreenWidth());
-    // camera->offset.y = Clamp(camera->offset.y, 0, GetScreenHeight());
 }
 
 static void update_zoom(Camera2D *camera)
@@ -53,6 +52,18 @@ static void update_zoom(Camera2D *camera)
     if (wheel < 0)
         scale_factor = 1.0f / scale_factor;
     camera->zoom = Clamp(camera->zoom * scale_factor, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM);
+}
+
+void renderer_center_camera(renderer_t *renderer, world_t *world)
+{
+    Vector2 center = {0};
+    Vector2 center_px = {0};
+    Vector2 screen = {(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2};
+
+    center = (Vector2){(float)world->size / 2, (float)world->size / 2};
+    center_px = Vector2Scale(center, (float)renderer->settings.tile_size_px);
+    renderer->camera.target = center_px;
+    renderer->camera.offset = screen;
 }
 
 void renderer_update_camera(Camera2D *camera)

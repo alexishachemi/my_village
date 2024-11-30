@@ -7,7 +7,6 @@
 #include "raylib.h"
 #include "terrain.h"
 #include "world.h"
-#include <stdbool.h>
 
 static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
     Rectangle tile_rect)
@@ -103,12 +102,21 @@ static void draw(renderer_t *renderer, world_t *world)
     EndDrawing();
 }
 
+static void update(renderer_t *renderer, world_t *world)
+{
+    renderer_update_camera(&renderer->camera);
+    if (IsKeyPressed(KEY_SPACE))
+        renderer_center_camera(renderer, world);
+}
+
 bool renderer_display(renderer_t *renderer, world_t *world)
 {
+
     if (!renderer)
         return false;
+    renderer_center_camera(renderer, world);
     while (!WindowShouldClose()) {
-        renderer_update_camera(&renderer->camera);
+        update(renderer, world);
         draw(renderer, world);
     }
     return true;
