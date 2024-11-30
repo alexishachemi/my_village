@@ -68,7 +68,7 @@ void renderer_center_camera(renderer_t *renderer, world_t *world)
 
 void renderer_update_camera(Camera2D *camera)
 {
-    Vector2 velocity = Vector2Scale(Vector2Scale(get_input_axis(), CAMERA_SCROLL_SPEED), GetFrameTime());
+    Vector2 velocity = Vector2Scale(Vector2Scale(get_input_axis(), CAMERA_MOVE_SPEED), GetFrameTime() / camera->zoom);
 
     if (velocity.x != 0 || velocity.y != 0) {
         camera->target = Vector2Add(camera->target, velocity);
