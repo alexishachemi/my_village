@@ -4,10 +4,10 @@
 #include "prop.h"
 #include "registry.h"
 #include "render.h"
-#include "raymath.h"
 #include "raylib.h"
 #include "terrain.h"
 #include "world.h"
+#include <stdbool.h>
 
 static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
     Rectangle tile_rect)
@@ -103,34 +103,12 @@ static void draw(renderer_t *renderer, world_t *world)
     EndDrawing();
 }
 
-static Vector2 get_input_axis()
-{
-    Vector2 input = {0};
-
-    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_Z))
-        input.y -= 1;
-    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))
-        input.y += 1;
-    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
-        input.x -= 1;
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
-        input.x += 1;
-    return input;
-}
-
-static void update(renderer_t *renderer)
-{
-    Vector2 velocity = Vector2Scale(get_input_axis(), CAMERA_SCROLL_SPEED);
-    velocity = Vector2Scale(velocity, GetFrameTime());
-    renderer->camera.target = Vector2Add(renderer->camera.target, velocity);
-}
-
 bool renderer_display(renderer_t *renderer, world_t *world)
 {
     if (!renderer)
         return false;
     while (!WindowShouldClose()) {
-        update(renderer);
+        renderer_update_camera(&renderer->camera);
         draw(renderer, world);
     }
     return true;
