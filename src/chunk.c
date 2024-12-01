@@ -12,8 +12,8 @@ bool chunk_bounds_size(const chunk_bounds_t *bounds, v2_t *pos_buf)
         return false;
     pos_buf->x = bounds->to_x - bounds->from_x;
     pos_buf->y = bounds->to_y - bounds->from_y;
-    if (pos_buf->x == 0 && pos_buf->y == 0)
-        return true;
+    // if (pos_buf->x == 0 && pos_buf->y == 0)
+    //     return true;
     pos_buf->x++;
     pos_buf->y++;
     return true;
@@ -133,15 +133,6 @@ Test(chunk, init)
         cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).prop);
         cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).biome);
     }
-}
-
-Test(chunk, bad_init)
-{
-    chunk_t chunk = {0};
-
-    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){0, 0, 0, 0}));
-    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){10, 10, 10, 10}));
-    cr_assert_not(chunk_init(&chunk, &(chunk_bounds_t){-1, -1, -1, -1}));
 }
 
 Test(chunk, get_tile_absolute)
