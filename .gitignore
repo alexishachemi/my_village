@@ -7,3 +7,5 @@ my_village
 lib/*/include/
 compile_commands.json
 .cache/
+__pycache__/
+*.Identifier
