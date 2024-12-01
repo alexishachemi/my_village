@@ -69,7 +69,6 @@ int MAIN(void)
         .tile_size_px=32
     });
     setup_debug_map(&renderer, &world);
-    reg_map(&world.chunk_reg, (reg_callback_t)chunk_print);
     render_and_display(&renderer, &world);
     renderer_deinit(&renderer);
     world_deinit(&world);
