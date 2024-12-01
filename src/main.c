@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "chunk.h"
+#include "registry.h"
 #include "orientation.h"
 #include "prop.h"
 #include "v2.h"
@@ -48,7 +50,6 @@ static void setup_debug_map(renderer_t *r, world_t *world)
                 world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_LEFT, false);
             else if (rand() % 7 == 0)
                 world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_LEFT, false);
-        
         }
     }
 }
@@ -58,11 +59,18 @@ int MAIN(void)
     world_t world = {0};
     renderer_t renderer = {0};
 
-    world_init(&world, 100, 10);
-    renderer_init(&renderer, &(display_settings_t){800, 600, 32});
+    if (!world_init(&world, 50, 0)) {
+        dprintf(2, "ERROR: Failed to initialize world\n");
+        return EXIT_FAILURE;
+    }
+    renderer_init(&renderer, &(display_settings_t){
+        .screen_width=800,
+        .screen_height=600,
+        .tile_size_px=32
+    });
     setup_debug_map(&renderer, &world);
     render_and_display(&renderer, &world);
     renderer_deinit(&renderer);
     world_deinit(&world);
-    return 0;
+    return EXIT_SUCCESS;
 }

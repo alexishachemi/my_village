@@ -36,12 +36,10 @@ static void draw_grid(renderer_t *renderer, world_t *world)
                 DEBUG_CHUNK_LINE_THICKNESS, DEBUG_CHUNK_LINE_COLOR);
         }
     }
-    if (i % chunk_size_px != 0) {
-        DrawLineEx((Vector2){0, i}, (Vector2){world_size_px, i},
-            DEBUG_CHUNK_LINE_THICKNESS, DEBUG_CHUNK_LINE_COLOR);
-        DrawLineEx((Vector2){i, 0}, (Vector2){i, world_size_px},
-            DEBUG_CHUNK_LINE_THICKNESS, DEBUG_CHUNK_LINE_COLOR);
-    }
+    DrawLineEx((Vector2){0, world_size_px}, (Vector2){world_size_px, world_size_px},
+        DEBUG_CHUNK_LINE_THICKNESS, DEBUG_CHUNK_LINE_COLOR);
+    DrawLineEx((Vector2){world_size_px, 0}, (Vector2){world_size_px, world_size_px},
+        DEBUG_CHUNK_LINE_THICKNESS, DEBUG_CHUNK_LINE_COLOR);
 }
 
 static void draw_top_bar(renderer_t *renderer, world_t *world)

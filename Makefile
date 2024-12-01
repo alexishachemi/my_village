@@ -49,6 +49,8 @@ ASANARGS				=	-fsanitize=address -g3
 
 TESTARGS				=	-DTEST -fprofile-arcs -ftest-coverage --coverage -lcriterion
 
+DEBUGARGS				=	-g3
+
 BUILD_DIR				=	./build/
 
 SRC_DIR					=	./src/
@@ -60,6 +62,8 @@ VAL_DIR					=	$(BUILD_DIR)valgrind/
 ASAN_DIR				=	$(BUILD_DIR)asan/
 
 TEST_DIR				=	$(BUILD_DIR)tests/
+
+DEBUG_DIR				=	$(BUILD_DIR)debug/
 
 LIB_DIR					=	./lib/
 
@@ -79,6 +83,8 @@ ASANOBJ					=	$(addprefix $(ASAN_DIR), $(SRC:.c=.o))
 
 TESTOBJ					=	$(addprefix $(TEST_DIR), $(SRC:.c=.o))	\
 							$(addprefix $(TEST_DIR), $(TSRC:.c=.o))
+
+DEBUGOBJ				=	$(addprefix $(DEBUG_DIR), $(SRC:.c=.o))
 
 # Targets
 
@@ -108,6 +114,10 @@ $(TEST_DIR): 		| $(BUILD_DIR)
 	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(TEST_DIR)
 	rsync -a -f"+ */" -f"- *" $(TSRC_ROOT) $(TEST_DIR)
 
+$(DEBUG_DIR): 		| $(BUILD_DIR)
+	mkdir -p $(DEBUG_DIR)
+	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(DEBUG_DIR)
+
 $(PROD_DIR)%.o:		$(SRC_ROOT)%.c | $(PROD_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
@@ -120,8 +130,8 @@ $(ASAN_DIR)%.o:		$(SRC_ROOT)%.c | $(ASAN_DIR)
 $(TEST_DIR)%.o:		$(SRC_ROOT)%.c | $(TEST_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(TESTARGS)
 
-$(TEST_DIR)%.o:		$(TSRC_ROOT)%.c | $(TEST_DIR)
-	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(TESTARGS)
+$(DEBUG_DIR)%.o:		$(SRC_ROOT)%.c | $(DEBUG_DIR)
+	$(CC) -c $< -o $@ $(CFLAGS) $(LDFLAGS) $(DEBUGARGS)
 
 $(VAL_DIR)$(NAME):	$(VALOBJ) | $(VAL_DIR)
 	$(CC) -o $(VAL_DIR)$(NAME) $(VALOBJ) $(CFLAGS) $(LDFLAGS) $(VALARGS)
@@ -132,6 +142,9 @@ $(ASAN_DIR)$(NAME):	$(ASANOBJ) | $(ASAN_DIR)
 $(TEST_DIR)$(NAME):	$(TESTOBJ) | $(TEST_DIR)
 	$(CC) -o $(TEST_DIR)$(NAME) $(TESTOBJ) $(CFLAGS) $(LDFLAGS) $(TESTARGS)
 
+$(DEBUG_DIR)$(NAME):	$(DEBUGOBJ) | $(DEBUG_DIR)
+	$(CC) -o $(DEBUG_DIR)$(NAME) $(DEBUGOBJ) $(CFLAGS) $(LDFLAGS) $(DEBUGARGS)
+
 lib:
 	for lib in $(LIBS); do make -C $(LIB_DIR)$$lib; done
 
@@ -140,6 +153,8 @@ grind:				$(VAL_DIR)$(NAME)
 sanitize:			$(ASAN_DIR)$(NAME)
 
 unit_tests:			$(TEST_DIR)$(NAME)
+
+debug:				$(DEBUG_DIR)$(NAME)
 
 clean:
 	rm -f $(TESTOBJ:.o=.gcda) $(TESTOBJ:.o=.gcno) $(TESTOBJ:.o=.gcov)

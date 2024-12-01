@@ -1,6 +1,8 @@
 *.o
 *.gc*
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
 *.a
 .obsidian/
 my_village
