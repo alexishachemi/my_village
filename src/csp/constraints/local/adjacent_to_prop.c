@@ -6,10 +6,9 @@ bool csp_add_adjacent_to_prop(csp_object_t *obj, prop_t *prop)
 
     if (!obj || !prop || obj->is_collection)
         return false;
-    constraint = csp_add_constraint(obj);
+    constraint = csp_add_constraint(obj, C_ADJACENT_TO_PROP);
     if (!constraint)
         return false;
-    constraint->type = C_ADJACENT_TO_WALL;
     constraint->prop = prop;
     return true;
 }

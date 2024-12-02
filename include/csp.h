@@ -72,7 +72,7 @@ typedef struct {
 /// Contraint
 
 csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type);
-csp_constraint_t *csp_add_constraint(csp_object_t *obj);
+csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type);
 
 bool csp_add_adjacent_to_wall(csp_object_t *obj);
 bool csp_add_adjacent_to_prop(csp_object_t *obj, prop_t *prop);
