@@ -78,6 +78,7 @@ bool csp_add_adjacent_to_wall(csp_object_t *obj);
 bool csp_add_adjacent_to_prop(csp_object_t *obj, prop_t *prop);
 bool csp_add_in_corner(csp_object_t *obj);
 bool csp_add_amount_range(csp_object_t *obj, unsigned int min, unsigned int max);
+bool csp_add_amount(csp_object_t *obj, unsigned int nb);
 bool csp_add_reserved_space(csp_object_t *obj, v2_t position);
 
 /// Global Constraint
