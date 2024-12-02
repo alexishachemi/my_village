@@ -1,6 +1,6 @@
 #include "csp.h"
 
-bool csp_add_adjacent_to_prop(csp_object_t *obj, prop_t *prop)
+bool csp_set_adjacent_to_prop(csp_object_t *obj, prop_t *prop)
 {
     csp_constraint_t *constraint = NULL;
 

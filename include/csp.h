@@ -7,6 +7,7 @@
 
 #define CSP_CONSTRAINT_SIZE 10
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
+#define CSP_POS_REG_BASE_SIZE 5
 
 //////////////////////////////////////////////////// CONSTRAINT
 
@@ -15,7 +16,7 @@ typedef enum {
     C_ADJACENT_TO_PROP,
     C_IN_CORNER,
     C_AMOUNT_RANGE,
-    C_SURROUNDING_SPACE,
+    C_RESERVED_SPACE,
     C_ON_TOP_OF_PROP,
 } csp_constraint_type_t;
 
@@ -71,21 +72,21 @@ typedef struct {
 
 /// Contraint
 
-csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type);
+csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type, bool add_if_absent);
 csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type);
 
-bool csp_add_adjacent_to_wall(csp_object_t *obj);
-bool csp_add_adjacent_to_prop(csp_object_t *obj, prop_t *prop);
-bool csp_add_in_corner(csp_object_t *obj);
-bool csp_add_amount_range(csp_object_t *obj, unsigned int min, unsigned int max);
-bool csp_add_amount(csp_object_t *obj, unsigned int nb);
-bool csp_add_reserved_space(csp_object_t *obj, v2_t position);
+bool csp_set_adjacent_to_wall(csp_object_t *obj);
+bool csp_set_adjacent_to_prop(csp_object_t *obj, prop_t *prop);
+bool csp_set_in_corner(csp_object_t *obj);
+bool csp_set_amount_range(csp_object_t *obj, unsigned int min, unsigned int max);
+bool csp_set_amount(csp_object_t *obj, unsigned int nb);
+bool csp_set_reserved_space(csp_object_t *obj, v2_t position);
 
 /// Global Constraint
 
 csp_global_constraint_t *csp_get_global_constraint(csp_map_t *map, csp_global_constraint_type_t type);
 
-bool csp_add_all_cell_connected(csp_map_t *map);
+bool csp_set_all_cell_connected(csp_map_t *map);
 
 /// Object
 
