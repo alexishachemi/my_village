@@ -6,6 +6,7 @@
 #include "v2.h"
 
 #define CSP_CONSTRAINT_SIZE 10
+#define CSP_COLLECTION_OBJ_SIZE 3
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5
 
@@ -74,6 +75,7 @@ typedef struct {
 
 csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type, bool add_if_absent);
 csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type);
+void csp_constraint_deinit(csp_constraint_t *constraint);
 
 bool csp_set_adjacent_to_wall(csp_object_t *obj);
 bool csp_set_adjacent_to_prop(csp_object_t *obj, prop_t *prop);
@@ -91,10 +93,11 @@ bool csp_set_all_cell_connected(csp_map_t *map);
 /// Object
 
 bool csp_obj_init(csp_object_t *obj, prop_t *prop);
+void csp_obj_deinit(csp_object_t *obj);
 
-bool csp_collection_init(csp_collection_t *coll);
-csp_object_t *csp_collection_add_obj(csp_object_t *collection);
-bool csp_obj_is_collection(csp_object_t *obj);
+bool csp_collection_init(csp_collection_t *collection);
+void csp_collection_deinit(csp_collection_t *collection);
+csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop);
 
 /// Map
 

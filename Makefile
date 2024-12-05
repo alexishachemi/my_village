@@ -5,31 +5,39 @@ NAME					=	my_village
 CC						=	gcc
 
 
-SRC						=	main.c 								\
-							utils/str.c							\
-							utils/v2.c							\
-							utils/registry.c					\
-							world/world_factory.c				\
-							asset.c								\
-							world/world_asset.c					\
-							prop/prop_factory.c					\
-							prop/prop_handling.c				\
-							prop/prop_child.c					\
-							world/world_prop.c					\
-							terrain.c							\
-							world/world_terrain.c				\
-							biome.c								\
-							world/world_biome.c					\
-							tile.c								\
-							world/world_tile.c					\
-							chunk.c								\
-							world/world_chunk.c					\
-							render/renderer/renderer_factory.c	\
-							render/renderer/renderer_display.c	\
-							render/renderer/renderer_debug.c	\
-							render/renderer/renderer_camera.c	\
-							render/texture.c					\
-							render/draw_queue.c					\
+SRC						=	main.c 										\
+							utils/str.c									\
+							utils/v2.c									\
+							utils/registry.c							\
+							world/world_factory.c						\
+							asset.c										\
+							world/world_asset.c							\
+							prop/prop_factory.c							\
+							prop/prop_handling.c						\
+							prop/prop_child.c							\
+							world/world_prop.c							\
+							terrain.c									\
+							world/world_terrain.c						\
+							biome.c										\
+							world/world_biome.c							\
+							tile.c										\
+							world/world_tile.c							\
+							chunk.c										\
+							world/world_chunk.c							\
+							render/renderer/renderer_factory.c			\
+							render/renderer/renderer_display.c			\
+							render/renderer/renderer_debug.c			\
+							render/renderer/renderer_camera.c			\
+							render/texture.c							\
+							render/draw_queue.c							\
+							csp/constraint.c							\
+							csp/constraints/local/adjacent_to_wall.c	\
+							csp/constraints/local/reserved_space.c		\
+							csp/constraints/local/adjacent_to_prop.c	\
+							csp/constraints/local/in_corner.c			\
+							csp/constraints/local/amount_range.c		\
+							csp/object.c								\
+							csp/collection.c							\
 
 TSRC					=	
 
