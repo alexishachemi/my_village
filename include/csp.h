@@ -86,7 +86,9 @@ bool csp_set_reserved_space(csp_object_t *obj, v2_t position);
 
 /// Global Constraint
 
-csp_global_constraint_t *csp_get_global_constraint(csp_map_t *map, csp_global_constraint_type_t type);
+csp_global_constraint_t *csp_get_global_constraint(csp_map_t *map, csp_global_constraint_type_t type, bool add_if_absent);
+csp_global_constraint_t *csp_add_global_constraint(csp_map_t *map, csp_global_constraint_type_t type);
+void csp_global_constraint_deinit(csp_global_constraint_t *gconstraint);
 
 bool csp_set_all_cell_connected(csp_map_t *map);
 
@@ -102,4 +104,5 @@ csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop)
 /// Map
 
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
+bool csp_map_deinit(csp_map_t *map);
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);

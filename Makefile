@@ -38,6 +38,7 @@ SRC						=	main.c 										\
 							csp/constraints/local/amount_range.c		\
 							csp/object.c								\
 							csp/collection.c							\
+							csp/global_constraint.c						\
 
 TSRC					=	
 
