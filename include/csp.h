@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include "linked.h"
 #include "prop.h"
 #include "registry.h"
 #include "v2.h"
@@ -55,20 +56,22 @@ struct csp_object_s {
     };
 };
 
-typedef reg_t csp_placement_list_t; // csp_object_t
-
 //////////////////////////////////////////////////// MAP
 
+typedef list_t csp_placement_t; // v2_t
+
 typedef struct {
-    bool free;
+    bool occupied;
     prop_t *occupant;
 } csp_cell_t;
 
 typedef struct {
     v2_t size;
+    unsigned int area;
+    unsigned int layers;
     reg_t global_constraints; // csp_global_constraint_t
-    vec_t layer; // vec_t // csp_cell;
-    csp_placement_list_t placement_list;
+    vec_t cells; // csp_cell (size.x * size.y * layers)
+    list_t placement_history; // csp_placement_t
 } csp_map_t;
 
 /// Contraint
@@ -96,6 +99,7 @@ bool csp_set_all_cell_connected(csp_map_t *map);
 
 bool csp_obj_init(csp_object_t *obj, prop_t *prop);
 void csp_obj_deinit(csp_object_t *obj);
+csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos);
 
 bool csp_collection_init(csp_collection_t *collection);
 void csp_collection_deinit(csp_collection_t *collection);
@@ -104,5 +108,5 @@ csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop)
 /// Map
 
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
-bool csp_map_deinit(csp_map_t *map);
+void csp_map_deinit(csp_map_t *map);
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);

@@ -39,6 +39,7 @@ SRC						=	main.c 										\
 							csp/object.c								\
 							csp/collection.c							\
 							csp/global_constraint.c						\
+							csp/map.c									\
 
 TSRC					=	
 
