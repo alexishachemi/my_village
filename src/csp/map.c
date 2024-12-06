@@ -7,7 +7,7 @@
 static bool init_layers(csp_map_t *map)
 {
     map->cells = vec_create(sizeof(csp_cell_t));
-    return vec_resize(&map->cells, map->area);
+    return vec_resize(&map->cells, (map->size.x * map->size.y) * map->layers);
 }
 
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers)
@@ -18,7 +18,7 @@ bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers)
         return false;
     map->size = size;
     map->layers = layers;
-    map->area = size.x * size.y * layers;
+    map->area = size.x * size.y;
     list_init(&map->placement_history);
     g_constraint_initialized = reg_init(
         &map->global_constraints,
@@ -70,7 +70,7 @@ Test(csp_map, init)
     cr_assert(csp_map_init(&map, size, layers));
     cr_assert_eq(map.size.x, 10);
     cr_assert_eq(map.size.y, 20);
-    cr_assert_eq(map.area, 600);
+    cr_assert_eq(map.area, 200);
     cr_assert_eq(map.placement_history.size, 0);
     cr_assert_eq(map.cells.size, (size.x * size.y) * layers);
     csp_map_deinit(&map);
@@ -79,7 +79,7 @@ Test(csp_map, init)
 Test(csp_map, get)
 {
     csp_map_t map = {0};
-    v2_t size = {10, 20};
+    v2_t size = {10, 10};
     int layers = 3;
     csp_cell_t *cell = NULL;
     csp_cell_t *cell_ref = NULL;

@@ -12,7 +12,7 @@ csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t ty
     if (!constraint)
         return NULL;
     constraint->type = type;
-    return constraint;   
+    return constraint;
 }
 
 csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type, bool add_if_absent)

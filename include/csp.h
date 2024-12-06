@@ -11,7 +11,11 @@
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5
 
+typedef struct csp_map_s csp_map_t;
+
 //////////////////////////////////////////////////// CONSTRAINT
+
+typedef struct csp_constraint_s csp_constraint_t;
 
 typedef enum {
     C_ADJACENT_TO_WALL,
@@ -22,14 +26,17 @@ typedef enum {
     C_ON_TOP_OF_PROP,
 } csp_constraint_type_t;
 
-typedef struct {
+typedef bool(*csp_validator_t)(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer);
+
+struct csp_constraint_s {
     csp_constraint_type_t type;
+    csp_validator_t validate;
     union {
         prop_t *prop;
         unsigned int range[2];
         reg_t positions;
     };
-} csp_constraint_t;
+};
 
 //////////////////////////////////////////////////// GLOBAL CONSTRAINT
 
@@ -68,14 +75,14 @@ typedef struct {
     prop_t *occupant;
 } csp_cell_t;
 
-typedef struct {
+struct csp_map_s {
     v2_t size;
     unsigned int area;
     unsigned int layers;
     reg_t global_constraints; // csp_global_constraint_t
     vec_t cells; // csp_cell (size.x * size.y * layers)
     list_t placement_history; // csp_placement_t
-} csp_map_t;
+};
 
 /// Contraint
 
