@@ -60,6 +60,9 @@ struct csp_object_s {
 
 typedef list_t csp_placement_t; // v2_t
 
+#define csp_placement_destroy list_destroy_free
+#define csp_placement_get list_at
+
 typedef struct {
     bool occupied;
     prop_t *occupant;
