@@ -10,6 +10,7 @@
 #define CSP_COLLECTION_OBJ_SIZE 3
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5
+#define CSP_MAP_OBJS_SIZE 10
 
 typedef struct csp_map_s csp_map_t;
 
@@ -60,11 +61,11 @@ typedef struct csp_object_s csp_object_t, csp_collection_t;
 struct csp_object_s {
     bool is_collection;
     union {
-        struct {
+        struct { // is_collection = false
             prop_t *prop;
             reg_t constraints; // constraint_t
         };
-        reg_t objs;
+        reg_t objs; // is_collection = true
     };
 };
 
@@ -86,6 +87,7 @@ struct csp_map_s {
     unsigned int layers;
     reg_t global_constraints; // csp_global_constraint_t
     vec_t cells; // csp_cell (size.x * size.y * layers)
+    reg_t objs;  // csp_object_t
     list_t placement_history; // csp_placement_t
 };
 
@@ -117,18 +119,25 @@ void csp_obj_deinit(csp_object_t *obj);
 csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos);
 
 bool csp_collection_init(csp_collection_t *collection);
-void csp_collection_deinit(csp_collection_t *collection);
 csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop);
 
 /// Map
 
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
 void csp_map_deinit(csp_map_t *map);
+
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);
-bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
-void csp_map_print(csp_map_t *map);
 void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+void csp_map_print(csp_map_t *map);
+
+bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
+
+csp_object_t *csp_map_add_obj(csp_map_t *map, prop_t *prop);
+csp_collection_t *csp_map_add_collection(csp_map_t *map);
 
 #ifdef TEST
 void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 #endif
+
+/// Generation
+

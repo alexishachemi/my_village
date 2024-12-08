@@ -9,13 +9,6 @@ bool csp_collection_init(csp_collection_t *collection)
     return reg_init(&collection->objs, sizeof(csp_object_t), CSP_COLLECTION_OBJ_SIZE);
 }
 
-void csp_collection_deinit(csp_collection_t *collection)
-{
-    if (!collection)
-        return;
-    reg_deinit(&collection->objs);
-}
-
 csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop)
 {
     csp_object_t *obj = NULL;
@@ -41,7 +34,7 @@ Test(csp_collection, init)
     cr_assert_eq(collection.objs.vec.size, CSP_COLLECTION_OBJ_SIZE);
     cr_assert_eq(REG_SIZE(collection.objs), 0);
     cr_assert(collection.is_collection);
-    csp_collection_deinit(&collection);
+    csp_obj_deinit(&collection);
 }
 
 Test(csp_collection, add)
@@ -57,7 +50,7 @@ Test(csp_collection, add)
     obj = csp_collection_add_obj(&collection, &prop);
     cr_assert_eq(REG_SIZE(collection.objs), 1);
     cr_assert_not_null(obj);
-    csp_collection_deinit(&collection);
+    csp_obj_deinit(&collection);
 }
 
 #endif

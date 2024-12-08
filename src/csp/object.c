@@ -14,10 +14,15 @@ bool csp_obj_init(csp_object_t *obj, prop_t *prop)
 
 void csp_obj_deinit(csp_object_t *obj)
 {
-    if (!obj || obj->is_collection)
+    if (!obj)
         return;
-    reg_map(&obj->constraints, (reg_callback_t)csp_constraint_deinit);
-    reg_deinit(&obj->constraints);
+    if (obj->is_collection) {
+        reg_map(&obj->objs, (reg_callback_t)csp_obj_deinit);
+        reg_deinit(&obj->objs);
+    } else {
+        reg_map(&obj->constraints, (reg_callback_t)csp_constraint_deinit);
+        reg_deinit(&obj->constraints);
+    }
 }
 
 static bool add_positions(csp_placement_t *placement, csp_constraint_t *constraint)

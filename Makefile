@@ -40,8 +40,10 @@ SRC						=	main.c 										\
 							csp/object.c								\
 							csp/collection.c							\
 							csp/global_constraint.c						\
-							csp/map.c									\
-							csp/dfs.c									\
+							csp/map/map_factory.c						\
+							csp/map/map_handling.c						\
+							csp/map/map_obj.c							\
+							csp/map/map_dfs.c							\
 
 TSRC					=	
 
