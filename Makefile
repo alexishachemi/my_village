@@ -36,6 +36,7 @@ SRC						=	main.c 										\
 							csp/constraints/local/adjacent_to_prop.c	\
 							csp/constraints/local/in_corner.c			\
 							csp/constraints/local/amount_range.c		\
+							csp/constraints/global/all_cells_connected.c\
 							csp/object.c								\
 							csp/collection.c							\
 							csp/global_constraint.c						\
