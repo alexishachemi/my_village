@@ -127,8 +127,8 @@ void csp_map_deinit(csp_map_t *map);
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
 void csp_map_print(csp_map_t *map);
+void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 
 #ifdef TEST
 void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
-void csp_map_unoccupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 #endif

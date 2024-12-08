@@ -84,6 +84,19 @@ void csp_map_print(csp_map_t *map)
     printf("\n");
 }
 
+void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer)
+{
+    csp_cell_t *cell = NULL;
+    
+    if (!map)
+        return;
+    cell = csp_map_get_cell(map, pos, layer);
+    if (!cell)
+        return;
+    cell->occupied = false;
+    cell->occupant = NULL;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef TEST
@@ -95,15 +108,6 @@ void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer)
     
     cr_assert_not_null(cell);
     cell->occupied = true;
-}
-
-void csp_map_unoccupy_cell(csp_map_t *map, v2_t pos, unsigned int layer)
-{
-    csp_cell_t *cell = csp_map_get_cell(map, pos, layer);
-    
-    cr_assert_not_null(cell);
-    cell->occupied = false;
-    cell->occupant = NULL;
 }
 
 Test(csp_map, init)

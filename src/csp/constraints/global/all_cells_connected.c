@@ -71,7 +71,7 @@ static void try_position(csp_map_t *map, csp_global_constraint_t *gconstraint, v
     csp_map_occupy_cell(map, pos, layer);
     cr_assert_eq(gconstraint->validate(map, gconstraint, pos, layer), should_succeed);
     if (!was_occupied)
-        csp_map_unoccupy_cell(map, pos, layer);
+        csp_map_clear_cell(map, pos, layer);
 }
 
 Test(csp_global_constraint, all_cells_connected_validation)
