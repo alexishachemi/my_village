@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "csp.h"
 #include "cvec.h"
 #include "linked.h"
@@ -56,10 +57,54 @@ csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer)
     return vec_at(&map->cells, (map->area * layer) + pos.y * map->size.x + pos.x);
 }
 
+static void print_layer(csp_map_t *map, unsigned int layer)
+{
+    csp_cell_t *cell = NULL;
+
+    for (int y = 0; y < map->size.y; y++) {
+        for (int x = 0; x < map->size.x; x++) {
+            cell = csp_map_get_cell(map, (v2_t){x, y}, layer);
+            if (!cell)
+                return;
+            printf("%c", cell->occupied ? 'X' : '.');
+        }
+        printf("\n");
+    }
+}
+
+void csp_map_print(csp_map_t *map)
+{
+    if (!map)
+        printf("(null)\n");
+    for (unsigned int layer = 0; layer < map->layers; layer++) {
+        printf("Layer %d\n", layer);
+        print_layer(map, layer);
+        printf("\n");
+    }
+    printf("\n");
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef TEST
 #include <criterion/criterion.h>
+
+void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer)
+{
+    csp_cell_t *cell = csp_map_get_cell(map, pos, layer);
+    
+    cr_assert_not_null(cell);
+    cell->occupied = true;
+}
+
+void csp_map_unoccupy_cell(csp_map_t *map, v2_t pos, unsigned int layer)
+{
+    csp_cell_t *cell = csp_map_get_cell(map, pos, layer);
+    
+    cr_assert_not_null(cell);
+    cell->occupied = false;
+    cell->occupant = NULL;
+}
 
 Test(csp_map, init)
 {

@@ -40,13 +40,18 @@ struct csp_constraint_s {
 
 //////////////////////////////////////////////////// GLOBAL CONSTRAINT
 
+typedef struct csp_global_constraint_s csp_global_constraint_t;
+
 typedef enum {
     GC_ALL_CELLS_CONNECTED,
 } csp_global_constraint_type_t;
 
-typedef struct {
+typedef bool(*csp_global_validator_t)(csp_map_t *map, csp_global_constraint_t *gconstraint, v2_t pos, unsigned int layer);
+
+struct csp_global_constraint_s {
     csp_global_constraint_type_t type;
-} csp_global_constraint_t;
+    csp_global_validator_t validate;
+};
 
 //////////////////////////////////////////////////// OBJECT
 
@@ -120,3 +125,10 @@ csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop)
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
 void csp_map_deinit(csp_map_t *map);
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
+void csp_map_print(csp_map_t *map);
+
+#ifdef TEST
+void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+void csp_map_unoccupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+#endif

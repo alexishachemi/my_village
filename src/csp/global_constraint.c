@@ -31,6 +31,7 @@ csp_global_constraint_t *csp_add_global_constraint(csp_map_t *map, csp_global_co
     if (!gconstraint)
         return NULL;
     gconstraint->type = type;
+    gconstraint->validate = NULL;
     return gconstraint;
 }
 

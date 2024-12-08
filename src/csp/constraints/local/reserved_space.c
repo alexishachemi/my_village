@@ -79,14 +79,6 @@ Test(csp_constraint, reserved_space)
     csp_obj_deinit(&obj);
 }
 
-static void occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer)
-{
-    csp_cell_t *cell = csp_map_get_cell(map, pos, layer);
-    
-    cr_assert_not_null(cell);
-    cell->occupied = true;
-}
-
 Test(csp_constraint, reserved_space_validation)
 {
     csp_map_t map = {0};
@@ -101,9 +93,9 @@ Test(csp_constraint, reserved_space_validation)
     cr_assert(csp_set_reserved_space(&obj, (v2_t){-1, 0})); // #O 
     cr_assert(csp_set_reserved_space(&obj, (v2_t){0, 1}));  //  #
 
-    occupy_cell(&map, (v2_t){3, 2}, 0);
-    occupy_cell(&map, (v2_t){5, 5}, 1);
-    occupy_cell(&map, (v2_t){1, 1}, 2);
+    csp_map_occupy_cell(&map, (v2_t){3, 2}, 0);
+    csp_map_occupy_cell(&map, (v2_t){5, 5}, 1);
+    csp_map_occupy_cell(&map, (v2_t){1, 1}, 2);
 
     constraint = csp_get_constraint(&obj, C_RESERVED_SPACE, false);
     cr_assert_not_null(constraint);

@@ -4,7 +4,7 @@
 
 static bool validate(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer)
 {
-    v2_t directions[] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+    const v2_t directions[] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
     csp_cell_t *cell = NULL;
     prop_t *prop = constraint->prop;
 

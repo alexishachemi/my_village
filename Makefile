@@ -41,6 +41,7 @@ SRC						=	main.c 										\
 							csp/collection.c							\
 							csp/global_constraint.c						\
 							csp/map.c									\
+							csp/dfs.c									\
 
 TSRC					=	
 
