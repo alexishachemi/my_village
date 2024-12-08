@@ -3,8 +3,9 @@
 #include "raylib.h"
 #include "orientation.h"
 
-#define V2_EQ(v1, v2) (v1.x == v2.x && v1.y == v2.y)
+#define V2_EQ(v1, v2) ((v1).x == (v2).x && (v1).y == (v2).y)
 #define V2_ADD(v1, v2) ((v2_t){v1.x + v2.x, v1.y + v2.y})
+#define V2_ZERO ((v2_t){0, 0})
 
 typedef struct {
     int x;
