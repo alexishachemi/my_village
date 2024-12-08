@@ -12,6 +12,7 @@ csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t ty
     if (!constraint)
         return NULL;
     constraint->type = type;
+    constraint->validate = NULL;
     return constraint;
 }
 
