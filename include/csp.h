@@ -25,6 +25,7 @@ typedef enum {
     C_AMOUNT_RANGE,
     C_RESERVED_SPACE,
     C_ON_TOP_OF_PROP,
+    C_ON_GROUND,
 } csp_constraint_type_t;
 
 typedef bool(*csp_validator_t)(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer);
