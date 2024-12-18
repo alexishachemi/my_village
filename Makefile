@@ -10,6 +10,7 @@ SRC						=	main.c 										\
 							utils/v2.c									\
 							utils/registry.c							\
 							world/world_factory.c						\
+							world/world_handling.c						\
 							asset.c										\
 							world/world_asset.c							\
 							prop/prop_factory.c							\
