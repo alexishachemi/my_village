@@ -2,9 +2,11 @@
 
 #include <stdbool.h>
 #include "linked.h"
+#include "orientation.h"
 #include "prop.h"
 #include "registry.h"
 #include "v2.h"
+#include "world.h"
 
 #define CSP_CONSTRAINT_SIZE 10
 #define CSP_COLLECTION_OBJ_SIZE 3
@@ -72,7 +74,12 @@ struct csp_object_s {
 
 //////////////////////////////////////////////////// MAP
 
-typedef list_t csp_placement_t; // v2_t
+typedef struct {
+    v2_t position;
+    unsigned int layer;
+} csp_pos_t;
+
+typedef list_t csp_placement_t; // csp_pos_t
 
 #define csp_placement_destroy list_destroy_free
 #define csp_placement_get list_at
@@ -80,9 +87,11 @@ typedef list_t csp_placement_t; // v2_t
 typedef struct {
     bool occupied;
     prop_t *occupant;
+    orient_t occupant_orient;
 } csp_cell_t;
 
 struct csp_map_s {
+    terrain_t *floor;
     v2_t size;
     unsigned int area;
     unsigned int layers;
@@ -117,7 +126,7 @@ bool csp_set_all_cell_connected(csp_map_t *map);
 
 bool csp_obj_init(csp_object_t *obj, prop_t *prop);
 void csp_obj_deinit(csp_object_t *obj);
-csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos);
+csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
 
 bool csp_collection_init(csp_collection_t *collection);
 csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop);
@@ -127,18 +136,22 @@ csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop)
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
 void csp_map_deinit(csp_map_t *map);
 
+bool csp_pos_is_valid(csp_map_t *map, v2_t pos);
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);
-void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 void csp_map_print(csp_map_t *map);
+
+bool csp_map_cell_occupied(csp_map_t *map, v2_t pos, unsigned int layer);
+void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+bool csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+
+// bool csp_can_place_at(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
+// bool csp_place_obj(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
 
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
 
 csp_object_t *csp_map_add_obj(csp_map_t *map, prop_t *prop);
 csp_collection_t *csp_map_add_collection(csp_map_t *map);
 
-#ifdef TEST
-void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
-#endif
+// bool csp_map_generate(csp_map_t *map);
 
-/// Generation
-
+bool csp_map_apply(csp_map_t *map, world_t *world, v2_t pos);

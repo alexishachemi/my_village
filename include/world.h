@@ -40,6 +40,7 @@ asset_t *world_get_asset(world_t *world, const char *name);
 
 prop_t *world_new_prop(world_t *world, const char *name);
 prop_t *world_get_prop(world_t *world, const char *name);
+void world_remove_prop(world_t *world, v2_t pos);
 
 // Terrain
 

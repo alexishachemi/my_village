@@ -1,5 +1,6 @@
 #include "csp.h"
 #include "linked.h"
+#include "orientation.h"
 #include "registry.h"
 #include "v2.h"
 
@@ -34,7 +35,7 @@ static bool add_positions(csp_placement_t *placement, csp_constraint_t *constrai
     return true;
 }
 
-csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos)
+csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient)
 {
     csp_constraint_t *constraint = NULL;
     csp_placement_t *placement = NULL;
@@ -44,7 +45,7 @@ csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos)
     placement = list_create();
     if (!placement)
         return NULL;
-    if (!list_add_copy(placement, &pos, sizeof(v2_t))) {
+    if (!list_add_copy(placement, &(csp_pos_t){v2_orient(pos, orient), layer}, sizeof(csp_pos_t))) {
         list_destroy(placement, NULL);
         return NULL;
     }
@@ -83,7 +84,7 @@ Test(csp_obj, make_placement_single_pos)
     v2_t pos = {12, 8};
 
     cr_assert(csp_obj_init(&obj, &prop));
-    placement = csp_obj_make_placement(&obj, pos);
+    placement = csp_obj_make_placement(&obj, pos, 0, ORIENT_DOWN);
     cr_assert_not_null(placement);
     cr_assert_eq(placement->size, 1);
     pos_buf = placement->head->data;
@@ -116,7 +117,7 @@ Test(csp_obj, make_placement_mutiple_pos)
     for (unsigned int i = 0; i < size; i++) {
         cr_assert(csp_set_reserved_space(&obj, reserved[i]));
     }
-    placement = csp_obj_make_placement(&obj, pos);
+    placement = csp_obj_make_placement(&obj, pos, 0, ORIENT_DOWN);
     cr_assert_not_null(placement);
     cr_assert_eq(placement->size, size + 1);
     pos_buf = placement->head->data;

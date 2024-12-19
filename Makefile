@@ -46,6 +46,7 @@ SRC						=	main.c 										\
 							csp/map/map_handling.c						\
 							csp/map/map_obj.c							\
 							csp/map/map_dfs.c							\
+							csp/map/map_apply.c							\
 
 TSRC					=	
 

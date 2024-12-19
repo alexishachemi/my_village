@@ -26,6 +26,7 @@ bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers)
         csp_map_deinit(map);
         return false;
     }
+    map->floor = NULL;
     return true;
 }
 
@@ -46,14 +47,6 @@ void csp_map_deinit(csp_map_t *map)
 
 #ifdef TEST
 #include <criterion/criterion.h>
-
-void csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer)
-{
-    csp_cell_t *cell = csp_map_get_cell(map, pos, layer);
-    
-    cr_assert_not_null(cell);
-    cell->occupied = true;
-}
 
 Test(csp_map, init)
 {

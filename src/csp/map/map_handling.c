@@ -1,30 +1,17 @@
 #include <stdio.h>
 #include "csp.h"
 
-static bool pos_is_valid(csp_map_t *map, v2_t pos)
+bool csp_pos_is_valid(csp_map_t *map, v2_t pos)
 {
-    return pos.x >= 0 && pos.x < map->size.x
+    return map && pos.x >= 0 && pos.x < map->size.x
         && pos.y >= 0 && pos.y < map->size.y;
 }
 
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer)
 {
-    if (!map || !pos_is_valid(map, pos) || layer >= map->layers)
+    if (!map || !csp_pos_is_valid(map, pos) || layer >= map->layers)
         return NULL;
     return vec_at(&map->cells, (map->area * layer) + pos.y * map->size.x + pos.x);
-}
-
-void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer)
-{
-    csp_cell_t *cell = NULL;
-    
-    if (!map)
-        return;
-    cell = csp_map_get_cell(map, pos, layer);
-    if (!cell)
-        return;
-    cell->occupied = false;
-    cell->occupant = NULL;
 }
 
 static void print_layer(csp_map_t *map, unsigned int layer)
@@ -53,6 +40,7 @@ void csp_map_print(csp_map_t *map)
     }
     printf("\n");
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef TEST
