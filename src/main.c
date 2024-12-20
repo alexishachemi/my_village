@@ -41,7 +41,7 @@ static void setup_debug_map(renderer_t *r, world_t *world)
     prop_t *tree_prop = world_new_prop(world, "tree");
     prop_t *big_tree_prop = world_new_prop(world, "big_tree");
     prop_t *sofa_prop = world_new_prop(world, "sofa");
-    prop_t *sofa_prop_r = prop_add_child(sofa_prop, (v2_t){0, 1});
+    prop_t *sofa_prop_r = prop_add_child(sofa_prop, (v2_t){1, 0});
     prop_t *tl_bed_prop = world_new_prop(world, "bed");
     prop_t *tr_bed_prop = prop_add_child(tl_bed_prop, (v2_t){1, 0});
     prop_t *bl_bed_prop = prop_add_child(tl_bed_prop, (v2_t){0, 1});
@@ -63,16 +63,16 @@ static void setup_debug_map(renderer_t *r, world_t *world)
     prop_set_mono_asset(painting_prop, painting_asset);
     prop_set_z_index(painting_prop, 1);
 
-    srand(time(NULL));
+    // srand(time(NULL));
     for (size_t y = 0; y < world->size; y++) {
         for (size_t x = 0; x < world->size; x++) {
             world_place_terrain(world, (v2_t){x, y}, grass_terrain);
+            // if (rand() % 5 == 0)
+            //     world_place_prop(world, sofa_prop, (v2_t){x, y}, ORIENT_DOWN, false);
             if (rand() % 5 == 0)
-                world_place_prop(world, sofa_prop, (v2_t){x, y}, ORIENT_RIGHT, false);
-            else if (rand() % 5 == 0)
-                world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_LEFT, false);
+                world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
             else if (rand() % 7 == 0)
-                world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_LEFT, false);
+                world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
         }
     }
 }
@@ -80,14 +80,32 @@ static void setup_debug_map(renderer_t *r, world_t *world)
 static void setup_room(world_t *world)
 {
     csp_map_t map = {0};
-    v2_t map_size = {10, 10};
+    v2_t map_size = {5, 5};
     unsigned int map_layers = 3;
-    // csp_object_t *obj = NULL;
+    csp_object_t *obj = NULL;
 
     csp_map_init(&map, map_size, map_layers);
     map.floor = world_get_terrain(world, "floor");
-    // obj = csp_map_add_obj(&map, world_get_prop(world, "bed"));
-    csp_map_apply(&map, world, (v2_t){20, 20});
+
+    obj = csp_map_add_obj(&map, world_get_prop(world, "bed"));
+    csp_set_on_ground(obj);
+    csp_set_reserved_space(obj, (v2_t){1, 0});
+    csp_set_reserved_space(obj, (v2_t){0, 1});
+    csp_set_reserved_space(obj, (v2_t){1, 1});
+    csp_set_adjacent_to_wall(obj);
+    csp_set_amount(obj, 1);
+
+    obj = csp_map_add_obj(&map, world_get_prop(world, "sofa"));
+    csp_set_on_ground(obj);
+    csp_set_reserved_space(obj, (v2_t){1, 0});
+    csp_set_adjacent_to_wall(obj);
+    csp_set_amount(obj, 2);
+
+    if (!csp_map_generate(&map))
+        printf("-- Room generation failed --\n");
+    // csp_place_obj(&map, obj, (v2_t){0, 0}, 0, ORIENT_DOWN);
+    // csp_map_print(&map);
+    csp_map_apply(&map, world, (v2_t){25, 25});
     csp_map_deinit(&map);
 }
 
@@ -96,6 +114,7 @@ int MAIN(void)
     world_t world = {0};
     renderer_t renderer = {0};
 
+    srand(time(NULL));
     if (!world_init(&world, 50, 0)) {
         dprintf(2, "ERROR: Failed to initialize world\n");
         return EXIT_FAILURE;

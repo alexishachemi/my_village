@@ -10,7 +10,6 @@ static void apply(csp_map_t *map, world_t *world, v2_t tile_pos, v2_t cell_pos, 
 
     if (!cell || !tile)
         return;
-    world_remove_prop(world, tile_pos);
     tile->prop = cell->occupant;
     tile->prop_orient = cell->occupant_orient;
     tile->terrain = map->floor;
@@ -28,11 +27,24 @@ static void apply_layer(csp_map_t *map, world_t *world, v2_t origin, unsigned in
     }
 }
 
+static void clear_area(csp_map_t *map, world_t *world, v2_t origin)
+{
+    v2_t pos = {0};
+
+    for (int y = 0; y < map->size.y; y++) {
+        for (int x = 0; x < map->size.x; x++) {
+            pos = (v2_t){x, y};
+            world_remove_prop(world, V2_ADD(origin, pos));
+        }
+    }
+}
+
 bool csp_map_apply(csp_map_t *map, world_t *world, v2_t origin)
 {
     if (!map || !world_pos_is_valid(world, origin))
         return false;
-    for (unsigned int layer = 0; layer < map->layers; layer++) {
+    clear_area(map, world, origin);
+    for (unsigned int layer = 0; layer < 1; layer++) {
         apply_layer(map, world, origin, layer);
     }
     return true;

@@ -30,7 +30,7 @@ typedef enum {
     C_ON_GROUND,
 } csp_constraint_type_t;
 
-typedef bool(*csp_validator_t)(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer);
+typedef bool(*csp_validator_t)(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer, orient_t orient);
 
 struct csp_constraint_s {
     csp_constraint_type_t type;
@@ -113,6 +113,7 @@ bool csp_set_in_corner(csp_object_t *obj);
 bool csp_set_amount_range(csp_object_t *obj, unsigned int min, unsigned int max);
 bool csp_set_amount(csp_object_t *obj, unsigned int nb);
 bool csp_set_reserved_space(csp_object_t *obj, v2_t position);
+bool csp_set_on_ground(csp_object_t *obj);
 
 /// Global Constraint
 
@@ -136,21 +137,25 @@ csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop)
 bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
 void csp_map_deinit(csp_map_t *map);
 
-bool csp_pos_is_valid(csp_map_t *map, v2_t pos);
+bool csp_pos_is_valid(csp_map_t *map, v2_t pos, unsigned int layer);
 csp_cell_t *csp_map_get_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 void csp_map_print(csp_map_t *map);
 
 bool csp_map_cell_occupied(csp_map_t *map, v2_t pos, unsigned int layer);
 void csp_map_clear_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 bool csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
+void csp_map_clear_placement(csp_map_t *map, csp_placement_t *placement);
+bool csp_map_occupy_placement(csp_map_t *map, csp_placement_t *placement);
 
-// bool csp_can_place_at(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
-// bool csp_place_obj(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
+bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, orient_t orient, list_t *buf);
+bool csp_place_obj(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
 
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
 
 csp_object_t *csp_map_add_obj(csp_map_t *map, prop_t *prop);
 csp_collection_t *csp_map_add_collection(csp_map_t *map);
+
+bool csp_map_generate(csp_map_t *map);
 
 // bool csp_map_generate(csp_map_t *map);
 

@@ -6,3 +6,5 @@ typedef enum {
     ORIENT_LEFT = 2,
     ORIENT_RIGHT = 3
 } orient_t;
+
+static const orient_t directions[] = { ORIENT_DOWN, ORIENT_UP, ORIENT_LEFT, ORIENT_RIGHT };

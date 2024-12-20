@@ -47,6 +47,10 @@ SRC						=	main.c 										\
 							csp/map/map_obj.c							\
 							csp/map/map_dfs.c							\
 							csp/map/map_apply.c							\
+							csp/map/map_placement.c						\
+							csp/map/map_place.c							\
+							csp/map/map_generate.c						\
+							utils/list.c								\
 
 TSRC					=	
 

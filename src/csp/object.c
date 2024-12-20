@@ -26,10 +26,13 @@ void csp_obj_deinit(csp_object_t *obj)
     }
 }
 
-static bool add_positions(csp_placement_t *placement, csp_constraint_t *constraint)
+static bool add_positions(csp_placement_t *placement, csp_constraint_t *constraint, v2_t origin, orient_t orient)
 {
+    v2_t pos = {0};
+
     for (unsigned int i = 0; i < REG_SIZE(constraint->positions); i++) {
-        if (!list_add_copy(placement, REG_AT(v2_t, &constraint->positions, i), sizeof(v2_t)))
+        pos = *REG_AT(v2_t, &constraint->positions, i);
+        if (!list_add_copy(placement, &V2_ADD(origin, v2_orient(pos, orient)), sizeof(v2_t)))
             return false;
     }
     return true;
@@ -50,7 +53,7 @@ csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned in
         return NULL;
     }
     constraint = csp_get_constraint(obj, C_RESERVED_SPACE, false);
-    if (constraint && !add_positions(placement, constraint)) {
+    if (constraint && !add_positions(placement, constraint, pos, orient)) {
         list_destroy_free(placement);
         return NULL;
     }

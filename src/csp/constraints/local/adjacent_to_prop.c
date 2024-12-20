@@ -1,8 +1,10 @@
 #include "csp.h"
+#include "orientation.h"
 #include "prop.h"
 #include "v2.h"
+#include "utils.h"
 
-static bool validate(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer)
+static bool validate(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer, UNUSED orient_t orient)
 {
     const v2_t directions[] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
     csp_cell_t *cell = NULL;
@@ -75,17 +77,17 @@ Test(csp_constraint, adjacent_to_prop_validation)
     prop_cell->occupied = true;
     prop_cell->occupant = &adj_prop;
 
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){0, 4}, 0));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){4, 8}, 0));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){5, 8}, 1));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 10}, 1));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 9}, 2));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 7}, 2));
+    cr_assert_not(constraint->validate(&map, constraint, (v2_t){0, 4}, 0, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, constraint, (v2_t){4, 8}, 0, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, constraint, (v2_t){5, 8}, 1, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 10}, 1, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 9}, 2, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 7}, 2, ORIENT_DOWN));
 
-    cr_assert(constraint->validate(&map, constraint, (v2_t){4, 8}, 1));
-    cr_assert(constraint->validate(&map, constraint, (v2_t){2, 8}, 1));
-    cr_assert(constraint->validate(&map, constraint, (v2_t){3, 9}, 1));
-    cr_assert(constraint->validate(&map, constraint, (v2_t){3, 7}, 1));
+    cr_assert(constraint->validate(&map, constraint, (v2_t){4, 8}, 1, ORIENT_DOWN));
+    cr_assert(constraint->validate(&map, constraint, (v2_t){2, 8}, 1, ORIENT_DOWN));
+    cr_assert(constraint->validate(&map, constraint, (v2_t){3, 9}, 1, ORIENT_DOWN));
+    cr_assert(constraint->validate(&map, constraint, (v2_t){3, 7}, 1, ORIENT_DOWN));
 
     csp_obj_deinit(&obj);
     csp_map_deinit(&map);
