@@ -3,7 +3,6 @@
 #include "orientation.h"
 #include "raylib.h"
 #include "registry.h"
-#include "v2.h"
 
 static unsigned int get_placement_count(csp_object_t *obj)
 {
@@ -26,13 +25,37 @@ static csp_object_t *get_final_obj(csp_object_t *obj)
     return obj;
 }
 
+static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placements);
+
+static bool try_possible_positions(csp_map_t *map, csp_object_t *obj, orient_t orient,
+    unsigned int idx, unsigned int nb_placements)
+{
+    list_t possible_positions = {0};
+    csp_pos_t *pos = {0};
+    csp_placement_t *placement = NULL;
+
+    if (!csp_get_possible_pos(map, obj, orient, &possible_positions))
+        return false;
+    for (node_t *itt = possible_positions.head; itt; itt = itt->next) {
+        pos = itt->data;
+        if (!csp_place_obj(map, obj, pos->position, pos->layer, orient))
+            continue;
+        if (place_obj(map, idx + (nb_placements == 1), nb_placements - 1)) {
+            list_clear_free(&possible_positions);
+            return true;
+        }
+        placement = csp_obj_make_placement(obj, pos->position, pos->layer, orient);
+        csp_map_clear_placement(map, placement);
+        csp_placement_destroy(placement);
+    }
+    list_clear_free(&possible_positions);
+    return false;
+}
+
 static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placements)
 {
     csp_object_t *obj = NULL;
-    csp_placement_t *placement = NULL;
-    list_t possible_positions = {0};
     orient_t orient = ORIENT_DOWN;
-    csp_pos_t *pos = {0};
 
     if (idx >= REG_SIZE(map->objs))
         return true;
@@ -42,21 +65,8 @@ static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placemen
     nb_placements = nb_placements == 0 ? get_placement_count(obj) : nb_placements;
     for (unsigned int o = 0; o < 4; o++) {
         orient = directions[o];
-        if (!csp_get_possible_pos(map, obj, orient, &possible_positions))
-            return false;
-        for (node_t *itt = possible_positions.head; itt; itt = itt->next) {
-            pos = itt->data;
-            if (!csp_place_obj(map, obj, pos->position, pos->layer, orient))
-                continue;
-            if (place_obj(map, idx + (nb_placements == 1), nb_placements - 1)) {
-                list_clear_free(&possible_positions);
-                return true;
-            }
-            placement = csp_obj_make_placement(obj, pos->position, pos->layer, orient);
-            csp_map_clear_placement(map, placement);
-            csp_placement_destroy(placement);
-        }
-        list_clear_free(&possible_positions);
+        if (try_possible_positions(map, obj, orient, idx, nb_placements))
+            return true;
     }
     return false;
 }
