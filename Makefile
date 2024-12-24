@@ -72,6 +72,10 @@ TESTARGS				=	-DTEST -fprofile-arcs -ftest-coverage --coverage -lcriterion
 
 DEBUGARGS				=	-g3
 
+VALARGS					=	-g3
+
+VALBINARGS				=	--leak-check=full --show-leak-kinds=all --track-origins=yes
+
 BUILD_DIR				=	./build/
 
 SRC_DIR					=	./src/
@@ -194,9 +198,13 @@ fclean: 			clean
 re: 				fclean all
 
 do_grind:			grind
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(VAL_DIR)$(NAME)
+	valgrind $(VALBINARGS) ./$(VAL_DIR)$(NAME)
+
+log_grind:	VALBINARGS += --log-file="grind.log"
+log_grind:
+	valgrind $(VALBINARGS) ./$(VAL_DIR)$(NAME)
 
 tests_run:			unit_tests
 	./$(TEST_DIR)$(NAME)
 
-.PHONY: all clean fclean re lib grind sanitize unit_tests
+.PHONY: all clean fclean re lib grind do_grind log_grind sanitize unit_tests
