@@ -38,6 +38,7 @@ SRC						=	main.c 										\
 							csp/constraints/local/in_corner.c			\
 							csp/constraints/local/amount_range.c		\
 							csp/constraints/local/on_ground.c			\
+							csp/constraints/local/has_orient.c			\
 							csp/constraints/global/all_cells_connected.c\
 							csp/object.c								\
 							csp/collection.c							\

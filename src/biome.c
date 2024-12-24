@@ -30,21 +30,21 @@ bool biome_add_terrain(biome_t *biome, terrain_t *terrain)
 {
     if (!biome || !terrain)
         return false;
-    return REG_ADD(&biome->terrains, &terrain, sizeof(terrain_t*));
+    return reg_push_back(&biome->terrains, &terrain);
 }
 
 bool biome_add_prop(biome_t *biome, prop_t *prop)
 {
     if (!biome || !prop)
         return false;
-    return REG_ADD(&biome->props, &prop, sizeof(prop_t*));
+    return reg_push_back(&biome->props, &prop);
 }
 
 bool biome_add_parent(biome_t *biome, biome_t *parent)
 {
     if (!biome || !parent)
         return false;
-    return REG_ADD(&biome->parents, &parent, sizeof(biome_t*));
+    return reg_push_back(&biome->parents, &parent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

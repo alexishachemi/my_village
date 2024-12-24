@@ -35,8 +35,13 @@ csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t ty
 
 void csp_constraint_deinit(csp_constraint_t *constraint)
 {
-    if (constraint && constraint->type == C_RESERVED_SPACE)
-        reg_deinit(&constraint->positions);
+    if (!constraint)
+        return;
+    switch (constraint->type) {
+        case C_RESERVED_SPACE: reg_deinit(&constraint->positions); break;
+        case C_HAS_ORIENT: reg_deinit(&constraint->orientations); break;
+        default: break;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

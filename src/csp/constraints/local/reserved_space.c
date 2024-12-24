@@ -31,7 +31,7 @@ bool csp_set_reserved_space(csp_object_t *obj, v2_t position)
             return false;
         constraint->validate = validate;
     }
-    return REG_ADD(&constraint->positions, &position, sizeof(v2_t));
+    return reg_push_back(&constraint->positions, &position);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

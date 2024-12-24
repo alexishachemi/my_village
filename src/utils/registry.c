@@ -29,7 +29,7 @@ void *reg_new_elem(reg_t *reg)
     return vec_fast_at(&reg->vec, reg->last_free_index++);
 }
 
-void *reg_push_back(reg_t *reg, void *elem, size_t size)
+void *reg_push_back(reg_t *reg, void *elem)
 {
     void *new = NULL;
 
@@ -38,7 +38,7 @@ void *reg_push_back(reg_t *reg, void *elem, size_t size)
     new = reg_new_elem(reg);
     if (!reg)
         return NULL;
-    return memcpy(new, elem, size);
+    return memcpy(new, elem, reg->vec.elem_size);
 }
 
 bool reg_map(reg_t *reg, reg_callback_t func)

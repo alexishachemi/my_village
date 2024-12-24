@@ -20,7 +20,7 @@ static void dfs_search(csp_map_t *map, reg_t *discovered, v2_t pos, unsigned int
 
     if (!cell || cell->occupied || is_discovered(discovered, pos))
         return;
-    reg_push_back(discovered, &pos, sizeof(v2_t));
+    reg_push_back(discovered, &pos);
     for (unsigned int i = 0; i < 4; i++) {
         dfs_search(map, discovered, V2_ADD(pos, directions[i]), layer);
     }

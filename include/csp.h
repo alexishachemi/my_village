@@ -28,6 +28,7 @@ typedef enum {
     C_RESERVED_SPACE,
     C_ON_TOP_OF_PROP,
     C_ON_GROUND,
+    C_HAS_ORIENT,
 } csp_constraint_type_t;
 
 typedef bool(*csp_validator_t)(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer, orient_t orient);
@@ -39,6 +40,7 @@ struct csp_constraint_s {
         prop_t *prop;
         unsigned int range[2];
         reg_t positions;
+        reg_t orientations;
     };
 };
 
@@ -114,6 +116,7 @@ bool csp_set_amount_range(csp_object_t *obj, unsigned int min, unsigned int max)
 bool csp_set_amount(csp_object_t *obj, unsigned int nb);
 bool csp_set_reserved_space(csp_object_t *obj, v2_t position);
 bool csp_set_on_ground(csp_object_t *obj);
+bool csp_set_has_orient(csp_object_t *obj, orient_t orient);
 
 /// Global Constraint
 
