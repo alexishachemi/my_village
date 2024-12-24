@@ -36,11 +36,11 @@ Test(v2, orient)
     cr_assert_eq(v2_orient(v, ORIENT_DOWN).x, 1);
     cr_assert_eq(v2_orient(v, ORIENT_DOWN).y, 2);
 
-    cr_assert_eq(v2_orient(v, ORIENT_LEFT).x, -2);
-    cr_assert_eq(v2_orient(v, ORIENT_LEFT).y, 1);
+    cr_assert_eq(v2_orient(v, ORIENT_LEFT).x, 2);
+    cr_assert_eq(v2_orient(v, ORIENT_LEFT).y, -1);
 
-    cr_assert_eq(v2_orient(v, ORIENT_RIGHT).x, 2);
-    cr_assert_eq(v2_orient(v, ORIENT_RIGHT).y, -1);
+    cr_assert_eq(v2_orient(v, ORIENT_RIGHT).x, -2);
+    cr_assert_eq(v2_orient(v, ORIENT_RIGHT).y, 1);
 }
 
 Test(v2, to_raylib)
