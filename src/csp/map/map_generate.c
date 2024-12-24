@@ -3,6 +3,44 @@
 #include "orientation.h"
 #include "raylib.h"
 #include "registry.h"
+#include <stdlib.h>
+
+static orient_t orientations[4] = { ORIENT_DOWN, ORIENT_UP, ORIENT_LEFT, ORIENT_RIGHT};
+static orient_t possible_orientations[4] = {-1};
+
+static void shuffle_possible_orientations(unsigned short size)
+{
+    unsigned short idx1 = 0;
+    unsigned short idx2 = 0;
+    orient_t tmp = ORIENT_DOWN;
+
+    if (size <= 1)
+        return;
+    for (unsigned short i = 0; i < size; i++) {
+        for (unsigned short j = 0; j < size; j++) {
+            idx1 = rand() % size;
+            idx2 = rand() % size;
+            tmp = possible_orientations[idx1];
+            possible_orientations[idx1] = possible_orientations[idx2];
+            possible_orientations[idx2] = tmp;
+        }
+    }
+}
+
+static unsigned short get_possible_orientations(csp_constraint_t *constraint)
+{
+    orient_t orient = ORIENT_DOWN;
+    unsigned short last_free_idx = 0;
+
+    for (unsigned short i = 0; i < 4; i++) {
+        orient = orientations[i];
+        if (constraint && !reg_has_orient(&constraint->orientations, orient))
+            continue;
+        possible_orientations[last_free_idx++] = orient;
+    }
+    shuffle_possible_orientations(last_free_idx);
+    return last_free_idx;
+}
 
 static unsigned int get_placement_count(csp_object_t *obj)
 {
@@ -56,6 +94,7 @@ static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placemen
 {
     csp_object_t *obj = NULL;
     orient_t orient = ORIENT_DOWN;
+    unsigned short orients_size = 0;
 
     if (idx >= REG_SIZE(map->objs))
         return true;
@@ -63,8 +102,9 @@ static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placemen
     if (!obj)
         return false;
     nb_placements = nb_placements == 0 ? get_placement_count(obj) : nb_placements;
-    for (unsigned int o = 0; o < 4; o++) {
-        orient = directions[o];
+    orients_size = get_possible_orientations(csp_get_constraint(obj, C_HAS_ORIENT, false));
+    for (unsigned int i = 0; i < orients_size; i++) {
+        orient = possible_orientations[i];
         if (try_possible_positions(map, obj, orient, idx, nb_placements))
             return true;
     }

@@ -1,6 +1,7 @@
+#include <string.h>
 #include "registry.h"
 #include "cvec.h"
-#include <string.h>
+#include "orientation.h"
 
 bool reg_init(reg_t *reg, size_t elem_size, size_t base_size)
 {
@@ -56,4 +57,13 @@ size_t reg_last_idx(reg_t *reg)
     if (!reg)
         return 0;
     return reg->last_free_index - 1;
+}
+
+bool reg_has_orient(reg_t *orientations, orient_t orient)
+{
+    for (unsigned int i = 0; i < orientations->last_free_index; i++) {
+        if (*REG_AT(orient_t, orientations, i) == orient)
+            return true;
+    }
+    return false;
 }

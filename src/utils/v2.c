@@ -8,9 +8,9 @@ v2_t v2_orient(v2_t v, orient_t orientation)
         case ORIENT_UP:
             return (v2_t){-v.x, -v.y};
         case ORIENT_LEFT:
-            return (v2_t){-v.y, v.x};
-        case ORIENT_RIGHT:
             return (v2_t){v.y, -v.x};
+        case ORIENT_RIGHT:
+            return (v2_t){-v.y, v.x};
         default:
             return v;
     }

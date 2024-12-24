@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cvec.h"
+#include "orientation.h"
 
 #define REG_AT(type, regp, i) ((type*)vec_fast_at(&(regp)->vec, i))
 #define REG_SIZE(reg) ((reg).last_free_index)
@@ -18,3 +19,4 @@ void *reg_new_elem(reg_t *reg);
 void *reg_push_back(reg_t *reg, void *elem);
 bool reg_map(reg_t *reg, reg_callback_t func);
 size_t reg_last_idx(reg_t *reg);
+bool reg_has_orient(reg_t *orientations, orient_t orient);

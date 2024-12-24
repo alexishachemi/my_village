@@ -28,8 +28,17 @@ static void setup_debug_map(renderer_t *r, world_t *world)
     asset_t *grass_asset = world_new_asset(world, "grass", grass_texture, (Rectangle){0, 0, 32, 32});
     asset_t *tree_asset = world_new_asset(world, "tree", tree_texture, (Rectangle){0, 0, 32, 48});
     asset_t *big_tree_asset = world_new_asset(world, "big_tree", tree_texture, (Rectangle){32, 0, 64, 96});
-    asset_t *left_sofa_asset = world_new_asset(world, "lsofa", sofa_texture, (Rectangle){0, 0, 32, 42});
-    asset_t *right_sofa_asset = world_new_asset(world, "rsofa", sofa_texture, (Rectangle){32, 0, 32, 42});
+    
+    asset_t *left_sofa_down_asset = world_new_asset(world, "l_sofa_d", sofa_texture, (Rectangle){0, 0, 32, 42});
+    asset_t *right_sofa_down_asset = world_new_asset(world, "r_sofa_d", sofa_texture, (Rectangle){32, 0, 32, 42});
+
+    asset_t *left_sofa_right_asset = world_new_asset(world, "l_sofa_r", sofa_texture, (Rectangle){0, 42, 32, 44});
+    asset_t *right_sofa_right_asset = world_new_asset(world, "r_sofa_r", sofa_texture, (Rectangle){0, 86, 32, 32});
+
+    asset_t *left_sofa_left_asset = world_new_asset(world, "l_sofa_l", sofa_texture, (Rectangle){32, 86, 32, 32});
+    asset_t *right_sofa_left_asset = world_new_asset(world, "r_sofa_l", sofa_texture, (Rectangle){32, 42, 32, 44});
+    
+
     asset_t *tl_bed_asset = world_new_asset(world, "bed", bed_texture, (Rectangle){0, 0, 32, 32});
     asset_t *tr_bed_asset = world_new_asset(world, "tr_bed", bed_texture, (Rectangle){32, 0, 32, 32});
     asset_t *bl_bed_asset = world_new_asset(world, "bl_bed", bed_texture, (Rectangle){0, 32, 32, 32});
@@ -51,8 +60,23 @@ static void setup_debug_map(renderer_t *r, world_t *world)
 
     prop_set_mono_asset(tree_prop, tree_asset);
     prop_set_mono_asset(big_tree_prop, big_tree_asset);
-    prop_set_mono_asset(sofa_prop, left_sofa_asset);
-    prop_set_mono_asset(sofa_prop_r, right_sofa_asset);
+
+    prop_set_multi_asset(
+        sofa_prop,
+        left_sofa_down_asset,
+        left_sofa_down_asset,
+        left_sofa_left_asset,
+        left_sofa_right_asset
+    );
+
+    prop_set_multi_asset(
+        sofa_prop_r,
+        right_sofa_down_asset,
+        right_sofa_down_asset,
+        right_sofa_left_asset,
+        right_sofa_right_asset
+    );
+
     prop_set_z_index(big_tree_prop, 1);
     prop_set_z_index(tree_prop, 0);
     prop_set_mono_asset(tl_bed_prop, tl_bed_asset);
@@ -69,10 +93,10 @@ static void setup_debug_map(renderer_t *r, world_t *world)
             world_place_terrain(world, (v2_t){x, y}, grass_terrain);
             // if (rand() % 5 == 0)
             //     world_place_prop(world, sofa_prop, (v2_t){x, y}, ORIENT_DOWN, false);
-            if (rand() % 5 == 0)
-                world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
-            else if (rand() % 7 == 0)
-                world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
+            // if (rand() % 5 == 0)
+                // world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
+            // else if (rand() % 7 == 0)
+                // world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
         }
     }
 }
@@ -93,13 +117,17 @@ static void setup_room(world_t *world)
     csp_set_reserved_space(obj, (v2_t){0, 1});
     csp_set_reserved_space(obj, (v2_t){1, 1});
     csp_set_adjacent_to_wall(obj);
+    csp_set_has_orient(obj, ORIENT_DOWN);
     csp_set_amount(obj, 1);
 
     obj = csp_map_add_obj(&map, world_get_prop(world, "sofa"));
     csp_set_on_ground(obj);
     csp_set_reserved_space(obj, (v2_t){1, 0});
     csp_set_adjacent_to_wall(obj);
-    csp_set_amount(obj, 2);
+    csp_set_amount(obj, 3);
+    csp_set_has_orient(obj, ORIENT_RIGHT);
+    csp_set_has_orient(obj, ORIENT_LEFT);
+    csp_set_has_orient(obj, ORIENT_DOWN);
 
     if (!csp_map_generate(&map))
         printf("-- Room generation failed --\n");

@@ -2,18 +2,9 @@
 #include "orientation.h"
 #include "utils.h"
 
-static bool has_orient(reg_t *orientations, orient_t orient)
-{
-    for (unsigned int i = 0; i < orientations->last_free_index; i++) {
-        if (*REG_AT(orient_t, orientations, i) == orient)
-            return true;
-    }
-    return false;
-}
-
 static bool validate(UNUSED csp_map_t *map, csp_constraint_t *constraint, UNUSED v2_t pos, UNUSED unsigned int layer, orient_t orient)
 {
-    return has_orient(&constraint->orientations, orient);
+    return reg_has_orient(&constraint->orientations, orient);
 }
 
 bool csp_set_has_orient(csp_object_t *obj, orient_t orient)
@@ -25,7 +16,7 @@ bool csp_set_has_orient(csp_object_t *obj, orient_t orient)
         constraint->validate = validate;
         if (!constraint || !reg_init(&constraint->orientations, sizeof(orient_t), 4))
             return false;
-    } else if (has_orient(&constraint->orientations, orient)) {
+    } else if (reg_has_orient(&constraint->orientations, orient)) {
         return true;
     }
     return reg_push_back(&constraint->orientations, &orient);
