@@ -97,10 +97,10 @@ Test(csp_obj, make_placement_single_pos)
     csp_obj_deinit(&obj);
 }
 
-static bool pos_is_reserved(v2_t pos, v2_t *reserved, unsigned int size)
+static bool pos_is_reserved(v2_t origin, v2_t pos, v2_t *reserved, unsigned int size)
 {
     for (unsigned int i = 0; i < size; i++) {
-        if (V2_EQ(reserved[i], pos))
+        if (V2_EQ(V2_ADD(origin, reserved[i]), pos))
             return true;
     }
     return false;
@@ -129,7 +129,8 @@ Test(csp_obj, make_placement_mutiple_pos)
     for (unsigned int i = 0; i < size; i++) {
         pos_buf = csp_placement_get(placement, i);
         cr_assert_not_null(pos_buf);
-        cr_assert(pos_is_reserved(*pos_buf, reserved, size) || V2_EQ((*pos_buf), pos));
+        cr_assert(pos_is_reserved(pos, *pos_buf, reserved, size) || V2_EQ((*pos_buf), pos),
+            "(%d,%d) is not a valid reserved position.", pos_buf->x, pos_buf->y);
     }
     csp_placement_destroy(placement);
     csp_obj_deinit(&obj);
