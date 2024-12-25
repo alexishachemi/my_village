@@ -22,7 +22,6 @@ static bool merge(list_t *list, list_t *list1, list_t *list2)
     return true;
 }
 
-// https://stackoverflow.com/a/12168162
 bool list_shuffle(list_t *list)
 {
     list_t list1, list2;

@@ -12,6 +12,7 @@
 #define CSP_COLLECTION_OBJ_SIZE 3
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5
+#define CSP_PROP_REG_BASE_SIZE 5
 #define CSP_MAP_OBJS_SIZE 10
 
 typedef struct csp_map_s csp_map_t;
@@ -41,6 +42,7 @@ struct csp_constraint_s {
         unsigned int range[2];
         reg_t positions;
         reg_t orientations;
+        reg_t props;
     };
 };
 
@@ -117,6 +119,7 @@ bool csp_set_amount(csp_object_t *obj, unsigned int nb);
 bool csp_set_reserved_space(csp_object_t *obj, v2_t position);
 bool csp_set_on_ground(csp_object_t *obj);
 bool csp_set_has_orient(csp_object_t *obj, orient_t orient);
+bool csp_set_on_top_of_prop(csp_object_t *obj, prop_t *prop);
 
 /// Global Constraint
 

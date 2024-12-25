@@ -4,7 +4,7 @@
 
 static bool validate(UNUSED csp_map_t *map, csp_constraint_t *constraint, UNUSED v2_t pos, UNUSED unsigned int layer, orient_t orient)
 {
-    return reg_has_orient(&constraint->orientations, orient);
+    return reg_get_if(&constraint->orientations, (comparator_t)orient_eq, &orient);
 }
 
 bool csp_set_has_orient(csp_object_t *obj, orient_t orient)
@@ -16,7 +16,7 @@ bool csp_set_has_orient(csp_object_t *obj, orient_t orient)
         constraint->validate = validate;
         if (!constraint || !reg_init(&constraint->orientations, sizeof(orient_t), 4))
             return false;
-    } else if (reg_has_orient(&constraint->orientations, orient)) {
+    } else if (reg_get_if(&constraint->orientations, (comparator_t)orient_eq, &orient)) {
         return true;
     }
     return reg_push_back(&constraint->orientations, &orient);

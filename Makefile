@@ -39,6 +39,7 @@ SRC						=	main.c 										\
 							csp/constraints/local/amount_range.c		\
 							csp/constraints/local/on_ground.c			\
 							csp/constraints/local/has_orient.c			\
+							csp/constraints/local/on_top_of_prop.c		\
 							csp/constraints/global/all_cells_connected.c\
 							csp/object.c								\
 							csp/collection.c							\
@@ -52,6 +53,7 @@ SRC						=	main.c 										\
 							csp/map/map_place.c							\
 							csp/map/map_generate.c						\
 							utils/list.c								\
+							utils/orient.c								\
 
 TSRC					=	
 

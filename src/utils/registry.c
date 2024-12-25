@@ -1,4 +1,5 @@
 #include <string.h>
+#include <unistd.h>
 #include "registry.h"
 #include "cvec.h"
 #include "orientation.h"
@@ -59,11 +60,16 @@ size_t reg_last_idx(reg_t *reg)
     return reg->last_free_index - 1;
 }
 
-bool reg_has_orient(reg_t *orientations, orient_t orient)
+void *reg_get_if(reg_t *reg, comparator_t compare, void *right)
 {
-    for (unsigned int i = 0; i < orientations->last_free_index; i++) {
-        if (*REG_AT(orient_t, orientations, i) == orient)
-            return true;
+    void *elem = NULL;
+
+    if (!reg || !compare)
+        return NULL;
+    for (size_t i = 0; i < REG_SIZE(*reg); i++) {
+        elem = vec_fast_at(&reg->vec, i);
+        if (compare(elem, right))
+            return elem;
     }
-    return false;
+    return NULL;
 }

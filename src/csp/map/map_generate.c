@@ -1,9 +1,10 @@
+#include <stdlib.h>
 #include "csp.h"
 #include "linked.h"
 #include "orientation.h"
 #include "raylib.h"
 #include "registry.h"
-#include <stdlib.h>
+#include "utils.h"
 
 static orient_t orientations[4] = { ORIENT_DOWN, ORIENT_UP, ORIENT_LEFT, ORIENT_RIGHT};
 static orient_t possible_orientations[4] = {-1};
@@ -34,7 +35,7 @@ static unsigned short get_possible_orientations(csp_constraint_t *constraint)
 
     for (unsigned short i = 0; i < 4; i++) {
         orient = orientations[i];
-        if (constraint && !reg_has_orient(&constraint->orientations, orient))
+        if (constraint && !reg_get_if(&constraint->orientations, (comparator_t)orient_eq, &orient))
             continue;
         possible_orientations[last_free_idx++] = orient;
     }

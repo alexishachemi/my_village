@@ -40,6 +40,7 @@ void csp_constraint_deinit(csp_constraint_t *constraint)
     switch (constraint->type) {
         case C_RESERVED_SPACE: reg_deinit(&constraint->positions); break;
         case C_HAS_ORIENT: reg_deinit(&constraint->orientations); break;
+        case C_ON_TOP_OF_PROP: reg_deinit(&constraint->props); break;
         default: break;
     }
 }
