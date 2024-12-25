@@ -1,14 +1,22 @@
 #include "csp.h"
-#include "linked.h"
 #include "orientation.h"
 #include "prop.h"
 #include "registry.h"
 #include "v2.h"
 #include "utils.h"
 
-static bool prop_ptr_eq(prop_t **a, prop_t **b)
+static bool valid_under(prop_t *under, reg_t *expected)
 {
-    return a && b && *a == *b;
+    prop_t *current = NULL;
+    
+    for (unsigned int i = 0; i < expected->last_free_index; i++) {
+        current = *REG_AT(prop_t*, expected, i);
+        if (!current)
+            return false;
+        if (current == under || (under->type == PTYPE_CHILD && under->parent == current))
+            return true;
+    }
+    return false;
 }
 
 static bool validate(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer, UNUSED orient_t orient)
@@ -18,8 +26,7 @@ static bool validate(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, uns
     if (layer == 0)
         return false;
     under = csp_map_get_cell(map, pos, layer - 1);
-    return under && under->occupant 
-        && reg_get_if(&constraint->props, (comparator_t)prop_ptr_eq, &under->occupant);
+    return under && under->occupant && valid_under(under->occupant, &constraint->props);
 }
 
 bool csp_set_on_top_of_prop(csp_object_t *obj, prop_t *prop)
