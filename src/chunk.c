@@ -58,6 +58,9 @@ void chunk_deinit(chunk_t *chunk)
 {
     if (!chunk)
         return;
+    for (unsigned int i = 0; i < chunk->tiles.size; i++) {
+        tile_deinit(vec_fast_at(&chunk->tiles, i));
+    }
     vec_free_data(&chunk->tiles);
 }
 
@@ -130,7 +133,7 @@ Test(chunk, init)
     cr_assert_eq(vec_size(&chunk.tiles), 121);
     for (size_t i = 0; i < vec_size(&chunk.tiles); i++) {
         cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).terrain);
-        cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).prop);
+        cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).props.head);
         cr_assert_null(VEC_FAST_AT(tile_t, &chunk.tiles, i).biome);
     }
 }

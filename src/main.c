@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "csp.h"
-#include "chunk.h"
-#include "registry.h"
+#include "raylib.h"
 #include "orientation.h"
 #include "prop.h"
 #include "v2.h"
@@ -91,12 +90,10 @@ static void setup_debug_map(renderer_t *r, world_t *world)
     for (size_t y = 0; y < world->size; y++) {
         for (size_t x = 0; x < world->size; x++) {
             world_place_terrain(world, (v2_t){x, y}, grass_terrain);
-            // if (rand() % 5 == 0)
-            //     world_place_prop(world, sofa_prop, (v2_t){x, y}, ORIENT_DOWN, false);
-            // if (rand() % 5 == 0)
-                // world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
-            // else if (rand() % 7 == 0)
-                // world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
+            if (rand() % 5 == 0)
+                world_place_prop(world, big_tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
+            else if (rand() % 7 == 0)
+                world_place_prop(world, tree_prop, (v2_t){x, y}, ORIENT_DOWN, false);
         }
     }
 }
@@ -104,7 +101,7 @@ static void setup_debug_map(renderer_t *r, world_t *world)
 static void setup_room(world_t *world)
 {
     csp_map_t map = {0};
-    v2_t map_size = {5, 5};
+    v2_t map_size = {10, 10};
     unsigned int map_layers = 3;
     csp_object_t *obj = NULL;
 
@@ -120,11 +117,16 @@ static void setup_room(world_t *world)
     csp_set_has_orient(obj, ORIENT_DOWN);
     csp_set_amount(obj, 1);
 
+    obj = csp_map_add_obj(&map, world_get_prop(world, "painting"));
+    csp_set_has_orient(obj, ORIENT_DOWN);
+    csp_set_on_top_of_prop(obj, world_get_prop(world, "bed"));
+    csp_set_amount(obj, 1);
+
     obj = csp_map_add_obj(&map, world_get_prop(world, "sofa"));
     csp_set_on_ground(obj);
     csp_set_reserved_space(obj, (v2_t){1, 0});
-    csp_set_adjacent_to_wall(obj);
-    csp_set_amount(obj, 3);
+    // csp_set_adjacent_to_wall(obj);
+    csp_set_amount_range(obj, 1, 3);
     csp_set_has_orient(obj, ORIENT_RIGHT);
     csp_set_has_orient(obj, ORIENT_LEFT);
     csp_set_has_orient(obj, ORIENT_DOWN);
@@ -141,8 +143,10 @@ int MAIN(void)
 {
     world_t world = {0};
     renderer_t renderer = {0};
+    unsigned int seed = time(NULL);
 
-    srand(time(NULL));
+    srand(seed);
+    SetRandomSeed(seed);
     if (!world_init(&world, 50, 0)) {
         dprintf(2, "ERROR: Failed to initialize world\n");
         return EXIT_FAILURE;
@@ -154,7 +158,10 @@ int MAIN(void)
     });
     setup_debug_map(&renderer, &world);
     setup_room(&world);
-    render_and_display(&renderer, &world);
+    if (!render_and_display(&renderer, &world)) {
+        dprintf(2, "ERROR: Failed to render and display\n");
+        return EXIT_FAILURE;
+    }
     renderer_deinit(&renderer);
     world_deinit(&world);
     return EXIT_SUCCESS;

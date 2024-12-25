@@ -1,4 +1,5 @@
 #include "cvec.h"
+#include "linked.h"
 #include "orientation.h"
 #include "prop.h"
 #include "registry.h"
@@ -33,10 +34,8 @@ prop_t *world_get_prop(world_t *world, const char *name)
     return NULL;
 }
 
-
 static void remove_childs(world_t *world, v2_t pos, prop_t *prop, orient_t orient)
 {
-    tile_t *tile = NULL;
     prop_t *child = NULL;
     v2_t child_pos = {0};
 
@@ -45,23 +44,25 @@ static void remove_childs(world_t *world, v2_t pos, prop_t *prop, orient_t orien
     for (unsigned int i = 0; i < REG_SIZE(prop->childs); i++) {
         child = REG_AT(prop_t, &prop->childs, i);
         child_pos = V2_ADD(pos, v2_orient(child->offset, orient));
-        tile = world_get_tile(world, child_pos);
-        if (tile)
-            tile->prop = NULL;
+        tile_remove_prop(world_get_tile(world, child_pos), child);
     }
 }
 
 void world_remove_prop(world_t *world, v2_t pos)
 {
     tile_t *tile = world_get_tile(world, pos);
+    placed_prop_t *placed = NULL;
 
-    if (!tile || !tile->prop)
+    if (!tile || !tile->props.head)
         return;
-    if (tile->prop->type == PTYPE_PARENT) {
-        remove_childs(world, pos, tile->prop, tile->prop_orient);
-        tile->prop = NULL;
-    } else if (tile->prop->type == PTYPE_CHILD) {
-        world_remove_prop(world, V2_SUB(pos, v2_orient(tile->prop->offset, tile->prop_orient)));
+    for (unsigned int i = 0; i < tile->props.size && tile->props.head; i++) {
+        placed = list_at(&tile->props, i);
+        if (placed->prop->type == PTYPE_PARENT) {
+            remove_childs(world, pos, placed->prop, placed->orient);
+            list_remove_free(&tile->props, i--);
+        } else if (placed->prop->type == PTYPE_CHILD) {
+            world_remove_prop(world, V2_SUB(pos, v2_orient(placed->prop->offset, placed->orient)));
+        }
     }
 }
 
