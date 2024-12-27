@@ -46,3 +46,4 @@ bool render_and_display(renderer_t *renderer, world_t *world);
 void renderer_draw_overlay(renderer_t *renderer, world_t *world);
 void renderer_update_camera(Camera2D *camera);
 void renderer_center_camera(renderer_t *renderer, world_t *world);
+void renderer_print(renderer_t *renderer);

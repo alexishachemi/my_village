@@ -1,4 +1,5 @@
 
+#include "texture.h"
 #pragma GCC diagnostic push 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #define RAYGUI_IMPLEMENTATION
@@ -73,4 +74,20 @@ void renderer_draw_overlay(renderer_t *renderer, world_t *world)
     EndMode2D();
     draw_top_bar(renderer, world);
     BeginMode2D(renderer->camera);
+}
+
+void renderer_print(renderer_t *renderer)
+{
+    texture_t *texture = NULL;
+
+    if (!renderer)
+        return;
+    printf("-- Renderer --\n\t- screen_size: %dx%d\n\t- tile_size_px: %ld\n",
+        renderer->settings.screen_width, renderer->settings.screen_height,
+        renderer->settings.tile_size_px);
+    printf("-- Textures --\n");
+    for (unsigned int i = 0; i < REG_SIZE(renderer->textures); i++) {
+        texture = REG_AT(texture_t, &renderer->textures, i);
+        printf("\t- [%s] -> %s\n", texture->name, texture->path);
+    }
 }

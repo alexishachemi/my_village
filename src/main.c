@@ -7,8 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "chunk.h"
-#include "registry.h"
+#include "raylib.h"
 #include "orientation.h"
 #include "prop.h"
 #include "v2.h"
@@ -54,23 +53,40 @@ static void setup_debug_map(renderer_t *r, world_t *world)
     }
 }
 
+// int MAIN(void)
+// {
+//     world_t world = {0};
+//     renderer_t renderer = {0};
+
+//     if (!world_init(&world, 50, 0)) {
+//         dprintf(2, "ERROR: Failed to initialize world\n");
+//         return EXIT_FAILURE;
+//     }
+//     renderer_init(&renderer, &(display_settings_t){
+//         .screen_width=800,
+//         .screen_height=600,
+//         .tile_size_px=32
+//     });
+//     setup_debug_map(&renderer, &world);
+//     render_and_display(&renderer, &world);
+//     renderer_deinit(&renderer);
+//     world_deinit(&world);
+//     return EXIT_SUCCESS;
+// }
+
+#include <stdio.h>
+#include "parser.h"
+
 int MAIN(void)
 {
     world_t world = {0};
     renderer_t renderer = {0};
 
-    if (!world_init(&world, 50, 0)) {
-        dprintf(2, "ERROR: Failed to initialize world\n");
+    if (!parse_config(&world, &renderer, "test.json"))
         return EXIT_FAILURE;
-    }
-    renderer_init(&renderer, &(display_settings_t){
-        .screen_width=800,
-        .screen_height=600,
-        .tile_size_px=32
-    });
-    setup_debug_map(&renderer, &world);
-    render_and_display(&renderer, &world);
-    renderer_deinit(&renderer);
+    renderer_print(&renderer);
+    world_print(&world);
     world_deinit(&world);
+    renderer_deinit(&renderer);
     return EXIT_SUCCESS;
 }

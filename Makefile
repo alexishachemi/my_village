@@ -9,7 +9,7 @@ SRC						=	main.c 								\
 							utils/str.c							\
 							utils/v2.c							\
 							utils/registry.c					\
-							world/world_factory.c				\
+							world/world.c						\
 							asset.c								\
 							world/world_asset.c					\
 							prop/prop_factory.c					\
@@ -30,6 +30,14 @@ SRC						=	main.c 								\
 							render/renderer/renderer_camera.c	\
 							render/texture.c					\
 							render/draw_queue.c					\
+							parser/parser.c						\
+							parser/parser_factory.c				\
+							parser/parser_history.c				\
+							parser/parser_error.c				\
+							parser/parser_utils.c				\
+							parser/parser_render.c				\
+							parser/parser_world.c				\
+							parser/parser_texture.c				\
 
 TSRC					=	
 
@@ -41,7 +49,7 @@ NAME					=	my_village
 
 CC						=	gcc
 
-LIBS					=	raylib linked cvec
+LIBS					=	raylib linked cvec cjson
 
 CFLAGS					=	-Wall -Wextra -Iinclude
 
