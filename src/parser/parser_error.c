@@ -51,24 +51,52 @@ static void print_end()
     dprintf(2, " ===\n");
 }
 
-static unsigned int count_lines(const char *str)
+static unsigned int get_error_line(const char *str, const char *at,
+    const char **prev)
 {
-    unsigned int lines = 0;
+    unsigned int lines = 1;
+    const char *curr = NULL;
 
-    for (unsigned int i = 0; str[i]; i++) {
-        lines += str[i] == '\n';
+    *prev = str;
+    curr = str;
+    for (unsigned int i = 0; str[i] && (str + i) != at; i++) {
+        if (str[i] != '\n')
+            continue;
+        lines += 1;
+        *prev = curr;
+        curr = str + (i + 1);
     }
     return lines;
+}
+
+static void print_err_line(const char **line, unsigned int err_line, unsigned int line_nb)
+{
+    if (!**line)
+        return;
+    dprintf(2, "=== %d\t| ", line_nb + (err_line == 1));
+    while (**line && **line != '\n') {
+        dprintf(2, "%c", **line);
+        (*line)++;
+    }
+    if (**line == '\n')
+        (*line)++;
+    dprintf(2, "\n");
 }
 
 bool parser_raise_syntax_error(parser_t *parser)
 {
     unsigned int line = 0;
+    const char *line_ptr = NULL;
 
     if (!parser)
         return false;
-    line = count_lines(parser->raw) - count_lines(cJSON_GetErrorPtr());
-    dprintf(2, "=== " P_RED "Syntax Error " P_END "near " P_CYAN "[%s:%d]" P_END " ===\n", parser->filepath, line);
+    line = get_error_line(parser->raw, cJSON_GetErrorPtr(), &line_ptr);
+    dprintf(2, "=== " P_RED "Syntax Error " P_END "near " P_CYAN "[%s:%d]" P_END " ===\n===\n",
+        parser->filepath, line);
+    print_err_line(&line_ptr, line, line - 1);
+    print_err_line(&line_ptr, line, line);
+    print_err_line(&line_ptr, line, line + 1);
+    dprintf(2, "===\n");
     return false;
 }
 

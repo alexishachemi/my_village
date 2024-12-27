@@ -64,7 +64,7 @@ void world_print(world_t *world)
 {
     if (!world)
         return;
-    printf("-- World --\n\t- size: %ld\n\t- chunk_size: %ld\n", world->size, world->chunk_size);
+    printf("-- World --\n\t- size: %ld\n\t- chunk_size: %ld", world->size, world->chunk_size);
     print_assets(&world->asset_reg);
     print_props(&world->prop_reg);
 }
