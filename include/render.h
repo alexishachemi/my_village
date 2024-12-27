@@ -41,6 +41,7 @@ bool renderer_load(renderer_t *renderer);
 void renderer_unload(renderer_t *renderer);
 texture_t *renderer_new_texture(renderer_t *renderer,
     const char *name, const char *path);
+texture_t *renderer_get_texture(renderer_t *renderer, const char *name);
 bool renderer_display(renderer_t *renderer, world_t *world);
 bool render_and_display(renderer_t *renderer, world_t *world);
 void renderer_draw_overlay(renderer_t *renderer, world_t *world);

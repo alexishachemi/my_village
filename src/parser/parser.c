@@ -34,7 +34,8 @@ static bool parse(parser_t *parser)
 {
     return parse_render(parser)
         && parse_world(parser)
-        && parse_textures(parser);
+        && parse_textures(parser)
+        && parse_assets(parser);
 }
 
 bool parse_config(world_t *world, renderer_t *renderer, const char *path)

@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "registry.h"
 #include "render.h"
+#include "str.h"
 #include "texture.h"
 
 bool renderer_init(renderer_t *renderer, const display_settings_t *settings)
@@ -53,4 +54,18 @@ void renderer_unload(renderer_t *renderer)
     if (!renderer)
         return;
     reg_map(&renderer->textures, (reg_callback_t)texture_unload);
+}
+
+texture_t *renderer_get_texture(renderer_t *renderer, const char *name)
+{
+    texture_t *texture = NULL;
+
+    if (!renderer || !name)
+        return NULL;
+    for (unsigned int i = 0; i < REG_SIZE(renderer->textures); i++) {
+        texture = REG_AT(texture_t, &renderer->textures, i);
+        if (STR_EQ(texture->name, name))
+            return texture;
+    }
+    return NULL;
 }

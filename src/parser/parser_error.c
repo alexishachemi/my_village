@@ -5,29 +5,35 @@
 #include "parser.h"
 #include "p_color.h"
 
-static char json_type_str[8] = {0};
+static char json_str[64] = {0};
+
+const char *get_json_array_size(cJSON *item)
+{
+    snprintf(json_str, sizeof(json_str), "Array (%d)", cJSON_GetArraySize(item));
+    return json_str;
+}
 
 const char *get_json_type(cJSON *item)
 {
     if (cJSON_IsNumber(item))
-        return strcpy(json_type_str, "Number");
+        return strcpy(json_str, "Number");
     if (cJSON_IsBool(item))
-        return strcpy(json_type_str, "Bool");
+        return strcpy(json_str, "Bool");
     if (cJSON_IsNull(item))
-        return strcpy(json_type_str, "Null");
+        return strcpy(json_str, "Null");
     if (cJSON_IsObject(item))
-        return strcpy(json_type_str, "Object");
+        return strcpy(json_str, "Object");
     if (cJSON_IsString(item))
-        return strcpy(json_type_str, "String");
+        return strcpy(json_str, "String");
     if (cJSON_IsArray(item)) {
         if (cJSON_GetArraySize(item) == 2 
             && cJSON_IsNumber(cJSON_GetArrayItem(item, 0))
             && cJSON_IsNumber(cJSON_GetArrayItem(item, 1))) {
-            return strcpy(json_type_str, "Vector2");
+            return strcpy(json_str, "Vector2");
         }
-        return strcpy(json_type_str, "Array");
+        return strcpy(json_str, "Array");
     }
-    return strcpy(json_type_str, "Unknown");
+    return strcpy(json_str, "Unknown");
 }
 
 static void print_begin(parser_t *parser)
@@ -62,7 +68,7 @@ bool parser_raise_syntax_error(parser_t *parser)
     if (!parser)
         return false;
     line = count_lines(parser->raw) - count_lines(cJSON_GetErrorPtr());
-    dprintf(2, "=== " P_RED "Syntax Error " P_END "at " P_CYAN "[%s:%d]" P_END " ===\n", parser->filepath, line);
+    dprintf(2, "=== " P_RED "Syntax Error " P_END "near " P_CYAN "[%s:%d]" P_END " ===\n", parser->filepath, line);
     return false;
 }
 

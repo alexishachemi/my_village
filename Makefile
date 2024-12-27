@@ -24,7 +24,7 @@ SRC						=	main.c 								\
 							world/world_tile.c					\
 							chunk.c								\
 							world/world_chunk.c					\
-							render/renderer/renderer_factory.c	\
+							render/renderer/renderer.c			\
 							render/renderer/renderer_display.c	\
 							render/renderer/renderer_debug.c	\
 							render/renderer/renderer_camera.c	\
@@ -38,6 +38,7 @@ SRC						=	main.c 								\
 							parser/parser_render.c				\
 							parser/parser_world.c				\
 							parser/parser_texture.c				\
+							parser/parser_asset.c				\
 
 TSRC					=	
 
