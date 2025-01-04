@@ -39,7 +39,7 @@ struct prop_s {
         struct { // PTYPE_PARENT
             z_index_t z_index;
             bool has_child;
-            reg_t childs;
+            reg_t children;
         };
         struct { //PTYPE_CHILD
             prop_t *parent;

@@ -13,7 +13,7 @@ bool prop_has_child(const prop_t *prop)
 static bool init_child_reg(prop_t *prop)
 {
     prop->has_child = 
-        reg_init(&prop->childs, sizeof(prop_t), PROP_CHILD_REGISTRY_BASE_SIZE);
+        reg_init(&prop->children, sizeof(prop_t), PROP_CHILD_REGISTRY_BASE_SIZE);
     return prop->has_child;
 }
 
@@ -22,7 +22,7 @@ static prop_t *new_child(prop_t *prop)
     if (prop->type != PTYPE_PARENT
         || (!prop->has_child && !init_child_reg(prop)))
         return NULL;
-    return reg_new_elem(&prop->childs);   
+    return reg_new_elem(&prop->children);   
 }
 
 #pragma GCC diagnostic push
@@ -67,8 +67,8 @@ prop_t *prop_get_child(prop_t *prop, v2_t offset)
         return prop;
     if (!prop->has_child)
         return NULL;
-    for (unsigned int i = 0; i < REG_SIZE(prop->childs); i++) {
-        child = REG_AT(prop_t, &prop->childs, i);
+    for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
+        child = REG_AT(prop_t, &prop->children, i);
         if (child && V2_EQ(child->offset, offset))
             return child;
     }
@@ -91,11 +91,11 @@ Test(prop, add_child)
     child = prop_add_child(&prop, (v2_t){1, 1});
     cr_assert_not_null(child);
     cr_assert_null(prop_add_child(&prop, (v2_t){1, 1}));
-    cr_assert_eq(REG_SIZE(prop.childs), 1);
-    cr_assert_eq(child, REG_AT(prop_t, &prop.childs, 0));
+    cr_assert_eq(REG_SIZE(prop.children), 1);
+    cr_assert_eq(child, REG_AT(prop_t, &prop.children, 0));
     child2 = prop_add_child(&prop, (v2_t){1, 2});
     cr_assert_not_null(child2);
-    cr_assert_eq(REG_SIZE(prop.childs), 2);
+    cr_assert_eq(REG_SIZE(prop.children), 2);
     cr_assert_str_eq(child->name, "Child prop of ["LONG_NAME"] at [1,1]");
     cr_assert_eq(child->type, PTYPE_CHILD);
     cr_assert_eq(child->offset.x, 1);
@@ -111,7 +111,7 @@ Test(prop, get_child)
 
     cr_assert(prop_init(&prop, "name"));
     cr_assert(prop_add_child(&prop, (v2_t){1, 1}));
-    cr_assert_eq(REG_SIZE(prop.childs), 1);
+    cr_assert_eq(REG_SIZE(prop.children), 1);
     child = prop_get_child(&prop, (v2_t){1, 1});
     cr_assert(child);
     cr_assert_eq(child->type, PTYPE_CHILD);

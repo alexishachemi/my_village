@@ -75,8 +75,8 @@ static void print_prop_children(prop_t *prop, unsigned int i)
     if (!prop->has_child || prop->type != PTYPE_PARENT)
         return;
     iprintf(i, "- Children:\n");
-    for (unsigned int idx = 0; idx < REG_SIZE(prop->childs); idx++) {
-        child = REG_AT(prop_t, &prop->childs, idx);
+    for (unsigned int idx = 0; idx < REG_SIZE(prop->children); idx++) {
+        child = REG_AT(prop_t, &prop->children, idx);
         iprintf(i + 1, "- Offset: [%d, %d]\n", child->offset.x, child->offset.y);
         print_prop(child, i + 1);
     }

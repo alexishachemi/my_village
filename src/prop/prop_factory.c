@@ -18,7 +18,7 @@ void prop_deinit(prop_t *prop)
 {
     if (!prop || prop->type != PTYPE_PARENT || !prop->has_child)
         return;
-    reg_deinit(&prop->childs);
+    reg_deinit(&prop->children);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
