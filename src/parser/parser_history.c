@@ -16,15 +16,17 @@ static bool push_history(parser_t *parser, const char *name, cJSON *item)
     return true;
 }
 
-bool parser_enter(parser_t *parser, const char *name)
+bool parser_enter(parser_t *parser, const char *name, bool is_obj)
 {
     if (!parser || !name)
         return false;
     parser->current = cJSON_GetObjectItem(parser->current, name);
     if (!parser->current)
         return parser_raise_missing_value(parser, name, "Object");
-    if (!cJSON_IsObject(parser->current))
-        return parser_raise_invalid_type(parser, name, parser->current, "Object");
+    if (is_obj) {
+        if (!cJSON_IsObject(parser->current))
+            return parser_raise_invalid_type(parser, name, parser->current, "Object");
+    }
     return push_history(parser, name, parser->current);
 }
 
@@ -34,7 +36,11 @@ bool parser_exit(parser_t *parser)
         return false;
     if (REG_SIZE(parser->history) == 0)
         return true;
-    parser->history.last_free_index -= 1;
+    memset(
+        REG_AT(parser_history_t, &parser->history, parser->history.last_free_index),
+        0, parser->history.vec.elem_size
+    );
+    reg_pop_back(&parser->history, NULL);
     if (REG_SIZE(parser->history) != 0) {
         parser->current = REG_AT(parser_history_t, &parser->history,
             parser->history.last_free_index - 1)->item;
@@ -70,8 +76,7 @@ char *parser_get_path(parser_t *parser)
     memset(path_str, 0, sizeof(char) * size);
     snprintf(path_str, size, "%s:/", parser->filepath);
     for (unsigned int i = 0; i < parser->history.last_free_index; i++) {
-        strcat(path_str, REG_AT(parser_history_t, &parser->history,
-            parser->history.last_free_index - 1)->name);
+        strcat(path_str, REG_AT(parser_history_t, &parser->history, i)->name);
         if (i != parser->history.last_free_index - 1)
             strcat(path_str, "/");
     }

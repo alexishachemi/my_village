@@ -29,8 +29,6 @@ static bool new_asset(parser_t *parser, const char *name,
         snprintf(buf, sizeof(buf), "Anonymous asset #%ld", id++);
         name = buf;
     }
-    if (draw_rect.x == -1)
-        draw_rect = (Rectangle){0, 0, texture->rtexture.width, texture->rtexture.height};
     asset = world_new_asset(parser->world, name, texture, draw_rect);
     if (asset_ptr)
         *asset_ptr = asset;
@@ -62,7 +60,7 @@ static bool parse_array_asset(parser_t *parser, cJSON *item, const char *name, a
     unsigned int size = cJSON_GetArraySize(item);
 
     if (size != 5)
-        return parser_raise_invalid_value(parser, NULL, get_json_array_size(item), "Array (5)");
+        return parser_raise_invalid_value(parser, name, get_json_array_size(item), "Array (5)");
     curr = cJSON_GetArrayItem(item, 0);
     if (!cJSON_IsString(curr))
         return parser_raise_invalid_type(parser, NULL, curr, "String");
@@ -79,7 +77,7 @@ bool parse_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asse
     if (cJSON_IsString(item))
         return get_asset(parser, cJSON_GetStringValue(item), asset);
     if (cJSON_IsArray(item))
-        return parse_array_asset(parser, item, name, NULL);
+        return parse_array_asset(parser, item, name, asset);
     return parser_raise_invalid_type(parser, name, item, "String | Array");
 }
 

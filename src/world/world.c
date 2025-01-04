@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "asset.h"
 #include "biome.h"
+#include "prop.h"
 #include "registry.h"
 #include "world.h"
 #include "chunk.h"
@@ -32,6 +33,19 @@ void world_deinit(world_t *world)
     WORLD_DEINIT_REGISTRY(world, chunk);
 }
 
+static void print_asset(const asset_t *asset)
+{
+    if (!asset) {
+        printf("(null)\n");
+        return;
+    }
+    printf(
+        "[%s], texture: %s, [%d, %d, %d, %d]\n",
+        asset->name, asset->texture->name, (int)asset->draw_rect.x,
+        (int)asset->draw_rect.y, (int)asset->draw_rect.width, (int)asset->draw_rect.height
+    );
+}
+
 static void print_assets(reg_t *reg)
 {
     asset_t *curr = NULL;
@@ -39,11 +53,32 @@ static void print_assets(reg_t *reg)
     printf("\n-- Assets --\n");
     for (unsigned int i = 0; i < reg->last_free_index; i++) {
         curr = REG_AT(asset_t, reg, i);
-        printf(
-            "\t- [%s] texture: %s, [%d, %d, %d, %d]\n",
-            curr->name, curr->texture->name, (int)curr->draw_rect.x,
-            (int)curr->draw_rect.y, (int)curr->draw_rect.width, (int)curr->draw_rect.height
-        );
+        printf("\t- ");
+        print_asset(curr);
+    }
+}
+
+static void print_asset_map(prop_asset_map_t *map)
+{
+    printf("\t\t- Asset Mode: ");
+    switch (map->asset_mode) {
+        case AMODE_NONE: printf("None\n"); break;
+        case AMODE_MONO: {
+            printf("Mono\n");
+            printf("\t\t- Asset: ");
+            print_asset(map->asset);
+        } break;
+        case AMODE_MULTI: {
+            printf("Multi\n");
+            printf("\t\t- Up Asset: ");
+            print_asset(map->asset_up);
+            printf("\t\t- Down Asset: ");
+            print_asset(map->asset_down);
+            printf("\t\t- Left Asset: ");
+            print_asset(map->asset_left);
+            printf("\t\t- right Asset: ");
+            print_asset(map->asset_right);
+        } break;
     }
 }
 
@@ -54,9 +89,8 @@ static void print_props(reg_t *reg)
     printf("\n-- Props --\n");
     for (unsigned int i = 0; i < reg->last_free_index; i++) {
         curr = REG_AT(prop_t, reg, i);
-        printf(
-            "\t- [%s]\n", curr->name
-        );
+        printf("\t- [%s]\n", curr->name);
+        print_asset_map(&curr->asset_map);
     }
 }
 

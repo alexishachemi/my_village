@@ -132,3 +132,13 @@ bool parser_raise_invalid_value(parser_t *parser, const char *name, const char *
     print_end();
     return false;
 }
+
+bool parser_raise_error(parser_t *parser, const char *msg)
+{
+    if (!parser || !msg)
+        return false;
+    print_begin(parser);
+    dprintf(2, "%s", msg);
+    print_end();
+    return false;
+}

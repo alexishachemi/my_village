@@ -39,6 +39,7 @@ SRC						=	main.c 								\
 							parser/parser_world.c				\
 							parser/parser_texture.c				\
 							parser/parser_asset.c				\
+							parser/parser_prop.c				\
 
 TSRC					=	
 

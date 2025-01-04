@@ -35,7 +35,8 @@ static bool parse(parser_t *parser)
     return parse_render(parser)
         && parse_world(parser)
         && parse_textures(parser)
-        && parse_assets(parser);
+        && parse_assets(parser)
+        && parse_props(parser);
 }
 
 bool parse_config(world_t *world, renderer_t *renderer, const char *path)
@@ -47,5 +48,9 @@ bool parse_config(world_t *world, renderer_t *renderer, const char *path)
         return false;
     success = parse(&parser);
     parser_deinit(&parser);
+    if (!success) {
+        world_deinit(world);
+        renderer_deinit(renderer);
+    }
     return success;
 }

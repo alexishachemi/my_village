@@ -28,7 +28,7 @@ bool prop_set_multi_asset(
     asset_t *asset_right
 )
 {
-    if (!prop || !asset_up || !asset_down || !asset_left || !asset_right)
+    if (!prop)
         return false;
     prop->asset_map.asset_mode = AMODE_MULTI;
     prop->asset_map.asset_up = asset_up;
