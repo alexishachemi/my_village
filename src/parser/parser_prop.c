@@ -4,73 +4,86 @@
 #include "prop.h"
 #include "world.h"
 
-static bool parse_mono_asset_str(parser_t *parser, prop_t *prop)
+static bool parse_mono_asset_str(parser_t *parser, cJSON *item, prop_t *prop)
 {
-    PARSE_ENTER_ANY(parser, "assets");
-    char *name = cJSON_GetStringValue(parser->current);
+    char *name = cJSON_GetStringValue(item);
     asset_t *asset = world_get_asset(parser->world, name);
 
     if (!asset)
         return parser_raise_invalid_value(parser, "assets", name, "Existing asset name");
-    PARSE_EXIT(parser);
     return prop_set_mono_asset(prop, asset);
 }
 
-static bool parse_mono_asset_arr(parser_t *parser, prop_t *prop)
+static bool parse_mono_asset_arr(parser_t *parser, cJSON *item, prop_t *prop)
 {
-    PARSE_ENTER_ANY(parser, "assets");
     asset_t *asset = NULL;
 
-    if (!parse_asset(parser, parser->current, NULL, &asset))
+    if (!parse_asset(parser, item, NULL, &asset))
         return false;
-    PARSE_EXIT(parser);
     return prop_set_mono_asset(prop, asset);
 }
 
-static bool get_asset(parser_t *parser, const char *direction, asset_t **asset)
+static bool get_asset(parser_t *parser, cJSON *item, const char *direction, asset_t **asset)
 {
     *asset = NULL;
-    PARSE_OPTIONAL_ENTER_ANY(parser, direction);
-    if (!parse_asset(parser, parser->current, NULL, asset))
+    if (!parse_asset(parser, cJSON_GetObjectItem(item, direction), NULL, asset))
         return false;
-    PARSE_EXIT(parser);
     return true;
 }
 
-static bool parse_multi_asset(parser_t *parser, prop_t *prop)
+static bool parse_multi_asset(parser_t *parser, cJSON *item, prop_t *prop)
 {
-    PARSE_ENTER(parser, "assets");
     asset_t *assets[4] = {0};
-    bool success = get_asset(parser, "up", &assets[0])
-                && get_asset(parser, "down", &assets[1])
-                && get_asset(parser, "left", &assets[2])
-                && get_asset(parser, "right", &assets[3]);
+    bool success = get_asset(parser, item, "up", &assets[0])
+                && get_asset(parser, item, "down", &assets[1])
+                && get_asset(parser, item, "left", &assets[2])
+                && get_asset(parser, item, "right", &assets[3]);
     if (!success)
         return false;
-    PARSE_EXIT(parser);
     return prop_set_multi_asset(prop, assets[0], assets[1], assets[2], assets[3]);
 }
 
-static bool parse_prop_assets(parser_t *parser, prop_t *prop)
+static bool parse_prop_assets(parser_t *parser, cJSON *item, prop_t *prop)
 {
-    cJSON *item = cJSON_GetObjectItem(parser->current, "assets");
-
     if (!item)
         return parser_raise_missing_value(parser, "assets", "String | Object | Array");
     if (cJSON_IsString(item))
-        return parse_mono_asset_str(parser, prop);
+        return parse_mono_asset_str(parser, item, prop);
     if (cJSON_IsArray(item))
-        return parse_mono_asset_arr(parser, prop);
+        return parse_mono_asset_arr(parser, item, prop);
     if (cJSON_IsObject(item))
-        return parse_multi_asset(parser, prop);
+        return parse_multi_asset(parser, item, prop);
     return parser_raise_invalid_type(parser, item->string, item, "String | Object | Array");
+}
+
+static bool parse_prop_child(parser_t *parser, cJSON *item, prop_t *prop)
+{
+    prop_t *child = NULL;
+    v2_t offset = {0};
+
+    if (!cJSON_IsObject(item))
+        return parser_raise_invalid_type(parser, NULL, item, "Object");
+    if (!parse_v2(parser, "offset", cJSON_GetObjectItem(item, "offset"), &offset))
+        return false;
+    child = prop_add_child(prop, offset);
+    if (!child)
+        return parser_raise_error(parser, "Failed to create prop child");
+    return parse_prop_assets(parser, cJSON_GetObjectItem(item, "assets"), child);
 }
 
 static bool parse_prop_children(parser_t *parser, prop_t *prop)
 {
     PARSE_OPTIONAL_ENTER_ANY(parser, "children");
+    cJSON *curr = NULL;
+
+    if (!cJSON_IsArray(parser->current))
+        return parser_raise_invalid_type(parser, "children", parser->current, "Array");
+    cJSON_ArrayForEach(curr, parser->current) {
+        if (!parse_prop_child(parser, curr, prop))
+            return false;
+    }
     PARSE_EXIT(parser);
-    return false;
+    return true;
 }
 
 bool parse_prop(parser_t *parser, const char *name)
@@ -80,7 +93,7 @@ bool parse_prop(parser_t *parser, const char *name)
 
     if (!prop)
         return parser_raise_error(parser, "Failed to create prop");
-    if (!parse_prop_assets(parser, prop))
+    if (!parse_prop_assets(parser, cJSON_GetObjectItem(parser->current, "assets"), prop))
         return false;
     if (!parse_prop_children(parser, prop))
         return false;
