@@ -109,6 +109,31 @@ static void print_props(reg_t *reg)
     }
 }
 
+static void print_biome(biome_t *biome, unsigned int i)
+{
+    iprintf(i, "- \"%s\"\n", biome->name);
+    iprintf(i + 1, "- Parents:\n");
+    for (unsigned int idx = 0; idx < REG_SIZE(biome->parents); idx++) {
+        iprintf(i + 2, "- \"%s\"\n", (*REG_AT(biome_t*, &biome->parents, idx))->name);
+    }
+    iprintf(i + 1, "- Terrains:\n");
+    for (unsigned int idx = 0; idx < REG_SIZE(biome->terrains); idx++) {
+        iprintf(i + 2, "- \"%s\"\n", (*REG_AT(terrain_t*, &biome->terrains, idx))->name);
+    }
+    iprintf(i + 1, "- Props:\n");
+    for (unsigned int idx = 0; idx < REG_SIZE(biome->props); idx++) {
+        iprintf(i + 2, "- \"%s\"\n", (*REG_AT(prop_t*, &biome->props, idx))->name);
+    }
+}
+
+static void print_biomes(reg_t *reg)
+{
+    printf("\n-- Biomes --\n");
+    for (unsigned int i = 0; i < reg->last_free_index; i++) {
+        print_biome(REG_AT(biome_t, reg, i), 1);
+    }
+}
+
 void world_print(world_t *world)
 {
     if (!world)
@@ -117,4 +142,5 @@ void world_print(world_t *world)
     print_assets(&world->asset_reg);
     print_terrains(&world->terrain_reg);
     print_props(&world->prop_reg);
+    print_biomes(&world->biome_reg);
 }

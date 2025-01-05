@@ -44,6 +44,7 @@ SRC						=	main.c 								\
 							parser/parser_asset.c				\
 							parser/parser_terrain.c				\
 							parser/parser_prop.c				\
+							parser/parser_biome.c				\
 
 TSRC					=	
 

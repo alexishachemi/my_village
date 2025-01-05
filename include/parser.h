@@ -62,6 +62,7 @@ bool parse_textures(parser_t *parser);
 bool parse_assets(parser_t *parser);
 bool parse_terrains(parser_t *parser);
 bool parse_props(parser_t *parser);
+bool parse_biomes(parser_t *parser);
 
 bool parse_int(parser_t *parser, const char *name, cJSON *item, int *buf);
 bool parse_positive_int(parser_t *parser, const char *name, cJSON *item, int *buf);
