@@ -19,7 +19,9 @@ SRC						=	main.c 								\
 							world/world_prop.c					\
 							terrain.c							\
 							world/world_terrain.c				\
-							biome.c								\
+							biome/biome_factory.c				\
+							biome/biome_add.c					\
+							biome/biome_get.c					\
 							world/world_biome.c					\
 							tile.c								\
 							world/world_tile.c					\
