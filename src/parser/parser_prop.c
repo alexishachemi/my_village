@@ -67,7 +67,7 @@ static bool parse_prop_child(parser_t *parser, cJSON *item, prop_t *prop)
         return false;
     child = prop_add_child(prop, offset);
     if (!child)
-        return parser_raise_error(parser, "Failed to create prop child");
+        return parser_raise_error(parser, "Failed to create child for prop \"%s\"", prop->name);
     return parse_prop_assets(parser, cJSON_GetObjectItem(item, "assets"), child);
 }
 
@@ -92,7 +92,7 @@ bool parse_prop(parser_t *parser, const char *name)
     prop_t *prop = world_new_prop(parser->world, name);
 
     if (!prop)
-        return parser_raise_error(parser, "Failed to create prop");
+        return parser_raise_error(parser, "Failed to create prop \"%s\"", name);
     if (!parse_prop_assets(parser, cJSON_GetObjectItem(parser->current, "assets"), prop))
         return false;
     if (!parse_prop_children(parser, prop))

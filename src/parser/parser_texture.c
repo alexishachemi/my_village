@@ -12,7 +12,9 @@ bool parse_texture(parser_t *parser, cJSON *item, texture_t **texture)
     if (!cJSON_IsString(item))
         return parser_raise_invalid_type(parser, item->string, item, "String");
     *texture = renderer_new_texture(parser->renderer, item->string, cJSON_GetStringValue(item));
-    return *texture;
+    if (!*texture)
+        return parser_raise_error(parser, "Failed to create texture \"%s\"", item->string);
+    return true;
 }
 
 bool parse_textures(parser_t *parser)

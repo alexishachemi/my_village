@@ -9,7 +9,7 @@ static bool parse_new_terrain(parser_t *parser, cJSON *item, const char *name)
     if (!parse_asset(parser, item, NULL, &asset))
         return false;
     if (!world_new_terrain(parser->world, name, asset))
-        return parser_raise_error(parser, "Failed to create asset");
+        return parser_raise_error(parser, "Failed to create terrain \"%s\"", name);
     return true;
 }
 

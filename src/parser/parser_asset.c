@@ -67,7 +67,9 @@ static bool parse_array_asset(parser_t *parser, cJSON *item, const char *name, a
     texture_name = cJSON_GetStringValue(curr);
     if (!parse_array_asset_rect(parser, item, &rect))
         return false;
-    return new_asset(parser, name, texture_name, rect, asset);
+    if (!new_asset(parser, name, texture_name, rect, asset))
+        return parser_raise_error(parser, "Failed to create asset \"%s\"", name);
+    return true;
 }
 
 bool parse_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asset)

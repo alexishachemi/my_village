@@ -47,7 +47,7 @@ bool parser_raise_syntax_error(parser_t *parser);
 bool parser_raise_missing_value(parser_t *parser, const char *missing, const char *expected);
 bool parser_raise_invalid_type(parser_t *parser, const char *name, cJSON *got, const char *expected);
 bool parser_raise_invalid_value(parser_t *parser, const char *name, const char *got, const char *expected);
-bool parser_raise_error(parser_t *parser, const char *msg);
+bool parser_raise_error(parser_t *parser, const char *msg, ...);
 
 // Utils
 

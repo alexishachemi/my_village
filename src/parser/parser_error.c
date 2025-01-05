@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include "cJSON.h"
 #include "parser.h"
@@ -133,12 +134,16 @@ bool parser_raise_invalid_value(parser_t *parser, const char *name, const char *
     return false;
 }
 
-bool parser_raise_error(parser_t *parser, const char *msg)
+bool parser_raise_error(parser_t *parser, const char *msg, ...)
 {
+    va_list args = {0};
+
     if (!parser || !msg)
         return false;
+    va_start(args, msg);
     print_begin(parser);
-    dprintf(2, "%s", msg);
+    vdprintf(2, msg, args);
     print_end();
+    va_end(args);
     return false;
 }
