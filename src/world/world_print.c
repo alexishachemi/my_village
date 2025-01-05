@@ -97,6 +97,8 @@ static void print_prop_children(prop_t *prop, unsigned int i)
 static void print_prop(prop_t *prop, unsigned int i)
 {
     iprintf(i, "- \"%s\"\n", prop->name);
+    if (prop->type == PTYPE_PARENT)
+        iprintf(i + 1, "- Z Index: %d\n", prop->z_index);
     print_asset_map(&prop->asset_map, i);
     print_prop_children(prop, i + 1);
 }

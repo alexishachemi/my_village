@@ -90,11 +90,19 @@ bool parse_prop(parser_t *parser, const char *name)
 {
     PARSE_ENTER(parser, name);
     prop_t *prop = world_new_prop(parser->world, name);
+    cJSON *item = NULL;
+    int z_index = 0;
 
     if (!prop)
         return parser_raise_error(parser, "Failed to create prop \"%s\"", name);
     if (!parse_prop_assets(parser, cJSON_GetObjectItem(parser->current, "assets"), prop))
         return false;
+    item = cJSON_GetObjectItem(parser->current, "z_index");
+    if (item) {
+        if (!parse_int(parser, "z_index" , item, &z_index))
+            return false;
+        prop_set_z_index(prop, z_index);
+    }
     if (!parse_prop_children(parser, prop))
         return false;
     PARSE_EXIT(parser);
