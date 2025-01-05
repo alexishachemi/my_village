@@ -60,6 +60,7 @@ bool parse_render(parser_t *parser);
 bool parse_world(parser_t *parser);
 bool parse_textures(parser_t *parser);
 bool parse_assets(parser_t *parser);
+bool parse_terrains(parser_t *parser);
 bool parse_props(parser_t *parser);
 
 bool parse_int(parser_t *parser, const char *name, cJSON *item, int *buf);

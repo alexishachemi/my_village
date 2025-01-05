@@ -82,12 +82,12 @@ void renderer_print(renderer_t *renderer)
 
     if (!renderer)
         return;
-    printf("-- Renderer --\n\t- screen_size: %dx%d\n\t- tile_size_px: %ld\n",
+    printf("-- Renderer --\n    - screen_size: %dx%d\n    - tile_size_px: %ld\n",
         renderer->settings.screen_width, renderer->settings.screen_height,
         renderer->settings.tile_size_px);
-    printf("-- Textures --\n");
+    printf("\n-- Textures --\n");
     for (unsigned int i = 0; i < REG_SIZE(renderer->textures); i++) {
         texture = REG_AT(texture_t, &renderer->textures, i);
-        printf("\t- [%s] -> %s\n", texture->name, texture->path);
+        printf("    - \"%s\" -> %s\n", texture->name, texture->path);
     }
 }

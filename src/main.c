@@ -85,6 +85,7 @@ int MAIN(void)
     if (!parse_config(&world, &renderer, "test.json"))
         return EXIT_FAILURE;
     renderer_print(&renderer);
+    printf("\n");
     world_print(&world);
     world_deinit(&world);
     renderer_deinit(&renderer);

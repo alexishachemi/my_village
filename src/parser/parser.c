@@ -36,6 +36,7 @@ static bool parse(parser_t *parser)
         && parse_world(parser)
         && parse_textures(parser)
         && parse_assets(parser)
+        && parse_terrains(parser)
         && parse_props(parser);
 }
 

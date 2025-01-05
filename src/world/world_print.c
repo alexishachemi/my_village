@@ -10,7 +10,7 @@ static void print_asset(const asset_t *asset)
         return;
     }
     printf(
-        "[%s], texture: %s, [%d, %d, %d, %d]\n",
+        "\"%s\", texture: \"%s\", [%d, %d, %d, %d]\n",
         asset->name, asset->texture->name, (int)asset->draw_rect.x,
         (int)asset->draw_rect.y, (int)asset->draw_rect.width, (int)asset->draw_rect.height
     );
@@ -23,7 +23,7 @@ static int iprintf(unsigned int i, const char *format, ...)
 
     va_start(args, format);
     while (i--) {
-        printf("\t");
+        printf("    ");
     }
     ret = vprintf(format, args);
     va_end(args);
@@ -39,6 +39,18 @@ static void print_assets(reg_t *reg)
         curr = REG_AT(asset_t, reg, i);
         iprintf(1, "- ");
         print_asset(curr);
+    }
+}
+
+static void print_terrains(reg_t *reg)
+{
+    terrain_t *curr = NULL;
+
+    printf("\n-- Terrains --\n");
+    for (unsigned int i = 0; i < reg->last_free_index; i++) {
+        curr = REG_AT(terrain_t, reg, i);
+        iprintf(1, "- \"%s\", asset: ", curr->name);
+        print_asset(curr->asset);
     }
 }
 
@@ -84,7 +96,7 @@ static void print_prop_children(prop_t *prop, unsigned int i)
 
 static void print_prop(prop_t *prop, unsigned int i)
 {
-    iprintf(i, "- [%s]\n", prop->name);
+    iprintf(i, "- \"%s\"\n", prop->name);
     print_asset_map(&prop->asset_map, i);
     print_prop_children(prop, i + 1);
 }
@@ -101,7 +113,8 @@ void world_print(world_t *world)
 {
     if (!world)
         return;
-    printf("-- World --\n\t- size: %ld\n\t- chunk_size: %ld", world->size, world->chunk_size);
+    printf("-- World --\n\t- size: %ld\n\t- chunk_size: %ld\n", world->size, world->chunk_size);
     print_assets(&world->asset_reg);
+    print_terrains(&world->terrain_reg);
     print_props(&world->prop_reg);
 }
