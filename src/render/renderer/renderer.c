@@ -30,7 +30,7 @@ texture_t *renderer_new_texture(renderer_t *renderer,
 {
     texture_t *texture = NULL;
 
-    if (!renderer || !path)
+    if (!renderer || !path || renderer_get_texture(renderer, name))
         return false;
     texture = reg_new_elem(&renderer->textures);
     if (!texture || !texture_init(texture, name, path))
