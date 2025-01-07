@@ -44,8 +44,8 @@ bool world_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orientati
         return false;
     tile->prop = prop;
     tile->prop_orient = orientation;
-    for (unsigned int i = 0; i < REG_SIZE(prop->childs); i++) {
-        child = REG_AT(prop_t, &prop->childs, i);
+    for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
+        child = REG_AT(prop_t, &prop->children, i);
         if (!child)
             break;
         new_pos = V2_ADD(pos, v2_orient(child->offset, orientation));
@@ -67,8 +67,8 @@ bool world_can_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orien
         return false;
     if (prop->type != PTYPE_PARENT || !prop->has_child)
         return true;
-    for (unsigned int i = 0; i < REG_SIZE(prop->childs); i++) {
-        child = REG_AT(prop_t, &prop->childs, i);
+    for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
+        child = REG_AT(prop_t, &prop->children, i);
         if (!child)
             return false;
         tile = world_get_tile(world, V2_ADD(pos, v2_orient(child->offset, orientation)));

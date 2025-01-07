@@ -23,3 +23,7 @@ void biome_deinit(biome_t *biome);
 bool biome_add_terrain(biome_t *biome, terrain_t *terrain);
 bool biome_add_prop(biome_t *biome, prop_t *prop);
 bool biome_add_parent(biome_t *biome, biome_t *parent);
+
+biome_t *biome_get_parent(biome_t *biome, const char *name);
+terrain_t *biome_get_terrain(biome_t *biome, const char *name);
+prop_t *biome_get_prop(biome_t *biome, const char *name);

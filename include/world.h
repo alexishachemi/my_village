@@ -27,6 +27,7 @@ typedef struct {
 
 bool world_init(world_t *world, size_t size, size_t chunk_size);
 void world_deinit(world_t *world);
+void world_print(world_t *world);
 
 // Asset
 

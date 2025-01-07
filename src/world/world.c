@@ -1,4 +1,7 @@
+#include <stdio.h>
+#include "asset.h"
 #include "biome.h"
+#include "prop.h"
 #include "registry.h"
 #include "world.h"
 #include "chunk.h"
@@ -29,3 +32,4 @@ void world_deinit(world_t *world)
     reg_map(&world->chunk_reg, (reg_callback_t)chunk_deinit);
     WORLD_DEINIT_REGISTRY(world, chunk);
 }
+

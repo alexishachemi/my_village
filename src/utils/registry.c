@@ -57,3 +57,16 @@ size_t reg_last_idx(reg_t *reg)
         return 0;
     return reg->last_free_index - 1;
 }
+
+void reg_pop_back(reg_t *reg, void *buf)
+{
+    void *last = NULL;
+
+    if (!reg)
+        return;
+    last = vec_fast_at(&reg->vec, reg->last_free_index - 1);
+    if (buf)
+        memcpy(buf, last, reg->vec.elem_size);
+    memset(last, 0, reg->vec.elem_size);
+    reg->last_free_index -= 1;
+}

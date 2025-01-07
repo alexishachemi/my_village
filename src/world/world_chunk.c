@@ -35,11 +35,13 @@ static size_t compute_chunk_size(size_t size)
             return 0;
         *csize = i;
     }
-    switch (REG_SIZE(chunk_sizes)) {
-        case 0 : return 0;
-        case 1 : return *REG_AT(size_t, &chunk_sizes, 0);
-        default: return *REG_AT(size_t, &chunk_sizes, REG_SIZE(chunk_sizes) / 2 - 1);
+    if (REG_SIZE(chunk_sizes)) {
+        size = *REG_AT(size_t, &chunk_sizes, 0);
+    } else {
+        size = *REG_AT(size_t, &chunk_sizes, REG_SIZE(chunk_sizes) / 2 - 1);
     }
+    reg_deinit(&chunk_sizes);
+    return size;
 }
 
 bool world_init_chunks(world_t *world, size_t size, size_t chunk_size)

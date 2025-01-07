@@ -9,7 +9,8 @@ SRC						=	main.c 								\
 							utils/str.c							\
 							utils/v2.c							\
 							utils/registry.c					\
-							world/world_factory.c				\
+							world/world.c						\
+							world/world_print.c					\
 							asset.c								\
 							world/world_asset.c					\
 							prop/prop_factory.c					\
@@ -18,18 +19,32 @@ SRC						=	main.c 								\
 							world/world_prop.c					\
 							terrain.c							\
 							world/world_terrain.c				\
-							biome.c								\
+							biome/biome_factory.c				\
+							biome/biome_add.c					\
+							biome/biome_get.c					\
 							world/world_biome.c					\
 							tile.c								\
 							world/world_tile.c					\
 							chunk.c								\
 							world/world_chunk.c					\
-							render/renderer/renderer_factory.c	\
+							render/renderer/renderer.c			\
 							render/renderer/renderer_display.c	\
 							render/renderer/renderer_debug.c	\
 							render/renderer/renderer_camera.c	\
 							render/texture.c					\
 							render/draw_queue.c					\
+							parser/parser.c						\
+							parser/parser_factory.c				\
+							parser/parser_history.c				\
+							parser/parser_error.c				\
+							parser/parser_utils.c				\
+							parser/parser_render.c				\
+							parser/parser_world.c				\
+							parser/parser_texture.c				\
+							parser/parser_asset.c				\
+							parser/parser_terrain.c				\
+							parser/parser_prop.c				\
+							parser/parser_biome.c				\
 
 TSRC					=	
 
@@ -41,7 +56,7 @@ NAME					=	my_village
 
 CC						=	gcc
 
-LIBS					=	raylib linked cvec
+LIBS					=	raylib linked cvec cjson
 
 CFLAGS					=	-Wall -Wextra -Iinclude
 

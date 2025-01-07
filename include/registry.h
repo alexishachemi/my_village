@@ -19,3 +19,4 @@ void *reg_new_elem(reg_t *reg);
 void *reg_push_back(reg_t *reg, void *elem, size_t size);
 bool reg_map(reg_t *reg, reg_callback_t func);
 size_t reg_last_idx(reg_t *reg);
+void reg_pop_back(reg_t *reg, void *buf);
