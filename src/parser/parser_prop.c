@@ -26,7 +26,11 @@ static bool parse_mono_asset_arr(parser_t *parser, cJSON *item, prop_t *prop)
 static bool get_asset(parser_t *parser, cJSON *item, const char *direction, asset_t **asset)
 {
     *asset = NULL;
-    if (!parse_asset(parser, cJSON_GetObjectItem(item, direction), NULL, asset))
+    cJSON *dir_item = cJSON_GetObjectItem(item, direction);
+
+    if (!dir_item)
+        return true;
+    if (!parse_asset(parser, dir_item, NULL, asset))
         return false;
     return true;
 }
