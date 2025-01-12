@@ -6,6 +6,7 @@
 #include "render.h"
 #include "raylib.h"
 #include "terrain.h"
+#include "tile.h"
 #include "world.h"
 
 static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
@@ -43,26 +44,23 @@ static bool queue_tile(renderer_t *renderer, tile_t *tile, size_t x, size_t y)
     size_t tile_size = renderer->settings.tile_size_px;
     Rectangle tile_rect = {x * tile_size, y * tile_size, tile_size, tile_size};
     terrain_t *terrain = tile->terrain;
-    prop_t *prop = tile->prop;
+    placed_prop_t *placed = NULL;
     asset_t *asset = NULL;
 
     if (terrain && !draw_queue_add(&renderer->draw_queue, terrain->asset->texture,
         terrain->asset->draw_rect, tile_rect, TERRAIN_Z_INDEX, true)) {
         return false;
     }
-    if (!prop)
-        return true;
-    asset = prop_get_asset(prop, tile->prop_orient);
-    if (!asset)
-        return false;
-    return draw_queue_add(
-        &renderer->draw_queue,
-        asset->texture,
-        asset->draw_rect,
-        tile_rect,
-        prop->type == PTYPE_PARENT ? prop->z_index : prop->parent->z_index,
-        false
-    );
+    for (node_t *itt = tile->props.head; itt; itt = itt->next) {
+        placed = itt->data;
+        asset = prop_get_asset(placed->prop, placed->orient);
+        if (!asset)
+            return false;
+        if (!draw_queue_add(&renderer->draw_queue, asset->texture, asset->draw_rect, tile_rect,
+            placed->prop->type == PTYPE_PARENT ? placed->prop->z_index : placed->prop->parent->z_index, false))
+            return false;
+    }
+    return true;
 }
 
 static bool queue_chunk(renderer_t *renderer, chunk_t *chunk)

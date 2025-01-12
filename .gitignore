@@ -10,5 +10,6 @@ lib/*/include/
 compile_commands.json
 .cache/
 .timetracker
-venv/
 .bashrc
+*.log
+venv/

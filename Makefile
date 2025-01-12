@@ -5,46 +5,70 @@ NAME					=	my_village
 CC						=	gcc
 
 
-SRC						=	main.c 								\
-							utils/str.c							\
-							utils/v2.c							\
-							utils/registry.c					\
-							world/world.c						\
-							world/world_print.c					\
-							asset.c								\
-							world/world_asset.c					\
-							prop/prop_factory.c					\
-							prop/prop_handling.c				\
-							prop/prop_child.c					\
-							world/world_prop.c					\
-							terrain.c							\
-							world/world_terrain.c				\
-							biome/biome_factory.c				\
-							biome/biome_add.c					\
-							biome/biome_get.c					\
-							world/world_biome.c					\
-							tile.c								\
-							world/world_tile.c					\
-							chunk.c								\
-							world/world_chunk.c					\
-							render/renderer/renderer.c			\
-							render/renderer/renderer_display.c	\
-							render/renderer/renderer_debug.c	\
-							render/renderer/renderer_camera.c	\
-							render/texture.c					\
-							render/draw_queue.c					\
-							parser/parser.c						\
-							parser/parser_factory.c				\
-							parser/parser_history.c				\
-							parser/parser_error.c				\
-							parser/parser_utils.c				\
-							parser/parser_render.c				\
-							parser/parser_world.c				\
-							parser/parser_texture.c				\
-							parser/parser_asset.c				\
-							parser/parser_terrain.c				\
-							parser/parser_prop.c				\
-							parser/parser_biome.c				\
+SRC						=	main.c 										\
+							utils/str.c									\
+							utils/v2.c									\
+							utils/registry.c							\
+							world/world.c								\
+							world/world_print.c							\
+							world/world_handling.c						\
+							asset.c										\
+							world/world_asset.c							\
+							prop/prop_factory.c							\
+							prop/prop_handling.c						\
+							prop/prop_child.c							\
+							world/world_prop.c							\
+							terrain.c									\
+							world/world_terrain.c						\
+							biome/biome_factory.c						\
+							biome/biome_add.c							\
+							biome/biome_get.c							\
+							world/world_biome.c							\
+							tile.c										\
+							world/world_tile.c							\
+							chunk.c										\
+							world/world_chunk.c							\
+							render/renderer/renderer.c					\
+							render/renderer/renderer_display.c			\
+							render/renderer/renderer_debug.c			\
+							render/renderer/renderer_camera.c			\
+							render/texture.c							\
+							render/draw_queue.c							\
+							csp/constraint.c							\
+							csp/constraints/local/adjacent_to_wall.c	\
+							csp/constraints/local/reserved_space.c		\
+							csp/constraints/local/adjacent_to_prop.c	\
+							csp/constraints/local/in_corner.c			\
+							csp/constraints/local/amount_range.c		\
+							csp/constraints/local/on_ground.c			\
+							csp/constraints/local/has_orient.c			\
+							csp/constraints/local/on_top_of_prop.c		\
+							csp/constraints/global/all_cells_connected.c\
+							csp/object.c								\
+							csp/collection.c							\
+							csp/global_constraint.c						\
+							csp/map/map_factory.c						\
+							csp/map/map_handling.c						\
+							csp/map/map_obj.c							\
+							csp/map/map_dfs.c							\
+							csp/map/map_apply.c							\
+							csp/map/map_placement.c						\
+							csp/map/map_place.c							\
+							csp/map/map_generate.c						\
+							utils/list.c								\
+							utils/orient.c								\
+							parser/parser.c								\
+							parser/parser_factory.c						\
+							parser/parser_history.c						\
+							parser/parser_error.c						\
+							parser/parser_utils.c						\
+							parser/parser_render.c						\
+							parser/parser_world.c						\
+							parser/parser_texture.c						\
+							parser/parser_asset.c						\
+							parser/parser_terrain.c						\
+							parser/parser_prop.c						\
+							parser/parser_biome.c						\
 
 TSRC					=	
 
@@ -65,6 +89,10 @@ ASANARGS				=	-fsanitize=address -g3
 TESTARGS				=	-DTEST -fprofile-arcs -ftest-coverage --coverage -lcriterion
 
 DEBUGARGS				=	-g3
+
+VALARGS					=	-g3
+
+VALBINARGS				=	--leak-check=full --show-leak-kinds=all --track-origins=yes
 
 BUILD_DIR				=	./build/
 
@@ -188,9 +216,13 @@ fclean: 			clean
 re: 				fclean all
 
 do_grind:			grind
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(VAL_DIR)$(NAME)
+	valgrind $(VALBINARGS) ./$(VAL_DIR)$(NAME)
+
+log_grind:	VALBINARGS += --log-file="grind.log"
+log_grind:
+	valgrind $(VALBINARGS) ./$(VAL_DIR)$(NAME)
 
 tests_run:			unit_tests
 	./$(TEST_DIR)$(NAME)
 
-.PHONY: all clean fclean re lib grind sanitize unit_tests
+.PHONY: all clean fclean re lib grind do_grind log_grind sanitize unit_tests

@@ -29,6 +29,8 @@ bool world_init(world_t *world, size_t size, size_t chunk_size);
 void world_deinit(world_t *world);
 void world_print(world_t *world);
 
+bool world_pos_is_valid(world_t *world, v2_t pos);
+
 // Asset
 
 asset_t *world_new_asset(world_t *world, const char *name,
@@ -39,6 +41,7 @@ asset_t *world_get_asset(world_t *world, const char *name);
 
 prop_t *world_new_prop(world_t *world, const char *name);
 prop_t *world_get_prop(world_t *world, const char *name);
+void world_remove_prop(world_t *world, v2_t pos);
 
 // Terrain
 

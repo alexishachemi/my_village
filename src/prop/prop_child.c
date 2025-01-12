@@ -1,9 +1,9 @@
+#include <stdio.h>
+#include <sys/types.h>
 #include "prop.h"
 #include "registry.h"
 #include "str.h"
 #include "v2.h"
-#include <stdio.h>
-#include <sys/types.h>
 
 bool prop_has_child(const prop_t *prop)
 {
@@ -38,7 +38,7 @@ static const char *generate_child_name(const prop_t *parent, char *buf,
 
 static bool offset_valid(v2_t offset)
 {
-    return offset.x >= 0 && offset.y >= 0 && !(offset.x == 0 && offset.y == 0);
+    return !V2_EQ(offset, V2_ZERO);
 }
 
 prop_t *prop_add_child(prop_t *prop, v2_t offset)

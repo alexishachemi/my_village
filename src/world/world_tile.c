@@ -1,11 +1,11 @@
+#include <stdbool.h>
 #include "chunk.h"
 #include "orientation.h"
 #include "prop.h"
 #include "registry.h"
+#include "tile.h"
 #include "v2.h"
 #include "world.h"
-#include <stdbool.h>
-#include <stdio.h>
 
 static bool valid_pos(world_t *world, v2_t pos)
 {
@@ -40,10 +40,8 @@ bool world_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orientati
     if (!world || !prop || (!force && !world_can_place_prop(world, prop, pos, orientation)))
         return false;
     tile = world_get_tile(world, pos);
-    if (!tile || (!force && tile->prop))
+    if (!tile || !tile_place_prop(tile, prop, orientation))
         return false;
-    tile->prop = prop;
-    tile->prop_orient = orientation;
     for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
         child = REG_AT(prop_t, &prop->children, i);
         if (!child)
@@ -52,8 +50,8 @@ bool world_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orientati
         tile = world_get_tile(world, new_pos);
         if (!tile)
             continue;
-        tile->prop = child;
-        tile->prop_orient = orientation;
+        if (!tile_place_prop(tile, child, orientation))
+            return false;
     }
     return true;
 }
@@ -72,7 +70,7 @@ bool world_can_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orien
         if (!child)
             return false;
         tile = world_get_tile(world, V2_ADD(pos, v2_orient(child->offset, orientation)));
-        if (!tile || tile->prop)
+        if (!tile)
             return false;
     }
     return true;
