@@ -80,7 +80,7 @@ NAME					=	my_village
 
 CC						=	gcc
 
-LIBS					=	raylib linked cvec cjson
+LIBS					=	raylib linked cvec cjson bsp
 
 CFLAGS					=	-Wall -Wextra -Iinclude
 
