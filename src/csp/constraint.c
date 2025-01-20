@@ -13,6 +13,7 @@ csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t ty
         return NULL;
     constraint->type = type;
     constraint->validate = NULL;
+    constraint->expected = true;
     return constraint;
 }
 
@@ -63,6 +64,7 @@ Test(csp_constraint, add)
     cr_assert_not_null(constraint);
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     cr_assert_eq(constraint->type, type);
+    cr_assert(constraint->expected);
     
     csp_obj_deinit(&obj);
 }

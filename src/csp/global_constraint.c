@@ -32,6 +32,7 @@ csp_global_constraint_t *csp_add_global_constraint(csp_map_t *map, csp_global_co
         return NULL;
     gconstraint->type = type;
     gconstraint->validate = NULL;
+    gconstraint->expected = true;
     return gconstraint;
 }
 
@@ -58,6 +59,7 @@ Test(csp_global_constraint, add)
     cr_assert_not_null(gconstraint);
     cr_assert_eq(REG_SIZE(map.global_constraints), 1);
     cr_assert_eq(gconstraint->type, GC_ALL_CELLS_CONNECTED);
+    cr_assert(gconstraint->expected);
     csp_map_deinit(&map);
     csp_room_deinit(&room);
 }

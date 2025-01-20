@@ -34,7 +34,7 @@ static bool validate(
     return true;
 }
 
-bool csp_set_reserved_space(csp_object_t *obj, v2_t position)
+bool csp_set_reserved_space(csp_object_t *obj, bool expected, v2_t position)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -46,6 +46,7 @@ bool csp_set_reserved_space(csp_object_t *obj, v2_t position)
         if (!constraint || !reg_init(&constraint->positions, sizeof(v2_t), CSP_POS_REG_BASE_SIZE))
             return false;
         constraint->validate = validate;
+        constraint->expected = expected;
     }
     return reg_push_back(&constraint->positions, &position);
 }
@@ -63,7 +64,7 @@ Test(csp_constraint, reserved_space)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_reserved_space(&obj, (v2_t){1, 0}));
+    cr_assert(csp_set_reserved_space(&obj, true, (v2_t){1, 0}));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -76,7 +77,7 @@ Test(csp_constraint, reserved_space)
     cr_assert_eq(pos->x, 1);
     cr_assert_eq(pos->y, 0);
     
-    cr_assert(csp_set_reserved_space(&obj, (v2_t){3, 1}));
+    cr_assert(csp_set_reserved_space(&obj, true, (v2_t){3, 1}));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     cr_assert_eq(REG_AT(csp_constraint_t, &obj.constraints, 0), constraint);
     cr_assert_eq(REG_AT(v2_t, &constraint->positions, 0), pos);
@@ -104,9 +105,9 @@ Test(csp_constraint, reserved_space_validation)
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_obj_init(&obj));
 
-    cr_assert(csp_set_reserved_space(&obj, (v2_t){0, -1})); //  #
-    cr_assert(csp_set_reserved_space(&obj, (v2_t){-1, 0})); // #O 
-    cr_assert(csp_set_reserved_space(&obj, (v2_t){0, 1}));  //  #
+    cr_assert(csp_set_reserved_space(&obj, true, (v2_t){0, -1})); //  #
+    cr_assert(csp_set_reserved_space(&obj, true, (v2_t){-1, 0})); // #O 
+    cr_assert(csp_set_reserved_space(&obj, true, (v2_t){0, 1}));  //  #
 
     csp_map_occupy_cell(&map, (v2_t){3, 2}, 0);
     csp_map_occupy_cell(&map, (v2_t){5, 5}, 1);

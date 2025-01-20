@@ -15,7 +15,7 @@ static bool validate(
     return (pos.x == 0 || pos.x == map->size.x - 1) || (pos.y == 0 || pos.y == map->size.y - 1);
 }
 
-bool csp_set_adjacent_to_wall(csp_object_t *obj)
+bool csp_set_adjacent_to_wall(csp_object_t *obj, bool expected)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -25,6 +25,7 @@ bool csp_set_adjacent_to_wall(csp_object_t *obj)
     if (!constraint)
         return false;
     constraint->validate = validate;
+    constraint->expected = expected;
     return true;
 }
 
@@ -40,7 +41,7 @@ Test(csp_constraint, adjacent_to_wall)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_adjacent_to_wall(&obj));
+    cr_assert(csp_set_adjacent_to_wall(&obj, true));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -60,7 +61,7 @@ Test(csp_constraint, adjacent_to_wall_validation)
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
-    cr_assert(csp_set_adjacent_to_wall(&obj));
+    cr_assert(csp_set_adjacent_to_wall(&obj, true));
     constraint = csp_get_constraint(&obj, C_ADJACENT_TO_WALL, false);
     cr_assert_not_null(constraint);
     cr_assert_not_null(constraint->validate);

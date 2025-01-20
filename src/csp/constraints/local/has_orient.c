@@ -14,13 +14,14 @@ static bool validate(
     return reg_get_if(&constraint->orientations, (comparator_t)orient_eq, &orient);
 }
 
-bool csp_set_has_orient(csp_object_t *obj, orient_t orient)
+bool csp_set_has_orient(csp_object_t *obj, bool expected, orient_t orient)
 {
     csp_constraint_t *constraint = csp_get_constraint(obj, C_HAS_ORIENT, false);
 
     if (!constraint) {
         constraint = csp_add_constraint(obj, C_HAS_ORIENT);
         constraint->validate = validate;
+        constraint->expected = expected;
         if (!constraint || !reg_init(&constraint->orientations, sizeof(orient_t), 4))
             return false;
     } else if (reg_get_if(&constraint->orientations, (comparator_t)orient_eq, &orient)) {
@@ -41,7 +42,7 @@ Test(csp_constraint, has_orient)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_has_orient(&obj, ORIENT_DOWN));
+    cr_assert(csp_set_has_orient(&obj, ORIENT_DOWN, true));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -63,8 +64,8 @@ Test(csp_constraint, has_orient_validation)
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
-    cr_assert(csp_set_has_orient(&obj, ORIENT_DOWN));
-    cr_assert(csp_set_has_orient(&obj, ORIENT_LEFT));
+    cr_assert(csp_set_has_orient(&obj, true, ORIENT_DOWN));
+    cr_assert(csp_set_has_orient(&obj, true, ORIENT_LEFT));
     constraint = csp_get_constraint(&obj, C_HAS_ORIENT, false);
     cr_assert_not_null(constraint);
     cr_assert_not_null(constraint->validate);
@@ -79,7 +80,7 @@ Test(csp_constraint, has_orient_validation)
     cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){9, 7}, 0, ORIENT_RIGHT));
     cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){2, 6}, 0, ORIENT_RIGHT));
 
-    cr_assert(csp_set_has_orient(&obj, ORIENT_RIGHT));
+    cr_assert(csp_set_has_orient(&obj, true, ORIENT_RIGHT));
 
     cr_assert(constraint->validate(&map, &prop, constraint, (v2_t){9, 7}, 0, ORIENT_RIGHT));
     cr_assert(constraint->validate(&map, &prop, constraint, (v2_t){2, 6}, 0, ORIENT_RIGHT));

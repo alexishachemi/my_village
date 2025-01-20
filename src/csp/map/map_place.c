@@ -22,7 +22,7 @@ static bool can_place_at(csp_map_t *map, csp_object_t *obj, prop_t *prop, v2_t p
         constraint = REG_AT(csp_constraint_t, &obj->constraints, i);
         if (!constraint->validate)
             continue;
-        can_place &= constraint->validate(map, prop, constraint, pos, layer, orient);
+        can_place &= constraint->validate(map, prop, constraint, pos, layer, orient) == constraint->expected;
     }
     if (!can_place || !csp_map_occupy_placement(map, placement)) {
         csp_placement_destroy(placement);
@@ -32,7 +32,7 @@ static bool can_place_at(csp_map_t *map, csp_object_t *obj, prop_t *prop, v2_t p
         gconstraint = REG_AT(csp_global_constraint_t, &map->global_constraints, i);
         if (!gconstraint->validate)
             continue;
-        can_place &= gconstraint->validate(map, gconstraint, pos, layer);
+        can_place &= gconstraint->validate(map, gconstraint, pos, layer) == constraint->expected;
     }
     csp_map_clear_placement(map, placement);
     return can_place;

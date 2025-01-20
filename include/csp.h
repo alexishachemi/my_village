@@ -48,6 +48,7 @@ typedef bool(*csp_validator_t)(
 struct csp_constraint_s {
     csp_constraint_type_t type;
     csp_validator_t validate;
+    bool expected;
     union {
         prop_t *prop;
         unsigned int range[2];
@@ -70,6 +71,7 @@ typedef bool(*csp_global_validator_t)(csp_map_t *map, csp_global_constraint_t *g
 struct csp_global_constraint_s {
     csp_global_constraint_type_t type;
     csp_global_validator_t validate;
+    bool expected;
 };
 
 //////////////////////////////////////////////////// OBJECT
@@ -126,15 +128,15 @@ csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t ty
 csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type);
 void csp_constraint_deinit(csp_constraint_t *constraint);
 
-bool csp_set_adjacent_to_wall(csp_object_t *obj);
-bool csp_set_adjacent_to_prop(csp_object_t *obj, prop_t *prop);
-bool csp_set_in_corner(csp_object_t *obj);
+bool csp_set_adjacent_to_wall(csp_object_t *obj, bool expected);
+bool csp_set_adjacent_to_prop(csp_object_t *obj, bool expected, prop_t *prop);
+bool csp_set_in_corner(csp_object_t *obj, bool expected);
 bool csp_set_amount_range(csp_object_t *obj, unsigned int min, unsigned int max);
 bool csp_set_amount(csp_object_t *obj, unsigned int nb);
-bool csp_set_reserved_space(csp_object_t *obj, v2_t position);
-bool csp_set_on_ground(csp_object_t *obj);
-bool csp_set_has_orient(csp_object_t *obj, orient_t orient);
-bool csp_set_on_top_of_prop(csp_object_t *obj, prop_t *prop);
+bool csp_set_reserved_space(csp_object_t *obj, bool expected, v2_t position);
+bool csp_set_on_ground(csp_object_t *obj, bool expected);
+bool csp_set_has_orient(csp_object_t *obj, bool expected, orient_t orient);
+bool csp_set_on_top_of_prop(csp_object_t *obj, bool expected, prop_t *prop);
 
 /// Global Constraint
 
@@ -142,7 +144,7 @@ csp_global_constraint_t *csp_get_global_constraint(csp_map_t *map, csp_global_co
 csp_global_constraint_t *csp_add_global_constraint(csp_map_t *map, csp_global_constraint_type_t type);
 void csp_global_constraint_deinit(csp_global_constraint_t *gconstraint);
 
-bool csp_set_all_cell_connected(csp_map_t *map);
+bool csp_set_all_cell_connected(csp_map_t *map, bool expected);
 
 /// Object
 

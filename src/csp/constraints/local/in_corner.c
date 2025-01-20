@@ -21,7 +21,7 @@ static bool validate(
     return false;
 }
 
-bool csp_set_in_corner(csp_object_t *obj)
+bool csp_set_in_corner(csp_object_t *obj, bool expected)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -31,6 +31,7 @@ bool csp_set_in_corner(csp_object_t *obj)
     if (!constraint)
         return NULL;
     constraint->validate = validate;
+    constraint->expected = expected;
     return constraint;
 }
 
@@ -46,7 +47,7 @@ Test(csp_constraint, in_corner)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_in_corner(&obj));
+    cr_assert(csp_set_in_corner(&obj, true));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -66,7 +67,7 @@ Test(csp_constraint, in_corner_validation)
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
-    cr_assert(csp_set_in_corner(&obj));
+    cr_assert(csp_set_in_corner(&obj, true));
     constraint = csp_get_constraint(&obj, C_IN_CORNER, false);
     cr_assert_not_null(constraint);
     cr_assert_not_null(constraint->validate);

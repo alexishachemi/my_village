@@ -36,7 +36,7 @@ static bool validate(
     return under && under->occupant && valid_under(under->occupant, &constraint->props);
 }
 
-bool csp_set_on_top_of_prop(csp_object_t *obj, prop_t *prop)
+bool csp_set_on_top_of_prop(csp_object_t *obj, bool expected, prop_t *prop)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -48,6 +48,7 @@ bool csp_set_on_top_of_prop(csp_object_t *obj, prop_t *prop)
         if (!constraint || !reg_init(&constraint->props, sizeof(prop_t*), CSP_PROP_REG_BASE_SIZE))
             return false;        
         constraint->validate = validate;
+        constraint->expected = expected;
     }
     return reg_push_back(&constraint->props, &prop);
 }
@@ -65,7 +66,7 @@ Test(csp_constraint, on_top_prop)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_on_top_of_prop(&obj, &prop));
+    cr_assert(csp_set_on_top_of_prop(&obj, true, &prop));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -89,7 +90,7 @@ Test(csp_constraint, on_top_prop_validation)
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_obj_init(&obj));
-    cr_assert(csp_set_on_top_of_prop(&obj, &under_prop));
+    cr_assert(csp_set_on_top_of_prop(&obj, true, &under_prop));
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
     cr_assert_not_null(constraint);

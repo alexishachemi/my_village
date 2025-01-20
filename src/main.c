@@ -101,7 +101,7 @@ static void setup_debug_map(renderer_t *r, world_t *world)
 static void setup_room(world_t *world)
 {
     const char *name = "interior";
-    Rectangle bounds = {20, 20, 10, 10};
+    Rectangle bounds = {20, 20, 5, 5};
 
     csp_object_t *obj = NULL;
     csp_room_t *room = NULL;
@@ -111,29 +111,26 @@ static void setup_room(world_t *world)
 
     obj = csp_room_add_obj(room);
     csp_obj_add_prop(obj, world_get_prop(world, "bed"));
-    csp_set_on_ground(obj);
-    csp_set_reserved_space(obj, (v2_t){1, 0});
-    csp_set_reserved_space(obj, (v2_t){0, 1});
-    csp_set_reserved_space(obj, (v2_t){1, 1});
-    csp_set_adjacent_to_wall(obj);
-    csp_set_has_orient(obj, ORIENT_DOWN);
+    csp_set_on_ground(obj, true);
+    csp_set_adjacent_to_wall(obj, false);
+    csp_set_has_orient(obj, true, ORIENT_DOWN);
     csp_set_amount(obj, 1);
 
     obj = csp_room_add_obj(room);
     csp_obj_add_prop(obj, world_get_prop(world, "painting"));
-    csp_set_has_orient(obj, ORIENT_DOWN);
-    csp_set_on_top_of_prop(obj, world_get_prop(world, "bed"));
+    csp_set_has_orient(obj, true, ORIENT_DOWN);
+    csp_set_on_top_of_prop(obj, true, world_get_prop(world, "bed"));
     csp_set_amount(obj, 1);
 
     obj = csp_room_add_obj(room);
     csp_obj_add_prop(obj, world_get_prop(world, "sofa"));
-    csp_set_on_ground(obj);
-    csp_set_reserved_space(obj, (v2_t){1, 0});
-    // csp_set_adjacent_to_wall(obj);
+    csp_set_on_ground(obj, true);
+    csp_set_reserved_space(obj, true, (v2_t){1, 0});
+    csp_set_adjacent_to_wall(obj, true);
     csp_set_amount_range(obj, 1, 3);
-    csp_set_has_orient(obj, ORIENT_RIGHT);
-    csp_set_has_orient(obj, ORIENT_LEFT);
-    csp_set_has_orient(obj, ORIENT_DOWN);
+    csp_set_has_orient(obj, true, ORIENT_RIGHT);
+    csp_set_has_orient(obj, true, ORIENT_LEFT);
+    csp_set_has_orient(obj, true, ORIENT_DOWN);
 
     if (!world_generate_room(world, name, bounds))
         printf("-- Room generation failed --\n");
@@ -144,6 +141,7 @@ int MAIN(void)
     world_t world = {0};
     renderer_t renderer = {0};
 
+    srand(time(NULL));
     if (!world_init(&world, 50, 0)) {
         dprintf(2, "ERROR: Failed to initialize world\n");
         return EXIT_FAILURE;

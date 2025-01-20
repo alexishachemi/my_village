@@ -161,7 +161,7 @@ Test(csp_obj, make_placement_mutiple_pos)
 
     cr_assert(csp_obj_init(&obj));
     for (unsigned int i = 0; i < size; i++) {
-        cr_assert(csp_set_reserved_space(&obj, reserved[i]));
+        cr_assert(csp_set_reserved_space(&obj, true, reserved[i]));
     }
     placement = csp_obj_make_placement(&obj, pos, 0, ORIENT_DOWN);
     cr_assert_not_null(placement);

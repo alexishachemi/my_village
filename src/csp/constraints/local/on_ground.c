@@ -15,7 +15,7 @@ static bool validate(
     return layer == 0;
 }
 
-bool csp_set_on_ground(csp_object_t *obj)
+bool csp_set_on_ground(csp_object_t *obj, bool expected)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -25,6 +25,7 @@ bool csp_set_on_ground(csp_object_t *obj)
     if (!constraint)
         return NULL;
     constraint->validate = validate;
+    constraint->expected = expected;
     return constraint;
 }
 
@@ -40,7 +41,7 @@ Test(csp_constraint, on_ground)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_on_ground(&obj));
+    cr_assert(csp_set_on_ground(&obj, true));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -60,7 +61,7 @@ Test(csp_constraint, on_ground_validation)
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
-    cr_assert(csp_set_on_ground(&obj));
+    cr_assert(csp_set_on_ground(&obj, true));
     constraint = csp_get_constraint(&obj, C_ON_GROUND, false);
     cr_assert_not_null(constraint);
     cr_assert_not_null(constraint->validate);

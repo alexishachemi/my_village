@@ -25,7 +25,7 @@ static bool validate(
     return false;
 }
 
-bool csp_set_adjacent_to_prop(csp_object_t *obj, prop_t *prop)
+bool csp_set_adjacent_to_prop(csp_object_t *obj, bool expected, prop_t *prop)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -36,6 +36,7 @@ bool csp_set_adjacent_to_prop(csp_object_t *obj, prop_t *prop)
         return false;
     constraint->prop = prop;
     constraint->validate = validate;
+    constraint->expected = expected;
     return true;
 }
 
@@ -52,7 +53,7 @@ Test(csp_constraint, adjacent_to_prop)
 
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert(csp_set_adjacent_to_prop(&obj, &prop));
+    cr_assert(csp_set_adjacent_to_prop(&obj, true, &prop));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -75,7 +76,7 @@ Test(csp_constraint, adjacent_to_prop_validation)
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_obj_init(&obj));
-    cr_assert(csp_set_adjacent_to_prop(&obj, &adj_prop));
+    cr_assert(csp_set_adjacent_to_prop(&obj, true, &adj_prop));
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
     cr_assert_not_null(constraint);
