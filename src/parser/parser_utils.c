@@ -51,3 +51,17 @@ bool parse_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *bu
     return parse_positive_int(parser, name, cJSON_GetArrayItem(item, 0), &buf->x)
         && parse_positive_int(parser, name, cJSON_GetArrayItem(item, 1), &buf->y);
 }
+
+bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf)
+{
+    if (!item)
+        parser_raise_missing_value(parser, name, "Number (0.0 to 1.0)");
+    if (!parser || !item || !buf)
+        return false;
+    if (!cJSON_IsNumber(item))
+        return parser_raise_invalid_type(parser, item->string, item, "Number (0.0 to 1.0)");
+    *buf = (float)cJSON_GetNumberValue(item);
+    if (*buf < 0.0 || *buf > 1.0)
+        return parser_raise_invalid_value(parser, name, "Number", "Number (0.0 to 1.0)");
+    return true;
+}

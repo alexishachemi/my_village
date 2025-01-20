@@ -4,7 +4,6 @@
 #include "cJSON.h"
 #include "render.h"
 #include "texture.h"
-#include "world.h"
 
 #define PARSER_HISTORY_BASE_SIZE 3
 #define PARSER_HISTORY_NAME_SIZE 16
@@ -71,3 +70,4 @@ bool parse_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *bu
 bool parse_texture(parser_t *parser, cJSON *item, texture_t **texture);
 bool parse_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asset);
 bool parse_prop(parser_t *parser, const char *name);
+bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf);
