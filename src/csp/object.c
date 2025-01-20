@@ -1,29 +1,49 @@
 #include "csp.h"
 #include "linked.h"
 #include "orientation.h"
+#include "prop.h"
+#include "raylib.h"
 #include "registry.h"
 #include "v2.h"
 
-bool csp_obj_init(csp_object_t *obj, prop_t *prop)
+bool csp_obj_init(csp_object_t *obj)
 {
-    if (!obj || !prop)
+    if (!obj)
         return false;
-    obj->is_collection = false;
-    obj->prop = prop;
-    return reg_init(&obj->constraints, sizeof(csp_constraint_t), CSP_CONSTRAINT_SIZE);
+    if (!reg_init(&obj->props, sizeof(prop_t*), CSP_OBJ_PROP_SIZE)) {
+        return false;
+    }
+    if (!reg_init(&obj->constraints, sizeof(csp_constraint_t), CSP_CONSTRAINT_SIZE)) {
+        reg_deinit(&obj->props);
+        return false;
+    }
+    obj->chance = 1.0;
+    return true;
 }
 
 void csp_obj_deinit(csp_object_t *obj)
 {
     if (!obj)
         return;
-    if (obj->is_collection) {
-        reg_map(&obj->objs, (reg_callback_t)csp_obj_deinit);
-        reg_deinit(&obj->objs);
-    } else {
-        reg_map(&obj->constraints, (reg_callback_t)csp_constraint_deinit);
-        reg_deinit(&obj->constraints);
-    }
+    reg_deinit(&obj->props);
+    reg_map(&obj->constraints, (reg_callback_t)csp_constraint_deinit);
+    reg_deinit(&obj->constraints);
+}
+
+bool csp_obj_add_prop(csp_object_t *obj, prop_t *prop)
+{
+    return obj && prop && reg_push_back(&obj->props, &prop);
+}
+
+prop_t *csp_obj_pick_prop(csp_object_t *obj)
+{
+    if (!obj || REG_EMPTY(obj->props))
+        return NULL;
+    return *REG_AT(
+        prop_t *,
+        &obj->props,
+        GetRandomValue(0, REG_SIZE(obj->props) - 1)
+    );
 }
 
 static bool add_positions(csp_placement_t *placement, csp_constraint_t *constraint, v2_t origin, orient_t orient)
@@ -68,25 +88,49 @@ csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned in
 Test(csp_obj, init)
 {
     csp_object_t obj = {0};
+
+    cr_assert(csp_obj_init(&obj));
+    cr_assert_eq(obj.props.vec.size, CSP_OBJ_PROP_SIZE);
+    cr_assert_eq(obj.constraints.vec.size, CSP_CONSTRAINT_SIZE);
+    cr_assert_eq(REG_SIZE(obj.props), 0);
+    cr_assert_eq(REG_SIZE(obj.constraints), 0);
+    csp_obj_deinit(&obj);
+}
+
+Test(csp_obj, add)
+{
+    csp_object_t obj = {0};
     prop_t prop = {0};
 
-    cr_assert(csp_obj_init(&obj, &prop));
-    cr_assert_eq(obj.constraints.vec.size, CSP_CONSTRAINT_SIZE);
-    cr_assert_eq(REG_SIZE(obj.constraints), 0);
-    cr_assert_not(obj.is_collection);
-    cr_assert_eq(obj.prop, &prop);
+    cr_assert(csp_obj_init(&obj));
+    cr_assert(csp_obj_add_prop(&obj, &prop));
+    cr_assert_eq(*REG_AT(prop_t*, &obj.props, 0), &prop);
+    csp_obj_deinit(&obj);
+}
+
+Test(csp_obj, pick)
+{
+    csp_object_t obj = {0};
+    prop_t prop1 = {0};
+    prop_t prop2 = {0};
+    prop_t *picked = NULL;
+
+    cr_assert(csp_obj_init(&obj));
+    cr_assert(csp_obj_add_prop(&obj, &prop1));
+    cr_assert(csp_obj_add_prop(&obj, &prop2));
+    picked = csp_obj_pick_prop(&obj);
+    cr_assert(picked == &prop1 || picked == &prop2);
     csp_obj_deinit(&obj);
 }
 
 Test(csp_obj, make_placement_single_pos)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_placement_t *placement = NULL;
     v2_t *pos_buf = NULL;
     v2_t pos = {12, 8};
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     placement = csp_obj_make_placement(&obj, pos, 0, ORIENT_DOWN);
     cr_assert_not_null(placement);
     cr_assert_eq(placement->size, 1);
@@ -109,14 +153,13 @@ static bool pos_is_reserved(v2_t origin, v2_t pos, v2_t *reserved, unsigned int 
 Test(csp_obj, make_placement_mutiple_pos)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_placement_t *placement = NULL;
     v2_t *pos_buf = NULL;
     v2_t pos = {12, 8};
     v2_t reserved[] = { {3, 5}, {10, 5}, {20, 8} };
     unsigned int size = sizeof(reserved) / sizeof(v2_t);
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     for (unsigned int i = 0; i < size; i++) {
         cr_assert(csp_set_reserved_space(&obj, reserved[i]));
     }

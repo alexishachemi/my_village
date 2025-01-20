@@ -9,11 +9,11 @@
 #include "world.h"
 
 #define CSP_CONSTRAINT_SIZE 10
-#define CSP_COLLECTION_OBJ_SIZE 3
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5
 #define CSP_PROP_REG_BASE_SIZE 5
 #define CSP_MAP_OBJS_SIZE 10
+#define CSP_OBJ_PROP_SIZE 1
 
 typedef struct csp_map_s csp_map_t;
 
@@ -63,17 +63,12 @@ struct csp_global_constraint_s {
 
 //////////////////////////////////////////////////// OBJECT
 
-typedef struct csp_object_s csp_object_t, csp_collection_t;
+typedef struct csp_object_s csp_object_t;
 
 struct csp_object_s {
-    bool is_collection;
-    union {
-        struct { // is_collection = false
-            prop_t *prop;
-            reg_t constraints; // constraint_t
-        };
-        reg_t objs; // is_collection = true
-    };
+    reg_t props; // prop_t
+    float chance;
+    reg_t constraints; // constraint_t
 };
 
 //////////////////////////////////////////////////// MAP
@@ -131,12 +126,11 @@ bool csp_set_all_cell_connected(csp_map_t *map);
 
 /// Object
 
-bool csp_obj_init(csp_object_t *obj, prop_t *prop);
+bool csp_obj_init(csp_object_t *obj);
 void csp_obj_deinit(csp_object_t *obj);
+bool csp_obj_add_prop(csp_object_t *obj, prop_t *prop);
+prop_t *csp_obj_pick_prop(csp_object_t *obj);
 csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
-
-bool csp_collection_init(csp_collection_t *collection);
-csp_object_t *csp_collection_add_obj(csp_collection_t *collection, prop_t *prop);
 
 /// Map
 
@@ -159,7 +153,6 @@ bool csp_place_obj(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int lay
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
 
 csp_object_t *csp_map_add_obj(csp_map_t *map, prop_t *prop);
-csp_collection_t *csp_map_add_collection(csp_map_t *map);
 
 bool csp_map_generate(csp_map_t *map);
 
