@@ -3,7 +3,9 @@
 #include <sys/types.h>
 #include "biome.h"
 #include "chunk.h"
+#include "csp.h"
 #include "orientation.h"
+#include "raylib.h"
 #include "registry.h"
 #include "asset.h"
 #include "prop.h"
@@ -15,7 +17,7 @@
 #define WORLD_INIT_REGISTRY(wp, t, sz) (reg_init(&wp->t##s, sizeof(t##_t), sz))
 #define WORLD_DEINIT_REGISTRY(wp, t) (reg_deinit(&wp->t##s))
 
-typedef struct {
+struct world_s {
     size_t size;
     size_t chunk_size;
     reg_t assets;   // asset_t
@@ -24,7 +26,7 @@ typedef struct {
     reg_t biomes ;  // biome_t
     reg_t chunks;   // chunk_t
     reg_t rooms;    // csp_room_t  
-} world_t;
+};
 
 bool world_init(world_t *world, size_t size, size_t chunk_size);
 void world_deinit(world_t *world);
@@ -65,3 +67,9 @@ bool world_can_place_prop(world_t *world, prop_t *prop, v2_t pos, orient_t orien
 
 bool world_init_chunks(world_t *world, size_t size, size_t chunk_size);
 chunk_t *world_get_chunk(world_t *world, v2_t pos);
+
+// Room
+
+csp_room_t *world_new_room(world_t *world, const char *name);
+csp_room_t *world_get_room(world_t *world, const char *name);
+bool world_generate_room(world_t *world, const char *name, Rectangle bounds, unsigned int layers);

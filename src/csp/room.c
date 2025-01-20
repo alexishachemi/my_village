@@ -7,6 +7,7 @@ bool csp_room_init(csp_room_t *room, const char *name)
     if (!room || !name)
         return false;
     namecpy(room->name, name);
+    room->terrain = NULL;
     return reg_init(&room->objs, sizeof(csp_object_t), CSP_ROOM_OBJ_SIZE);
 }
 

@@ -16,6 +16,7 @@ bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size, unsigned int laye
     map->layers = layers;
     map->area = size.x * size.y;
     map->objs = &room->objs;
+    map->terrain = room->terrain;
     list_init(&map->placement_history);
     g_constraint_initialized = reg_init(
         &map->global_constraints,
@@ -26,7 +27,6 @@ bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size, unsigned int laye
         csp_map_deinit(map);
         return false;
     }
-    map->floor = NULL;
     return true;
 }
 

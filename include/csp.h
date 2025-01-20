@@ -7,7 +7,7 @@
 #include "registry.h"
 #include "str.h"
 #include "v2.h"
-#include "world.h"
+#include "terrain.h"
 
 #define CSP_ROOM_REGISTRY_BASE_SIZE 10
 #define CSP_CONSTRAINT_SIZE 10
@@ -17,6 +17,7 @@
 #define CSP_ROOM_OBJ_SIZE 10
 #define CSP_OBJ_PROP_SIZE 1
 
+typedef struct world_s world_t;
 typedef struct csp_map_s csp_map_t;
 
 //////////////////////////////////////////////////// CONSTRAINT
@@ -84,6 +85,7 @@ struct csp_object_s {
 
 typedef struct {
     name_t name;
+    terrain_t *terrain;
     reg_t objs;
 } csp_room_t;
 
@@ -106,7 +108,7 @@ typedef struct {
 } csp_cell_t;
 
 struct csp_map_s {
-    terrain_t *floor;
+    terrain_t *terrain;
     v2_t size;
     unsigned int area;
     unsigned int layers;

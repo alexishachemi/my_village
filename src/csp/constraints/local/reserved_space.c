@@ -97,9 +97,11 @@ Test(csp_constraint, reserved_space_validation)
     csp_object_t obj = {0};
     prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
+    csp_room_t room = {0};
 
+    cr_assert(csp_room_init(&room, "foo"));
     prop.type = PTYPE_CHILD;
-    cr_assert(csp_map_init(&map, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
     cr_assert(csp_obj_init(&obj));
 
     cr_assert(csp_set_reserved_space(&obj, (v2_t){0, -1})); //  #
@@ -126,6 +128,10 @@ Test(csp_constraint, reserved_space_validation)
     cr_assert(constraint->validate(&map, &prop, constraint, (v2_t){6, 5}, 2, ORIENT_DOWN));
     cr_assert(constraint->validate(&map, &prop, constraint, (v2_t){4, 5}, 1, ORIENT_DOWN));
     cr_assert(constraint->validate(&map, &prop, constraint, (v2_t){9, 8}, 0, ORIENT_DOWN));
+
+    csp_obj_deinit(&obj);
+    csp_map_deinit(&map);
+    csp_room_deinit(&room);
 }
 
 #endif

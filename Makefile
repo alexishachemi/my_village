@@ -28,6 +28,7 @@ SRC						=	main.c 										\
 							world/world_tile.c							\
 							chunk.c										\
 							world/world_chunk.c							\
+							world/world_room.c							\
 							render/renderer/renderer.c					\
 							render/renderer/renderer_display.c			\
 							render/renderer/renderer_debug.c			\

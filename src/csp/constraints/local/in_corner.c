@@ -61,9 +61,11 @@ Test(csp_constraint, in_corner_validation)
     csp_constraint_t *constraint = NULL;
     csp_object_t obj = {0};
     prop_t prop = {0};
+    csp_room_t room = {0};
 
+    cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
-    cr_assert(csp_map_init(&map, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
     cr_assert(csp_set_in_corner(&obj));
     constraint = csp_get_constraint(&obj, C_IN_CORNER, false);
     cr_assert_not_null(constraint);
@@ -81,6 +83,7 @@ Test(csp_constraint, in_corner_validation)
 
     csp_obj_deinit(&obj);
     csp_map_deinit(&map);
+    csp_room_deinit(&room);
 }
 
 #endif
