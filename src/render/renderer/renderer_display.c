@@ -83,8 +83,8 @@ static bool queue_chunk(renderer_t *renderer, chunk_t *chunk)
 
 static bool queue(renderer_t *renderer, world_t *world)
 {
-    for (size_t i = 0; i < REG_SIZE(world->chunk_reg); i++) {
-        if (!queue_chunk(renderer, REG_AT(chunk_t, &world->chunk_reg, i)))
+    for (size_t i = 0; i < REG_SIZE(world->chunks); i++) {
+        if (!queue_chunk(renderer, REG_AT(chunk_t, &world->chunks, i)))
             return false;
     }
     return true;

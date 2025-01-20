@@ -24,12 +24,12 @@ void world_deinit(world_t *world)
     if (!world)
         return;
     WORLD_DEINIT_REGISTRY(world, asset);
-    reg_map(&world->prop_reg, (reg_callback_t)prop_deinit);
+    reg_map(&world->props, (reg_callback_t)prop_deinit);
     WORLD_DEINIT_REGISTRY(world, prop);
     WORLD_DEINIT_REGISTRY(world, terrain);
-    reg_map(&world->biome_reg, (reg_callback_t)biome_deinit);
+    reg_map(&world->biomes, (reg_callback_t)biome_deinit);
     WORLD_DEINIT_REGISTRY(world, biome);
-    reg_map(&world->chunk_reg, (reg_callback_t)chunk_deinit);
+    reg_map(&world->chunks, (reg_callback_t)chunk_deinit);
     WORLD_DEINIT_REGISTRY(world, chunk);
 }
 

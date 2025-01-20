@@ -10,7 +10,7 @@ bool prop_has_child(const prop_t *prop)
     return prop->type == PTYPE_PARENT && prop->has_child;
 }
 
-static bool init_child_reg(prop_t *prop)
+static bool init_childs(prop_t *prop)
 {
     prop->has_child = 
         reg_init(&prop->children, sizeof(prop_t), PROP_CHILD_REGISTRY_BASE_SIZE);
@@ -20,7 +20,7 @@ static bool init_child_reg(prop_t *prop)
 static prop_t *new_child(prop_t *prop)
 {
     if (prop->type != PTYPE_PARENT
-        || (!prop->has_child && !init_child_reg(prop)))
+        || (!prop->has_child && !init_childs(prop)))
         return NULL;
     return reg_new_elem(&prop->children);   
 }

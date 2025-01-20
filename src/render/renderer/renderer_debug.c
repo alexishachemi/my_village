@@ -49,14 +49,14 @@ static void draw_top_bar(renderer_t *renderer, world_t *world)
     char buf[1024];
     Rectangle top_bar = {0, 0, GetScreenWidth(), 32};
 
-    for (unsigned int i = 0; i < REG_SIZE(world->chunk_reg); i++) {
-        tiles += REG_AT(chunk_t, &world->chunk_reg, i)->tiles.size;
+    for (unsigned int i = 0; i < REG_SIZE(world->chunks); i++) {
+        tiles += REG_AT(chunk_t, &world->chunks, i)->tiles.size;
     }
     DrawRectangleRec(top_bar, WHITE);
     snprintf(
         buf, 1024,
         "Tiles: %ld\t\tChunks: %ld",
-        tiles, REG_SIZE(world->chunk_reg)
+        tiles, REG_SIZE(world->chunks)
     );
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     GuiLabel(top_bar, buf);

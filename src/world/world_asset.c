@@ -8,7 +8,7 @@ asset_t *world_new_asset(world_t *world, const char *name,
 
     if (!world || !name || world_get_asset(world, name))
         return NULL;
-    asset = reg_new_elem(&world->asset_reg);
+    asset = reg_new_elem(&world->assets);
     if (!asset || !asset_init(asset, name, texture, draw_rect))
         return NULL;
     return asset;
@@ -20,8 +20,8 @@ asset_t *world_get_asset(world_t *world, const char *name)
 
     if (!world || !name)
         return NULL;
-    for (size_t i = 0; i < REG_SIZE(world->asset_reg); i++) {
-        asset = vec_fast_at(&world->asset_reg.vec, i);
+    for (size_t i = 0; i < REG_SIZE(world->assets); i++) {
+        asset = vec_fast_at(&world->assets.vec, i);
         if (asset && STR_EQ(asset->name, name))
             return asset;
     }

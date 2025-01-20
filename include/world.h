@@ -12,17 +12,17 @@
 #include "tile.h"
 #include "v2.h"
 
-#define WORLD_INIT_REGISTRY(wp, t, s) (reg_init(&wp->t##_reg, sizeof(t##_t), s))
-#define WORLD_DEINIT_REGISTRY(wp, t) (reg_deinit(&wp->t##_reg))
+#define WORLD_INIT_REGISTRY(wp, t, sz) (reg_init(&wp->t##s, sizeof(t##_t), sz))
+#define WORLD_DEINIT_REGISTRY(wp, t) (reg_deinit(&wp->t##s))
 
 typedef struct {
     size_t size;
     size_t chunk_size;
-    reg_t asset_reg;    // asset_t
-    reg_t prop_reg;     // prop_t
-    reg_t terrain_reg;  // terrain_t
-    reg_t biome_reg ;   // biome_t
-    reg_t chunk_reg;    // chunk_t
+    reg_t assets;    // asset_t
+    reg_t props;     // prop_t
+    reg_t terrains;  // terrain_t
+    reg_t biomes ;   // biome_t
+    reg_t chunks;    // chunk_t
 } world_t;
 
 bool world_init(world_t *world, size_t size, size_t chunk_size);
