@@ -16,6 +16,7 @@
 #define CSP_PROP_REG_BASE_SIZE 5
 #define CSP_ROOM_OBJ_SIZE 10
 #define CSP_OBJ_PROP_SIZE 1
+#define CSP_ROOM_DEFAULT_LAYERS 3
 
 typedef struct world_s world_t;
 typedef struct csp_map_s csp_map_t;
@@ -86,6 +87,7 @@ struct csp_object_s {
 typedef struct {
     name_t name;
     terrain_t *terrain;
+    unsigned int layers;
     reg_t objs;
 } csp_room_t;
 
@@ -155,10 +157,11 @@ csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned in
 bool csp_room_init(csp_room_t *room, const char *name);
 void csp_room_deinit(csp_room_t *room);
 csp_object_t *csp_room_add_obj(csp_room_t *room);
+bool csp_room_set_layers(csp_room_t *room, unsigned int layers);
 
 /// Map
 
-bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size, unsigned int layers);
+bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size);
 void csp_map_deinit(csp_map_t *map);
 
 bool csp_pos_is_valid(csp_map_t *map, v2_t pos, unsigned int layer);

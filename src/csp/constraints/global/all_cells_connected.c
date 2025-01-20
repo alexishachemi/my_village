@@ -49,7 +49,7 @@ Test(csp_global_constraint, all_cells_connected)
     csp_room_t room = {0};
 
     cr_assert(csp_room_init(&room, "foo"));
-    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 1));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert_eq(REG_SIZE(map.global_constraints), 0);
     cr_assert(csp_set_all_cell_connected(&map));
     cr_assert_eq(REG_SIZE(map.global_constraints), 1);
@@ -84,7 +84,7 @@ Test(csp_global_constraint, all_cells_connected_validation)
     csp_room_t room = {0};
 
     cr_assert(csp_room_init(&room, "foo"));
-    cr_assert(csp_map_init(&map, &room, (v2_t){5, 5}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){5, 5}));
     cr_assert(csp_set_all_cell_connected(&map));
     cr_assert_not_null((gconstraint = csp_get_global_constraint(&map, GC_ALL_CELLS_CONNECTED, false)));
 

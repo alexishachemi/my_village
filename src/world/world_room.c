@@ -28,14 +28,14 @@ csp_room_t *world_get_room(world_t *world, const char *name)
     return NULL;
 }
 
-bool world_generate_room(world_t *world, const char *name, Rectangle bounds, unsigned int layers)
+bool world_generate_room(world_t *world, const char *name, Rectangle bounds)
 {
     csp_map_t map = {0};
     csp_room_t *room = world_get_room(world, name);
     v2_t pos = {bounds.x, bounds.y};
     v2_t size = {bounds.height, bounds.width};
 
-    if (!room || !csp_map_init(&map, room, size, layers))
+    if (!room || !csp_map_init(&map, room, size))
         return false;
     if (!csp_map_generate(&map) || !csp_map_apply(&map, world, pos)) {
         csp_map_deinit(&map);

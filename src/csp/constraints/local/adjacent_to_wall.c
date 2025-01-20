@@ -59,7 +59,7 @@ Test(csp_constraint, adjacent_to_wall_validation)
 
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
-    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_set_adjacent_to_wall(&obj));
     constraint = csp_get_constraint(&obj, C_ADJACENT_TO_WALL, false);
     cr_assert_not_null(constraint);

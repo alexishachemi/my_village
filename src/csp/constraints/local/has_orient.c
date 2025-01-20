@@ -62,7 +62,7 @@ Test(csp_constraint, has_orient_validation)
 
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
-    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_set_has_orient(&obj, ORIENT_DOWN));
     cr_assert(csp_set_has_orient(&obj, ORIENT_LEFT));
     constraint = csp_get_constraint(&obj, C_HAS_ORIENT, false);

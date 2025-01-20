@@ -102,7 +102,6 @@ static void setup_room(world_t *world)
 {
     const char *name = "interior";
     Rectangle bounds = {20, 20, 10, 10};
-    unsigned int layers = 3;
 
     csp_object_t *obj = NULL;
     csp_room_t *room = NULL;
@@ -136,7 +135,7 @@ static void setup_room(world_t *world)
     csp_set_has_orient(obj, ORIENT_LEFT);
     csp_set_has_orient(obj, ORIENT_DOWN);
 
-    if (!world_generate_room(world, name, bounds, layers))
+    if (!world_generate_room(world, name, bounds))
         printf("-- Room generation failed --\n");
 }
 

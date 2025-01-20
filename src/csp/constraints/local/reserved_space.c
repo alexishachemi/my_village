@@ -101,7 +101,7 @@ Test(csp_constraint, reserved_space_validation)
 
     cr_assert(csp_room_init(&room, "foo"));
     prop.type = PTYPE_CHILD;
-    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_obj_init(&obj));
 
     cr_assert(csp_set_reserved_space(&obj, (v2_t){0, -1})); //  #

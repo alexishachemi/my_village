@@ -59,7 +59,7 @@ Test(csp_constraint, on_ground_validation)
 
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_obj_init(&obj));
-    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_set_on_ground(&obj));
     constraint = csp_get_constraint(&obj, C_ON_GROUND, false);
     cr_assert_not_null(constraint);

@@ -73,7 +73,7 @@ Test(csp_constraint, adjacent_to_prop_validation)
     csp_room_t room = {0};
 
     cr_assert(csp_room_init(&room, "foo"));
-    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 3));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_obj_init(&obj));
     cr_assert(csp_set_adjacent_to_prop(&obj, &adj_prop));
 

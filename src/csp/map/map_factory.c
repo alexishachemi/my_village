@@ -6,14 +6,14 @@ static bool init_layers(csp_map_t *map)
     return vec_resize(&map->cells, (map->size.x * map->size.y) * map->layers);
 }
 
-bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size, unsigned int layers)
+bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size)
 {
     bool g_constraint_initialized = false;
 
-    if (!map || !room || size.x < 2 || size.y < 2 || layers == 0)
+    if (!map || !room || size.x < 2 || size.y < 2 || room->layers == 0)
         return false;
     map->size = size;
-    map->layers = layers;
+    map->layers = room->layers;
     map->area = size.x * size.y;
     map->objs = &room->objs;
     map->terrain = room->terrain;
@@ -53,7 +53,8 @@ Test(csp_map, init)
     int layers = 3;
     csp_room_t room = {0};
 
-    cr_assert(csp_map_init(&map, &room, size, layers));
+    cr_assert(csp_room_init(&room, "foo"));
+    cr_assert(csp_map_init(&map, &room, size));
     cr_assert_eq(map.size.x, 10);
     cr_assert_eq(map.size.y, 20);
     cr_assert_eq(map.area, 200);

@@ -72,4 +72,4 @@ chunk_t *world_get_chunk(world_t *world, v2_t pos);
 
 csp_room_t *world_new_room(world_t *world, const char *name);
 csp_room_t *world_get_room(world_t *world, const char *name);
-bool world_generate_room(world_t *world, const char *name, Rectangle bounds, unsigned int layers);
+bool world_generate_room(world_t *world, const char *name, Rectangle bounds);
