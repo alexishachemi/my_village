@@ -74,7 +74,7 @@ static bool try_possible_positions(
         return false;
     for (node_t *itt = possible_positions.head; itt; itt = itt->next) {
         pos = itt->data;
-        if (!csp_place_obj(map, prop, pos->position, pos->layer, orient))
+        if (!csp_place_prop(map, prop, pos->position, pos->layer, orient))
             continue;
         if (place_obj(map, idx + (nb_placements == 1), nb_placements - 1)) {
             list_clear_free(&possible_positions);

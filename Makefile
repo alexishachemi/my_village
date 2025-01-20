@@ -45,7 +45,6 @@ SRC						=	main.c 										\
 							csp/constraints/local/on_top_of_prop.c		\
 							csp/constraints/global/all_cells_connected.c\
 							csp/object.c								\
-							csp/collection.c							\
 							csp/global_constraint.c						\
 							csp/map/map_factory.c						\
 							csp/map/map_handling.c						\

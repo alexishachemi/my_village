@@ -8,6 +8,7 @@
 #include "terrain.h"
 #include "tile.h"
 #include "world.h"
+#include <stdio.h>
 
 static Rectangle get_texture_draw_rect(Rectangle texture_rect, 
     Rectangle tile_rect)
@@ -133,10 +134,12 @@ bool render_and_display(renderer_t *renderer, world_t *world)
         "MyVillage"
     );
     if (!renderer_load(renderer)) {
+        dprintf(2, "Failed to load renderer\n");
         CloseWindow();
         return false;
     }
     if (!queue(renderer, world)) {
+        dprintf(2, "Failed to queue render actions\n");
         renderer_unload(renderer);
         CloseWindow();
         return false;
