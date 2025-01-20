@@ -45,10 +45,10 @@ SRC						=	main.c 										\
 							csp/constraints/local/on_top_of_prop.c		\
 							csp/constraints/global/all_cells_connected.c\
 							csp/object.c								\
+							csp/room.c									\
 							csp/global_constraint.c						\
 							csp/map/map_factory.c						\
 							csp/map/map_handling.c						\
-							csp/map/map_obj.c							\
 							csp/map/map_dfs.c							\
 							csp/map/map_apply.c							\
 							csp/map/map_placement.c						\

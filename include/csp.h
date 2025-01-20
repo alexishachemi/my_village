@@ -5,6 +5,7 @@
 #include "orientation.h"
 #include "prop.h"
 #include "registry.h"
+#include "str.h"
 #include "v2.h"
 #include "world.h"
 
@@ -12,7 +13,7 @@
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5
 #define CSP_PROP_REG_BASE_SIZE 5
-#define CSP_MAP_OBJS_SIZE 10
+#define CSP_ROOM_OBJ_SIZE 10
 #define CSP_OBJ_PROP_SIZE 1
 
 typedef struct csp_map_s csp_map_t;
@@ -78,6 +79,13 @@ struct csp_object_s {
     reg_t constraints; // constraint_t
 };
 
+//////////////////////////////////////////////////// ROOM
+
+typedef struct {
+    name_t name;
+    reg_t objs;
+} csp_room_t;
+
 //////////////////////////////////////////////////// MAP
 
 typedef struct {
@@ -103,7 +111,7 @@ struct csp_map_s {
     unsigned int layers;
     reg_t global_constraints; // csp_global_constraint_t
     vec_t cells; // csp_cell (size.x * size.y * layers)
-    reg_t objs;  // csp_object_t
+    reg_t *objs;  // csp_object_t
     list_t placement_history; // csp_placement_t
 };
 
@@ -139,9 +147,15 @@ bool csp_obj_add_prop(csp_object_t *obj, prop_t *prop);
 prop_t *csp_obj_pick_prop(csp_object_t *obj);
 csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
 
+/// Room
+
+bool csp_room_init(csp_room_t *room, const char *name);
+void csp_room_deinit(csp_room_t *room);
+csp_object_t *csp_room_add_obj(csp_room_t *room);
+
 /// Map
 
-bool csp_map_init(csp_map_t *map, v2_t size, unsigned int layers);
+bool csp_map_init(csp_map_t *map, csp_room_t *room, v2_t size, unsigned int layers);
 void csp_map_deinit(csp_map_t *map);
 
 bool csp_pos_is_valid(csp_map_t *map, v2_t pos, unsigned int layer);
@@ -158,8 +172,6 @@ bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, prop_t *prop, orien
 bool csp_place_prop(csp_map_t *map, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient);
 
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
-
-csp_object_t *csp_map_add_obj(csp_map_t *map);
 
 bool csp_map_generate(csp_map_t *map);
 

@@ -55,8 +55,9 @@ Test(csp_map, get)
     csp_cell_t *cell = NULL;
     csp_cell_t *cell_ref = NULL;
     v2_t pos = {0, 0};
+    csp_room_t room = {0};
 
-    cr_assert(csp_map_init(&map, size, layers));
+    cr_assert(csp_map_init(&map, &room, size, layers));
     for (unsigned int layer = 0; layer < map.layers; layer++) {
         cell_ref = vec_at(&map.cells, (map.area * layer) + (size.y * pos.y + pos.x));
         cell = csp_map_get_cell(&map, pos, layer);

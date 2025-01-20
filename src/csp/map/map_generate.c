@@ -94,9 +94,9 @@ static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placemen
     orient_t orient = ORIENT_DOWN;
     unsigned short orients_size = 0;
 
-    if (idx >= REG_SIZE(map->objs))
+    if (idx >= map->objs->last_free_index)
         return true;
-    obj = REG_AT(csp_object_t, &map->objs, idx);
+    obj = REG_AT(csp_object_t, map->objs, idx);
     if (!obj)
         return false;
     if (GetRandomValue(0, 1.0) > obj->chance)

@@ -104,11 +104,11 @@ static void setup_room(world_t *world)
     v2_t map_size = {10, 10};
     unsigned int map_layers = 3;
     csp_object_t *obj = NULL;
+    csp_room_t room = {0};
 
-    csp_map_init(&map, map_size, map_layers);
-    map.floor = world_get_terrain(world, "floor");
+    csp_room_init(&room, "interior");
 
-    obj = csp_map_add_obj(&map);
+    obj = csp_room_add_obj(&room);
     csp_obj_add_prop(obj, world_get_prop(world, "bed"));
     csp_set_on_ground(obj);
     csp_set_reserved_space(obj, (v2_t){1, 0});
@@ -118,13 +118,13 @@ static void setup_room(world_t *world)
     csp_set_has_orient(obj, ORIENT_DOWN);
     csp_set_amount(obj, 1);
 
-    obj = csp_map_add_obj(&map);
+    obj = csp_room_add_obj(&room);
     csp_obj_add_prop(obj, world_get_prop(world, "painting"));
     csp_set_has_orient(obj, ORIENT_DOWN);
     csp_set_on_top_of_prop(obj, world_get_prop(world, "bed"));
     csp_set_amount(obj, 1);
 
-    obj = csp_map_add_obj(&map);
+    obj = csp_room_add_obj(&room);
     csp_obj_add_prop(obj, world_get_prop(world, "sofa"));
     csp_set_on_ground(obj);
     csp_set_reserved_space(obj, (v2_t){1, 0});
@@ -134,51 +134,55 @@ static void setup_room(world_t *world)
     csp_set_has_orient(obj, ORIENT_LEFT);
     csp_set_has_orient(obj, ORIENT_DOWN);
 
+    csp_map_init(&map, &room, map_size, map_layers);
+    map.floor = world_get_terrain(world, "floor");
+    
     if (!csp_map_generate(&map))
         printf("-- Room generation failed --\n");
     // csp_place_obj(&map, obj, (v2_t){0, 0}, 0, ORIENT_DOWN);
     // csp_map_print(&map);
     csp_map_apply(&map, world, (v2_t){25, 25});
     csp_map_deinit(&map);
+    csp_room_deinit(&room);
 }
-
-// int MAIN(void)
-// {
-//     world_t world = {0};
-//     renderer_t renderer = {0};
-
-//     if (!world_init(&world, 50, 0)) {
-//         dprintf(2, "ERROR: Failed to initialize world\n");
-//         return EXIT_FAILURE;
-//     }
-//     renderer_init(&renderer, &(display_settings_t){
-//         .screen_width=800,
-//         .screen_height=600,
-//         .tile_size_px=32
-//     });
-//     setup_debug_map(&renderer, &world);
-//     setup_room(&world);
-//     render_and_display(&renderer, &world);
-//     renderer_deinit(&renderer);
-//     world_deinit(&world);
-//     return EXIT_SUCCESS;
-// }
-
-#include <stdio.h>
-#include "parser.h"
 
 int MAIN(void)
 {
     world_t world = {0};
     renderer_t renderer = {0};
-    unsigned int seed = time(NULL);
 
-    srand(seed);
-    if (!parse_config(&world, &renderer, "examples/config/interiors.json"))
+    if (!world_init(&world, 50, 0)) {
+        dprintf(2, "ERROR: Failed to initialize world\n");
         return EXIT_FAILURE;
+    }
+    renderer_init(&renderer, &(display_settings_t){
+        .screen_width=800,
+        .screen_height=600,
+        .tile_size_px=32
+    });
     setup_debug_map(&renderer, &world);
+    setup_room(&world);
     render_and_display(&renderer, &world);
-    world_deinit(&world);
     renderer_deinit(&renderer);
+    world_deinit(&world);
     return EXIT_SUCCESS;
 }
+
+// #include <stdio.h>
+// #include "parser.h"
+
+// int MAIN(void)
+// {
+//     world_t world = {0};
+//     renderer_t renderer = {0};
+//     unsigned int seed = time(NULL);
+
+//     srand(seed);
+//     if (!parse_config(&world, &renderer, "examples/config/interiors.json"))
+//         return EXIT_FAILURE;
+//     setup_debug_map(&renderer, &world);
+//     render_and_display(&renderer, &world);
+//     world_deinit(&world);
+//     renderer_deinit(&renderer);
+//     return EXIT_SUCCESS;
+// }

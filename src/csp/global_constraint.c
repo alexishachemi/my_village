@@ -49,8 +49,9 @@ Test(csp_global_constraint, add)
 {
     csp_map_t map = {0};
     csp_global_constraint_t *gconstraint = NULL;
+    csp_room_t room = {0};
 
-    cr_assert(csp_map_init(&map, (v2_t){10, 10}, 1));
+    cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}, 1));
     cr_assert_eq(REG_SIZE(map.global_constraints), 0);
     gconstraint = csp_add_global_constraint(&map, GC_ALL_CELLS_CONNECTED);
     cr_assert_not_null(gconstraint);
