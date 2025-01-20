@@ -53,11 +53,10 @@ void csp_constraint_deinit(csp_constraint_t *constraint)
 Test(csp_constraint, add)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
     csp_constraint_type_t type = C_ADJACENT_TO_WALL;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
     constraint = csp_add_constraint(&obj, type);
@@ -71,12 +70,11 @@ Test(csp_constraint, add)
 Test(csp_constraint, get)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
     csp_constraint_t *constraint2 = NULL;
     csp_constraint_type_t type = C_ADJACENT_TO_WALL;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
     constraint = csp_add_constraint(&obj, type);
@@ -94,11 +92,10 @@ Test(csp_constraint, get)
 Test(csp_constraint, enforce_get)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
     csp_constraint_type_t type = C_ADJACENT_TO_WALL;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
 
@@ -113,12 +110,11 @@ Test(csp_constraint, enforce_get)
 Test(csp_constraint, bad_get)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
     csp_constraint_type_t type = C_ADJACENT_TO_WALL;
     csp_constraint_type_t not_type = C_ADJACENT_TO_PROP;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
     constraint = csp_add_constraint(&obj, type);
