@@ -19,7 +19,14 @@ static bool valid_under(prop_t *under, reg_t *expected)
     return false;
 }
 
-static bool validate(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer, UNUSED orient_t orient)
+static bool validate(
+    csp_map_t *map,
+    UNUSED prop_t *prop,
+    csp_constraint_t *constraint,
+    v2_t pos,
+    unsigned int layer,
+    UNUSED orient_t orient
+)
 {
     csp_cell_t *under = NULL;
 
@@ -33,7 +40,7 @@ bool csp_set_on_top_of_prop(csp_object_t *obj, prop_t *prop)
 {
     csp_constraint_t *constraint = NULL;
 
-    if (!obj || !prop || obj->is_collection)
+    if (!obj || !prop)
         return false;
     constraint = csp_get_constraint(obj, C_ON_TOP_OF_PROP, false);
     if (!constraint) {
@@ -56,7 +63,7 @@ Test(csp_constraint, on_top_prop)
     prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert(csp_set_on_top_of_prop(&obj, &prop));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
@@ -79,7 +86,7 @@ Test(csp_constraint, on_top_prop_validation)
     csp_cell_t *prop_cell = NULL;
 
     cr_assert(csp_map_init(&map, (v2_t){10, 10}, 3));
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert(csp_set_on_top_of_prop(&obj, &under_prop));
 
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
@@ -91,16 +98,16 @@ Test(csp_constraint, on_top_prop_validation)
     prop_cell->occupied = true;
     prop_cell->occupant = &under_prop;
 
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){0, 4}, 0, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){4, 8}, 0, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){5, 8}, 1, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 10}, 1, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 9}, 2, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 7}, 2, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 8}, 0, ORIENT_DOWN));
-    cr_assert_not(constraint->validate(&map, constraint, (v2_t){3, 8}, 1, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){0, 4}, 0, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){4, 8}, 0, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){5, 8}, 1, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){3, 10}, 1, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){3, 9}, 2, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){3, 7}, 2, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){3, 8}, 0, ORIENT_DOWN));
+    cr_assert_not(constraint->validate(&map, &prop, constraint, (v2_t){3, 8}, 1, ORIENT_DOWN));
 
-    cr_assert(constraint->validate(&map, constraint, (v2_t){3, 8}, 2, ORIENT_DOWN));
+    cr_assert(constraint->validate(&map, &prop, constraint, (v2_t){3, 8}, 2, ORIENT_DOWN));
 
     csp_obj_deinit(&obj);
     csp_map_deinit(&map);

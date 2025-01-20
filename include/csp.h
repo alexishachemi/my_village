@@ -32,7 +32,14 @@ typedef enum {
     C_HAS_ORIENT,
 } csp_constraint_type_t;
 
-typedef bool(*csp_validator_t)(csp_map_t *map, csp_constraint_t *constraint, v2_t pos, unsigned int layer, orient_t orient);
+typedef bool(*csp_validator_t)(
+    csp_map_t *map,
+    prop_t *prop,
+    csp_constraint_t *constraint,
+    v2_t pos,
+    unsigned int layer,
+    orient_t orient
+);
 
 struct csp_constraint_s {
     csp_constraint_type_t type;
@@ -147,8 +154,8 @@ bool csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 void csp_map_clear_placement(csp_map_t *map, csp_placement_t *placement);
 bool csp_map_occupy_placement(csp_map_t *map, csp_placement_t *placement);
 
-bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, orient_t orient, list_t *buf);
-bool csp_place_obj(csp_map_t *map, csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
+bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, prop_t *prop, orient_t orient, list_t *buf);
+bool csp_place_obj(csp_map_t *map, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient);
 
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
 

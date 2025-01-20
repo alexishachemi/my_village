@@ -47,7 +47,7 @@ static unsigned int get_placement_count(csp_object_t *obj)
 {
     csp_constraint_t *amount_constraint = NULL;
  
-    if (!obj || obj->is_collection)
+    if (!obj)
         return 0;
     amount_constraint = csp_get_constraint(obj, C_AMOUNT_RANGE, false);
     if (!amount_constraint)
@@ -55,29 +55,26 @@ static unsigned int get_placement_count(csp_object_t *obj)
     return GetRandomValue(amount_constraint->range[0], amount_constraint->range[1]);
 }
 
-static csp_object_t *get_final_obj(csp_object_t *obj)
-{
-    if (!obj)
-        return NULL;
-    if (obj->is_collection)
-        obj = REG_AT(csp_object_t, &obj->objs, GetRandomValue(0, obj->objs.last_free_index - 1));
-    return obj;
-}
-
 static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placements);
 
-static bool try_possible_positions(csp_map_t *map, csp_object_t *obj, orient_t orient,
-    unsigned int idx, unsigned int nb_placements)
+static bool try_possible_positions(
+    csp_map_t *map,
+    csp_object_t *obj,
+    orient_t orient,
+    unsigned int idx,
+    unsigned int nb_placements
+)
 {
     list_t possible_positions = {0};
     csp_pos_t *pos = {0};
     csp_placement_t *placement = NULL;
+    prop_t *prop = csp_obj_pick_prop(obj);
 
-    if (!csp_get_possible_pos(map, obj, orient, &possible_positions))
+    if (!prop || !csp_get_possible_pos(map, obj, prop, orient, &possible_positions))
         return false;
     for (node_t *itt = possible_positions.head; itt; itt = itt->next) {
         pos = itt->data;
-        if (!csp_place_obj(map, obj, pos->position, pos->layer, orient))
+        if (!csp_place_obj(map, prop, pos->position, pos->layer, orient))
             continue;
         if (place_obj(map, idx + (nb_placements == 1), nb_placements - 1)) {
             list_clear_free(&possible_positions);
@@ -88,7 +85,7 @@ static bool try_possible_positions(csp_map_t *map, csp_object_t *obj, orient_t o
         csp_placement_destroy(placement);
     }
     list_clear_free(&possible_positions);
-    return false;
+    return obj->chance < 1.0 && place_obj(map, idx + 1, 0);
 }
 
 static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placements)
@@ -99,9 +96,11 @@ static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placemen
 
     if (idx >= REG_SIZE(map->objs))
         return true;
-    obj = get_final_obj(REG_AT(csp_object_t, &map->objs, idx));
+    obj = REG_AT(csp_object_t, &map->objs, idx);
     if (!obj)
         return false;
+    if (GetRandomValue(0, 1.0) > obj->chance)
+        return place_obj(map, idx + 1, 0);
     nb_placements = nb_placements == 0 ? get_placement_count(obj) : nb_placements;
     orients_size = get_possible_orientations(csp_get_constraint(obj, C_HAS_ORIENT, false));
     for (unsigned int i = 0; i < orients_size; i++) {
