@@ -9,6 +9,7 @@
 #include "v2.h"
 #include "world.h"
 
+#define CSP_ROOM_REGISTRY_BASE_SIZE 10
 #define CSP_CONSTRAINT_SIZE 10
 #define CSP_GLOBAL_CONSTRAINT_SIZE 3
 #define CSP_POS_REG_BASE_SIZE 5

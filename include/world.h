@@ -18,11 +18,12 @@
 typedef struct {
     size_t size;
     size_t chunk_size;
-    reg_t assets;    // asset_t
-    reg_t props;     // prop_t
-    reg_t terrains;  // terrain_t
-    reg_t biomes ;   // biome_t
-    reg_t chunks;    // chunk_t
+    reg_t assets;   // asset_t
+    reg_t props;    // prop_t
+    reg_t terrains; // terrain_t
+    reg_t biomes ;  // biome_t
+    reg_t chunks;   // chunk_t
+    reg_t rooms;    // csp_room_t  
 } world_t;
 
 bool world_init(world_t *world, size_t size, size_t chunk_size);
