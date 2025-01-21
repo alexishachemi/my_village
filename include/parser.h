@@ -2,6 +2,7 @@
 
 #include "asset.h"
 #include "cJSON.h"
+#include "csp.h"
 #include "render.h"
 #include "texture.h"
 
@@ -29,6 +30,13 @@ typedef struct {
     renderer_t *renderer;
     reg_t history;
 } parser_t;
+
+typedef bool (*constraint_parser_t)(csp_object_t*, bool, cJSON*);
+
+typedef struct {
+    const char *name;
+    constraint_parser_t parse;
+} constraint_parser_map_t;
 
 bool parser_init(parser_t *parser);
 void parser_deinit(parser_t *parser);

@@ -101,7 +101,7 @@ static void setup_debug_map(renderer_t *r, world_t *world)
 static void setup_room(world_t *world)
 {
     const char *name = "interior";
-    Rectangle bounds = {20, 20, 5, 5};
+    Rectangle bounds = {20, 20, 10, 6};
 
     csp_object_t *obj = NULL;
     csp_room_t *room = NULL;
@@ -109,12 +109,17 @@ static void setup_room(world_t *world)
     room = world_new_room(world, name);
     room->terrain = world_get_terrain(world, "floor");
 
+    if (!csp_set_all_cell_connected(room, true)) {
+        dprintf(2, "Failed to set all cell connected");
+        return;
+    }
+
     obj = csp_room_add_obj(room);
     csp_obj_add_prop(obj, world_get_prop(world, "bed"));
     csp_set_on_ground(obj, true);
     csp_set_adjacent_to_wall(obj, false);
     csp_set_has_orient(obj, true, ORIENT_DOWN);
-    csp_set_amount(obj, 1);
+    csp_set_amount(obj, 2);
 
     obj = csp_room_add_obj(room);
     csp_obj_add_prop(obj, world_get_prop(world, "painting"));

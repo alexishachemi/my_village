@@ -24,13 +24,13 @@ static bool validate(csp_map_t *map, UNUSED csp_global_constraint_t *gconstraint
     return true;
 }
 
-bool csp_set_all_cell_connected(csp_map_t *map, bool expected)
+bool csp_set_all_cell_connected(csp_room_t *room, bool expected)
 {
     csp_global_constraint_t *gconstraint = NULL;
 
-    if (!map)
+    if (!room)
         return false;
-    gconstraint = csp_get_global_constraint(map, GC_ALL_CELLS_CONNECTED, true);
+    gconstraint = csp_get_global_constraint(room, GC_ALL_CELLS_CONNECTED, true);
     if (!gconstraint)
         return false;
     gconstraint->validate = validate;
@@ -51,10 +51,10 @@ Test(csp_global_constraint, all_cells_connected)
 
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
-    cr_assert_eq(REG_SIZE(map.global_constraints), 0);
-    cr_assert(csp_set_all_cell_connected(&map, true));
-    cr_assert_eq(REG_SIZE(map.global_constraints), 1);
-    gconstraint = REG_AT(csp_global_constraint_t, &map.global_constraints, 0);
+    cr_assert_eq(REG_SIZE(*map.global_constraints), 0);
+    cr_assert(csp_set_all_cell_connected(&room, true));
+    cr_assert_eq(REG_SIZE(*map.global_constraints), 1);
+    gconstraint = REG_AT(csp_global_constraint_t, map.global_constraints, 0);
     cr_assert_not_null(gconstraint);
     cr_assert_eq(gconstraint->type, GC_ALL_CELLS_CONNECTED);
     csp_map_deinit(&map);
@@ -86,8 +86,8 @@ Test(csp_global_constraint, all_cells_connected_validation)
 
     cr_assert(csp_room_init(&room, "foo"));
     cr_assert(csp_map_init(&map, &room, (v2_t){5, 5}));
-    cr_assert(csp_set_all_cell_connected(&map, true));
-    cr_assert_not_null((gconstraint = csp_get_global_constraint(&map, GC_ALL_CELLS_CONNECTED, false)));
+    cr_assert(csp_set_all_cell_connected(&room, true));
+    cr_assert_not_null((gconstraint = csp_get_global_constraint(&room, GC_ALL_CELLS_CONNECTED, false)));
 
     csp_map_occupy_cell(&map, (v2_t){2, 0}, 0);
     csp_map_occupy_cell(&map, (v2_t){2, 1}, 0);

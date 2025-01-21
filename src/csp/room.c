@@ -9,7 +9,13 @@ bool csp_room_init(csp_room_t *room, const char *name)
     namecpy(room->name, name);
     room->terrain = NULL;
     room->layers = CSP_ROOM_DEFAULT_LAYERS;
-    return reg_init(&room->objs, sizeof(csp_object_t), CSP_ROOM_OBJ_SIZE);
+    if (!reg_init(&room->objs, sizeof(csp_object_t), CSP_ROOM_OBJ_SIZE))
+        return false;
+    if (!reg_init(&room->constraints, sizeof(csp_global_constraint_t), CSP_GLOBAL_CONSTRAINT_SIZE)) {
+        reg_deinit(&room->objs);
+        return false;
+    }
+    return true;
 }
 
 void csp_room_deinit(csp_room_t *room)
@@ -18,6 +24,8 @@ void csp_room_deinit(csp_room_t *room)
         return;
     reg_map(&room->objs, (reg_callback_t)csp_obj_deinit);
     reg_deinit(&room->objs);
+    reg_map(&room->constraints, (reg_callback_t)csp_global_constraint_deinit);
+    reg_deinit(&room->constraints);
 }
 
 csp_object_t *csp_room_add_obj(csp_room_t *room)

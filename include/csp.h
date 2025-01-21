@@ -90,6 +90,7 @@ typedef struct {
     name_t name;
     terrain_t *terrain;
     unsigned int layers;
+    reg_t constraints; // csp_global_constraint_t
     reg_t objs;
 } csp_room_t;
 
@@ -116,9 +117,9 @@ struct csp_map_s {
     v2_t size;
     unsigned int area;
     unsigned int layers;
-    reg_t global_constraints; // csp_global_constraint_t
     vec_t cells; // csp_cell (size.x * size.y * layers)
     reg_t *objs;  // csp_object_t
+    reg_t *global_constraints; // csp_global_constraint_t
     list_t placement_history; // csp_placement_t
 };
 
@@ -140,11 +141,11 @@ bool csp_set_on_top_of_prop(csp_object_t *obj, bool expected, prop_t *prop);
 
 /// Global Constraint
 
-csp_global_constraint_t *csp_get_global_constraint(csp_map_t *map, csp_global_constraint_type_t type, bool add_if_absent);
-csp_global_constraint_t *csp_add_global_constraint(csp_map_t *map, csp_global_constraint_type_t type);
+csp_global_constraint_t *csp_get_global_constraint(csp_room_t *room, csp_global_constraint_type_t type, bool add_if_absent);
+csp_global_constraint_t *csp_add_global_constraint(csp_room_t *room, csp_global_constraint_type_t type);
 void csp_global_constraint_deinit(csp_global_constraint_t *gconstraint);
 
-bool csp_set_all_cell_connected(csp_map_t *map, bool expected);
+bool csp_set_all_cell_connected(csp_room_t *room, bool expected);
 
 /// Object
 
@@ -152,7 +153,7 @@ bool csp_obj_init(csp_object_t *obj);
 void csp_obj_deinit(csp_object_t *obj);
 bool csp_obj_add_prop(csp_object_t *obj, prop_t *prop);
 prop_t *csp_obj_pick_prop(csp_object_t *obj);
-csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient);
+csp_placement_t *csp_obj_make_placement(csp_object_t *obj, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient);
 
 /// Room
 
@@ -176,7 +177,14 @@ bool csp_map_occupy_cell(csp_map_t *map, v2_t pos, unsigned int layer);
 void csp_map_clear_placement(csp_map_t *map, csp_placement_t *placement);
 bool csp_map_occupy_placement(csp_map_t *map, csp_placement_t *placement);
 
-bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, prop_t *prop, orient_t orient, list_t *buf);
+bool csp_get_possible_pos(
+    csp_map_t *map,
+    csp_object_t *obj,
+    prop_t *prop,
+    orient_t orient,
+    bool is_last,
+    list_t *buf
+);
 bool csp_place_prop(csp_map_t *map, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient);
 
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);

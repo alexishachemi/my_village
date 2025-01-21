@@ -69,8 +69,9 @@ static bool try_possible_positions(
     csp_pos_t *pos = {0};
     csp_placement_t *placement = NULL;
     prop_t *prop = csp_obj_pick_prop(obj);
+    bool is_last = nb_placements == 1 && idx == map->objs->last_free_index - 1;
 
-    if (!prop || !csp_get_possible_pos(map, obj, prop, orient, &possible_positions))
+    if (!prop || !csp_get_possible_pos(map, obj, prop, orient, is_last, &possible_positions))
         return false;
     for (node_t *itt = possible_positions.head; itt; itt = itt->next) {
         pos = itt->data;
@@ -80,13 +81,15 @@ static bool try_possible_positions(
             list_clear_free(&possible_positions);
             return true;
         }
-        placement = csp_obj_make_placement(obj, pos->position, pos->layer, orient);
+        placement = csp_obj_make_placement(obj, prop, pos->position, pos->layer, orient);
         csp_map_clear_placement(map, placement);
         csp_placement_destroy(placement);
     }
     list_clear_free(&possible_positions);
     return obj->chance < 1.0 && place_obj(map, idx + 1, 0);
 }
+
+ 
 
 static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placements)
 {

@@ -4,9 +4,17 @@
 #include "utils.h"
 #include "v2.h"
 
-static bool can_place_at(csp_map_t *map, csp_object_t *obj, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient)
+static bool can_place_at(
+    csp_map_t *map,
+    csp_object_t *obj,
+    prop_t *prop,
+    v2_t pos,
+    unsigned int layer,
+    orient_t orient,
+    bool is_last
+)
 {
-    csp_placement_t *placement = csp_obj_make_placement(obj, pos, layer, orient);
+    csp_placement_t *placement = csp_obj_make_placement(obj, prop, pos, layer, orient);
     csp_pos_t *pos_buf = NULL;
     bool can_place = true;
     csp_constraint_t *constraint = NULL;
@@ -28,17 +36,24 @@ static bool can_place_at(csp_map_t *map, csp_object_t *obj, prop_t *prop, v2_t p
         csp_placement_destroy(placement);
         return false;
     }
-    for (unsigned int i = 0; can_place && i < REG_SIZE(map->global_constraints); i++) {
-        gconstraint = REG_AT(csp_global_constraint_t, &map->global_constraints, i);
+    for (unsigned int i = 0; is_last && can_place && i < REG_SIZE(*map->global_constraints); i++) {
+        gconstraint = REG_AT(csp_global_constraint_t, map->global_constraints, i);
         if (!gconstraint->validate)
             continue;
-        can_place &= gconstraint->validate(map, gconstraint, pos, layer) == constraint->expected;
+        can_place &= gconstraint->validate(map, gconstraint, pos, layer) == gconstraint->expected;
     }
     csp_map_clear_placement(map, placement);
     return can_place;
 }
 
-bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, prop_t *prop, orient_t orient, list_t *buf)
+bool csp_get_possible_pos(
+    csp_map_t *map,
+    csp_object_t *obj,
+    prop_t *prop,
+    orient_t orient,
+    bool is_last,
+    list_t *buf
+)
 {
     csp_pos_t pos = {0};
 
@@ -49,7 +64,7 @@ bool csp_get_possible_pos(csp_map_t *map, csp_object_t *obj, prop_t *prop, orien
         pos.layer = layer;
         for (unsigned int i = 0; i < map->area; i++) {
             pos.position = (v2_t){i % map->size.x, i / map->size.x};
-            if (!can_place_at(map, obj, prop, pos.position, pos.layer, orient))
+            if (!can_place_at(map, obj, prop, pos.position, pos.layer, orient, is_last))
                 continue;
             if (!list_add_copy(buf, &pos, sizeof(pos))) {
                 list_clear_free(buf);

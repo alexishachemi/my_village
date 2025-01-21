@@ -33,7 +33,7 @@ bool world_generate_room(world_t *world, const char *name, Rectangle bounds)
     csp_map_t map = {0};
     csp_room_t *room = world_get_room(world, name);
     v2_t pos = {bounds.x, bounds.y};
-    v2_t size = {bounds.height, bounds.width};
+    v2_t size = {bounds.width, bounds.height};
 
     if (!room || !csp_map_init(&map, room, size))
         return false;

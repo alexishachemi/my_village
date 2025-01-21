@@ -58,7 +58,23 @@ static bool add_positions(csp_placement_t *placement, csp_constraint_t *constrai
     return true;
 }
 
-csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned int layer, orient_t orient)
+static bool add_children_positions(csp_placement_t *placement, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient)
+{
+    prop_t *child = NULL;
+    v2_t new_pos = {0};
+
+    if (prop->type != PTYPE_PARENT || !prop->has_child)
+        return true;
+    for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
+        child = REG_AT(prop_t, &prop->children, i);
+        new_pos = V2_ADD(pos, child->offset);
+        if (!list_add_copy(placement, &(csp_pos_t){v2_orient(new_pos, orient), layer}, sizeof(csp_pos_t)))
+            return false;
+    }
+    return true;
+}
+
+csp_placement_t *csp_obj_make_placement(csp_object_t *obj, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient)
 {
     csp_constraint_t *constraint = NULL;
     csp_placement_t *placement = NULL;
@@ -68,7 +84,8 @@ csp_placement_t *csp_obj_make_placement(csp_object_t *obj, v2_t pos, unsigned in
     placement = list_create();
     if (!placement)
         return NULL;
-    if (!list_add_copy(placement, &(csp_pos_t){v2_orient(pos, orient), layer}, sizeof(csp_pos_t))) {
+    if (!list_add_copy(placement, &(csp_pos_t){v2_orient(pos, orient), layer}, sizeof(csp_pos_t))
+        || !add_children_positions(placement, prop, pos, layer, orient)) {
         list_destroy(placement, NULL);
         return NULL;
     }
@@ -129,9 +146,10 @@ Test(csp_obj, make_placement_single_pos)
     csp_placement_t *placement = NULL;
     v2_t *pos_buf = NULL;
     v2_t pos = {12, 8};
+    prop_t prop = {.type = PTYPE_CHILD};
 
     cr_assert(csp_obj_init(&obj));
-    placement = csp_obj_make_placement(&obj, pos, 0, ORIENT_DOWN);
+    placement = csp_obj_make_placement(&obj, &prop, pos, 0, ORIENT_DOWN);
     cr_assert_not_null(placement);
     cr_assert_eq(placement->size, 1);
     pos_buf = placement->head->data;
@@ -158,12 +176,13 @@ Test(csp_obj, make_placement_mutiple_pos)
     v2_t pos = {12, 8};
     v2_t reserved[] = { {3, 5}, {10, 5}, {20, 8} };
     unsigned int size = sizeof(reserved) / sizeof(v2_t);
+    prop_t prop = {.type = PTYPE_CHILD};
 
     cr_assert(csp_obj_init(&obj));
     for (unsigned int i = 0; i < size; i++) {
         cr_assert(csp_set_reserved_space(&obj, true, reserved[i]));
     }
-    placement = csp_obj_make_placement(&obj, pos, 0, ORIENT_DOWN);
+    placement = csp_obj_make_placement(&obj, &prop, pos, 0, ORIENT_DOWN);
     cr_assert_not_null(placement);
     cr_assert_eq(placement->size, size + 1);
     pos_buf = placement->head->data;
