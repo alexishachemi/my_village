@@ -4,7 +4,7 @@ bool csp_set_amount_range(csp_object_t *obj, unsigned int min, unsigned int max)
 {
     csp_constraint_t *constraint = NULL;
 
-    if (!obj || obj->is_collection || min > max)
+    if (!obj || min > max)
         return false;
     constraint = csp_get_constraint(obj, C_AMOUNT_RANGE, true);
     if (!constraint)
@@ -27,10 +27,9 @@ bool csp_set_amount(csp_object_t *obj, unsigned int nb)
 Test(csp_constraint, amount)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert(csp_set_amount(&obj, 1));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
@@ -53,10 +52,9 @@ Test(csp_constraint, amount)
 Test(csp_constraint, amount_range)
 {
     csp_object_t obj = {0};
-    prop_t prop = {0};
     csp_constraint_t *constraint = NULL;
 
-    cr_assert(csp_obj_init(&obj, &prop));
+    cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert(csp_set_amount_range(&obj, 0, 1));
     cr_assert_eq(REG_SIZE(obj.constraints), 1);

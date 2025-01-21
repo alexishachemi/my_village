@@ -87,11 +87,11 @@ Test(world, get_tile)
 
     cr_assert(world_init(&world, 100, 10));
     cr_assert_eq(world_get_tile(&world, (v2_t){0, 0}),
-        chunk_get_tile_relative(REG_AT(chunk_t, &world.chunk_reg, 0), (v2_t){0, 0}));
+        chunk_get_tile_relative(REG_AT(chunk_t, &world.chunks, 0), (v2_t){0, 0}));
     cr_assert_eq(world_get_tile(&world, (v2_t){10, 10}),
-        chunk_get_tile_relative(REG_AT(chunk_t, &world.chunk_reg, 11), (v2_t){0, 0}));
+        chunk_get_tile_relative(REG_AT(chunk_t, &world.chunks, 11), (v2_t){0, 0}));
     cr_assert_eq(world_get_tile(&world, (v2_t){5, 26}),
-        chunk_get_tile_relative(REG_AT(chunk_t, &world.chunk_reg, 20), (v2_t){5, 6}));
+        chunk_get_tile_relative(REG_AT(chunk_t, &world.chunks, 20), (v2_t){5, 6}));
 }
 
 Test(world, get_tile_bad)

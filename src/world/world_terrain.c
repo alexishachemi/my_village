@@ -8,7 +8,7 @@ terrain_t *world_new_terrain(world_t *world, const char *name, asset_t *asset)
 
     if (!world || !name || !asset || world_get_terrain(world, name))
         return NULL;
-    terrain = reg_new_elem(&world->terrain_reg);
+    terrain = reg_new_elem(&world->terrains);
     if (!terrain || !terrain_init(terrain, name, asset))
         return NULL;
     return terrain;
@@ -20,8 +20,8 @@ terrain_t *world_get_terrain(world_t *world, const char *name)
 
     if (!world || !name)
         return NULL;
-    for (size_t i = 0; i < REG_SIZE(world->terrain_reg); i++) {
-        terrain = REG_AT(terrain_t, &world->terrain_reg, i);
+    for (size_t i = 0; i < REG_SIZE(world->terrains); i++) {
+        terrain = REG_AT(terrain_t, &world->terrains, i);
         if (terrain && STR_EQ(terrain->name, name))
             return terrain;
     }

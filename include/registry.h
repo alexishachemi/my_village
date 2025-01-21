@@ -6,6 +6,7 @@
 
 #define REG_AT(type, regp, i) ((type*)vec_fast_at(&(regp)->vec, i))
 #define REG_SIZE(reg) ((reg).last_free_index)
+#define REG_EMPTY(reg) (REG_SIZE(reg) == 0)
 
 typedef struct {
     vec_t vec;

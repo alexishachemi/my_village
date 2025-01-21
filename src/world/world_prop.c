@@ -14,7 +14,7 @@ prop_t *world_new_prop(world_t *world, const char *name)
 
     if (!world || !name || world_get_prop(world, name))
         return NULL;
-    prop = reg_new_elem(&world->prop_reg);
+    prop = reg_new_elem(&world->props);
     if (!prop || !prop_init(prop, name))
         return NULL;
     return prop;
@@ -26,8 +26,8 @@ prop_t *world_get_prop(world_t *world, const char *name)
 
     if (!world || !name)
         return NULL;
-    for (size_t i = 0; i < REG_SIZE(world->prop_reg); i++) {
-        prop = vec_fast_at(&world->prop_reg.vec, i);
+    for (size_t i = 0; i < REG_SIZE(world->props); i++) {
+        prop = vec_fast_at(&world->props.vec, i);
         if (prop && STR_EQ(prop->name, name))
             return prop;
     }

@@ -10,7 +10,7 @@ static bool init_chunk_line(world_t *world, size_t size, size_t chunk_size, size
     chunk_bounds_t bounds = {0};
 
     for (size_t x = 0; x < size; x += chunk_size) {
-        chunk = reg_new_elem(&world->chunk_reg);
+        chunk = reg_new_elem(&world->chunks);
         if (!chunk)
             return false;
         bounds = (chunk_bounds_t){x, y, x + chunk_size - 1, y + chunk_size - 1};
@@ -74,8 +74,8 @@ chunk_t *world_get_chunk(world_t *world, v2_t pos)
 
     if (!world || (unsigned int)pos.x >= world->size || (unsigned int)pos.y >= world->size)
         return NULL;
-    for (size_t i = 0; i < world->chunk_reg.last_free_index; i++) {
-        chunk = REG_AT(chunk_t, &world->chunk_reg, i);
+    for (size_t i = 0; i < world->chunks.last_free_index; i++) {
+        chunk = REG_AT(chunk_t, &world->chunks, i);
         if (chunk && is_in_bounds(&chunk->bounds, pos))
             return chunk;
     }
@@ -101,8 +101,8 @@ static int count_tiles(world_t *world)
     int tiles = 0;
     chunk_t *chunk = NULL;
 
-    for (unsigned int i = 0; i < REG_SIZE(world->chunk_reg); i++) {
-        chunk = REG_AT(chunk_t, &world->chunk_reg, i);
+    for (unsigned int i = 0; i < REG_SIZE(world->chunks); i++) {
+        chunk = REG_AT(chunk_t, &world->chunks, i);
         tiles += chunk->tiles.size;
     }
     return tiles;
@@ -146,9 +146,9 @@ Test(world, get_chunk_single_chunk)
 
     cr_assert(world_init(&world, 10, 10));
     cr_assert_eq(world_get_chunk(&world, (v2_t){0, 0}),
-        REG_AT(chunk_t, &world.chunk_reg, 0));
+        REG_AT(chunk_t, &world.chunks, 0));
     cr_assert_eq(world_get_chunk(&world, (v2_t){9, 9}),
-        REG_AT(chunk_t, &world.chunk_reg, 0));
+        REG_AT(chunk_t, &world.chunks, 0));
     cr_assert_eq(world_get_chunk(&world, (v2_t){10, 10}), NULL);
     world_deinit(&world);
 }
@@ -159,13 +159,13 @@ Test(world, get_chunk_multiple_chunks)
 
     cr_assert(world_init(&world, 10, 5));
     cr_assert_eq(world_get_chunk(&world, (v2_t){0, 0}),
-        REG_AT(chunk_t, &world.chunk_reg, 0));
+        REG_AT(chunk_t, &world.chunks, 0));
     cr_assert_eq(world_get_chunk(&world, (v2_t){4, 4}),
-        REG_AT(chunk_t, &world.chunk_reg, 0));
+        REG_AT(chunk_t, &world.chunks, 0));
     cr_assert_eq(world_get_chunk(&world, (v2_t){5, 0}),
-        REG_AT(chunk_t, &world.chunk_reg, 1));
+        REG_AT(chunk_t, &world.chunks, 1));
     cr_assert_eq(world_get_chunk(&world, (v2_t){9, 9}),
-        REG_AT(chunk_t, &world.chunk_reg, 3));
+        REG_AT(chunk_t, &world.chunks, 3));
     cr_assert_eq(world_get_chunk(&world, (v2_t){10, 10}), NULL);
     world_deinit(&world);
 }
@@ -176,17 +176,17 @@ Test(world, get_chunk_lots_of_chunks)
 
     cr_assert(world_init(&world, 100, 10));
     cr_assert_eq(world_get_chunk(&world, (v2_t){0, 0}),
-        REG_AT(chunk_t, &world.chunk_reg, 0));
+        REG_AT(chunk_t, &world.chunks, 0));
     cr_assert_eq(world_get_chunk(&world, (v2_t){9, 9}),
-        REG_AT(chunk_t, &world.chunk_reg, 0));
+        REG_AT(chunk_t, &world.chunks, 0));
     cr_assert_eq(world_get_chunk(&world, (v2_t){10, 10}),
-        REG_AT(chunk_t, &world.chunk_reg, 11));
+        REG_AT(chunk_t, &world.chunks, 11));
     cr_assert_eq(world_get_chunk(&world, (v2_t){19, 19}),
-        REG_AT(chunk_t, &world.chunk_reg, 11));
+        REG_AT(chunk_t, &world.chunks, 11));
     cr_assert_eq(world_get_chunk(&world, (v2_t){20, 20}),
-        REG_AT(chunk_t, &world.chunk_reg, 22));
+        REG_AT(chunk_t, &world.chunks, 22));
     cr_assert_eq(world_get_chunk(&world, (v2_t){99, 99}),
-        REG_AT(chunk_t, &world.chunk_reg, 99));
+        REG_AT(chunk_t, &world.chunks, 99));
     cr_assert_eq(world_get_chunk(&world, (v2_t){100, 100}), NULL);
     world_deinit(&world);
 }

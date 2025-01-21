@@ -1,0 +1,247 @@
+{
+    "render": {
+        "screen_size": [800, 600],
+        "tile_size_px": 16
+    },
+    "world": {
+        "size": 7,
+        "chunk_size": 0
+    },
+    "textures": {
+        "grasslands": "examples/assets/exterior/grasslands.png",
+        "exterior": "examples/assets/exterior/objects.png",
+        "plants": "examples/assets/exterior/plants.png",
+        "bathroom": "examples/assets/interior/bathroom.png",
+        "bedroom": "examples/assets/interior/bedroom.png",
+        "carpets": "examples/assets/interior/carpets.png",
+        "decorations": "examples/assets/interior/decorations.png",
+        "doors": "examples/assets/interior/doors.png",
+        "kitchen": "examples/assets/interior/kitchen.png",
+        "walls&floors": "examples/assets/interior/walls_and_floors.png"
+    },
+    "terrains": {
+        "floor": ["walls&floors", 0, 32, 16, 16],
+        "floor_light": ["walls&floors", 0, 80, 16, 16],
+        "floor_dark": ["walls&floors", 0, 128, 16, 16],
+        "grass": ["grasslands", 48, 16, 16, 16],
+        "path": ["grasslands", 96, 192, 16, 16]
+    },
+    "props": {
+        "tree": { "assets": ["exterior", 0, 96, 48, 60] },
+
+        "standing_lamp_yellow": { "assets": ["decorations", 0, 0, 16, 32] },
+        "standing_lamp_red": { "assets": ["decorations", 16, 0, 16, 32] },
+        "table_lamp_yellow": { "assets": ["decorations", 0, 32, 16, 16] },
+        "table_lamp_white": { "assets": ["decorations", 16, 32, 16, 16] },
+        "table_lamp_blue": { "assets": ["decorations", 32, 32, 16, 16] },
+        "table_lamp_small": { "assets": ["decorations", 32, 64, 16, 16] },
+
+        "potted_plant_tall": { "assets": ["decorations", 16, 0, 16, 32] },
+        "potted_plant_small_1": { "assets": ["decorations", 48, 32, 16, 16] },
+        "potted_plant_small_2": { "assets": ["decorations", 64, 32, 16, 16] },
+        "potted_plant_small_3": { "assets": ["decorations", 48, 48, 16, 16] },
+        "potted_plant_small_4": { "assets": ["decorations", 64, 48, 16, 16] },
+
+        "bread_basket_1": { "assets": ["decorations", 0, 48, 16, 16] },
+        "bread_basket_2": { "assets": ["decorations", 16, 48, 16, 16] },
+        "fruit_basket": { "assets": ["decorations", 32, 48, 16, 16] },
+        
+        "box_opened": { "assets": ["decorations", 0, 64, 16, 16] },
+        "box_closed": { "assets": ["decorations", 16, 64, 16, 16] },
+        
+        "book_red": { "assets": ["decorations", 64, 64, 16, 16] },
+        "book_blue": { "assets": ["decorations", 80, 64, 16, 16] },
+        "book_pile": { "assets": ["decorations", 80, 48, 16, 16] },
+        
+        "cup_white": { "assets": ["decorations", 0, 80, 16, 16] },
+        "cup_pink": { "assets": ["decorations", 16, 80, 16, 16] },
+        "cup_yellow": { "assets": ["decorations", 32, 80, 16, 16] },
+        "teapot_white_1": { "assets": ["decorations", 0, 96, 16, 16] },
+        "teapot_white_pink": { "assets": ["decorations", 16, 96, 16, 16] },
+        "teapot_white_2": { "assets": ["decorations", 32, 96, 16, 16] },
+        "plate_empty": { "assets": ["decorations", 64, 96, 16, 16] },
+        "plate_full": { "assets": ["decorations", 80, 96, 16, 16] },
+
+        "chest_closed_red": { "assets": ["exterior", 128, 176, 16, 16] },
+        "chest_closed_blue": { "assets": ["exterior", 144, 176, 16, 16] },
+        "chest_closed_yellow": { "assets": ["exterior", 160, 176, 16, 16] },
+        "chest_opened_red": { "assets": ["exterior", 128, 192, 16, 16] },
+        "chest_opened_blue": { "assets": ["exterior", 144, 192, 16, 16] },
+        "chest_opened_yellow": { "assets": ["exterior", 160, 192, 16, 16] },
+
+        "bed_single_red": {
+            "assets": ["bedroom", 0, 0, 16, 16],
+            "children": [ { "offset": [0, 1], "assets": ["bedroom", 0, 16, 16, 16] }]
+        },
+        "bed_single_yellow": {
+            "assets": ["bedroom", 32, 0, 16, 16],
+            "children": [ { "offset": [0, 1], "assets": ["bedroom", 32, 16, 16, 16] }]
+        },
+        "bed_single_black": {
+            "assets": ["bedroom", 96, 0, 16, 16],
+            "children": [ { "offset": [0, 1], "assets": ["bedroom", 96, 16, 16, 16] }]
+        },
+        "bed_double_red": {
+            "assets": ["bedroom", 0, 32, 16, 16],
+            "children": [
+                { "offset": [1, 0], "assets": ["bedroom", 16, 32, 16, 16] },
+                { "offset": [0, 1], "assets": ["bedroom", 0, 48, 16, 16] },
+                { "offset": [1, 1], "assets": ["bedroom", 16, 48, 16, 16] }
+            ]
+        },
+        "bed_double_yellow": {
+            "assets": ["bedroom", 32, 32, 16, 16],
+            "children": [
+                { "offset": [1, 0], "assets": ["bedroom", 48, 32, 16, 16] },
+                { "offset": [0, 1], "assets": ["bedroom", 32, 48, 16, 16] },
+                { "offset": [1, 1], "assets": ["bedroom", 48, 48, 16, 16] }
+            ]
+        },
+        "bed_double_black": {
+            "assets": ["bedroom", 64, 32, 16, 16],
+            "children": [
+                { "offset": [1, 0], "assets": ["bedroom", 80, 32, 16, 16] },
+                { "offset": [0, 1], "assets": ["bedroom", 64, 48, 16, 16] },
+                { "offset": [1, 1], "assets": ["bedroom", 80, 48, 16, 16] }
+            ]
+        },
+
+        "table_small_light": {
+            "assets": {
+                "up": ["kitchen", 48, 16, 16, 19],
+                "down": ["kitchen", 32, 16, 16, 19],
+                "left": ["kitchen", 48, 64, 16, 16],
+                "right": ["kitchen", 48, 48, 16, 16]
+            },
+            "children": [
+                {
+                    "offset": [1, 0],
+                    "assets": {
+                        "up": ["kitchen", 32, 16, 16, 19],
+                        "down": ["kitchen", 48, 16, 16, 19],
+                        "left": ["kitchen", 48, 48, 16, 16],
+                        "right": ["kitchen", 48, 64, 16, 16]
+                    }
+                }
+            ]
+        },
+        "table_small_dark": {
+            "assets": {
+                "up": ["kitchen", 80 , 16, 16, 19],
+                "down": ["kitchen", 64 , 16, 16, 19],
+                "left": ["kitchen", 80, 64, 16, 16],
+                "right": ["kitchen", 80, 48, 16, 16]
+            },
+            "children": [
+                {
+                    "offset": [1, 0],
+                    "assets": {
+                        "up": ["kitchen", 64 , 16, 16, 19],
+                        "down": ["kitchen", 80 , 16, 16, 19],
+                        "left": ["kitchen", 80, 48, 16, 16],
+                        "right": ["kitchen", 80, 64, 16, 16]
+                    }
+                }
+            ]
+        },
+        "table_large_light": {
+            "assets": ["kitchen", 32, 112, 16, 16],
+            "children": [
+                { "offset": [1, 0], "assets": ["kitchen", 48, 112, 16, 16] },
+                { "offset": [0, 1], "assets": ["kitchen", 32, 128, 16, 16] },
+                { "offset": [1, 1], "assets": ["kitchen", 48, 128, 16, 16] }
+            ]
+        },
+        "table_large_dark": {
+            "assets": ["kitchen", 64, 112, 16, 16],
+            "children": [
+                { "offset": [1, 0], "assets": ["kitchen", 80, 112, 16, 16] },
+                { "offset": [0, 1], "assets": ["kitchen", 64, 128, 16, 16] },
+                { "offset": [1, 1], "assets": ["kitchen", 80, 128, 16, 16] }
+            ]
+        },
+        "stool_light": { "assets": ["kitchen", 0, 128, 16, 16] },
+        "stool_dark": { "assets": ["kitchen", 16, 128, 16, 16] }
+    },
+    "rooms": {
+        "living_room": {
+            "terrain": "floor",
+            "layers": 3,
+            "objects": [
+                {
+                    "prop": "table_large_light",
+                    "chance": 1.0,
+                    "amount": 1,
+                    "constraints": [
+                        [true, "on_ground"]
+                    ]
+                },
+                {
+                    "prop": "stool_light",
+                    "chance": 1.0,
+                    "amount": [1, 2],
+                    "constraints": [
+                        [true, "adjacent_to_prop", "table_large_light"],
+                        [true, "on_ground"]
+                    ]
+                },
+                {
+                    "prop": "standing_lamp_yellow",
+                    "chance": 1.0,
+                    "amount": 1,
+                    "constraints": [
+                        [true, "in_corner"],
+                        [true, "on_ground"]
+                    ]
+                },
+                {
+                    "prop": [
+                        "bed_single_red",
+                        "bed_single_yellow",
+                        "bed_single_black",
+                        "bed_double_red",
+                        "bed_double_yellow",
+                        "bed_double_black"
+                    ],
+                    "chance": 1.0,
+                    "amount": 1,
+                    "constraints": [
+                        [true, "adjacent_to_wall"],
+                        [false, "in_corner"],
+                        [true, "adjacent_to_prop", "standing_lamp_yellow"],
+                        [true, "has_orient", "down"],
+                        [true, "on_ground"]
+                    ]
+                },
+                {
+                    "prop": [
+                        "box_opened",
+                        "box_closed"
+                    ],
+                    "chance": 0.75,
+                    "amount": 1,
+                    "constraints": [
+                        [true, "adjacent_to_wall"],
+                        [true, "on_ground"]
+                    ]
+                },
+                {
+                    "prop": [
+                        "cup_white",
+                        "cup_pink",
+                        "cup_yellow",
+                        "teapot_white_1",
+                        "teapot_white_pink",
+                        "teapot_white_2"
+                    ],
+                    "chance": 0.75,
+                    "amount": [1, 2],
+                    "constraints": [
+                        [true, "adjacent_to_wall"],
+                        [true, "on_top_of_prop", "table_large_light"]
+                    ]
+                }
+            ]
+        }
+    }
+}

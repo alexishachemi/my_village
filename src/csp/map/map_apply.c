@@ -10,7 +10,8 @@ static bool apply(csp_map_t *map, world_t *world, v2_t tile_pos, v2_t cell_pos, 
 
     if (!cell || !tile)
         return true;
-    tile->terrain = map->floor;
+    if (map->terrain)
+        tile->terrain = map->terrain;
     if (!cell->occupant)
         return true;
     return tile_place_prop(tile, cell->occupant, cell->occupant_orient);
