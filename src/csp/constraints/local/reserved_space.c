@@ -17,8 +17,6 @@ bool parse_csp_set_reserved_space(
     if (!args)
         return parser_raise_error(parser, "Failed to get csp argument");
     while (args) {
-        if (!cJSON_IsString(args))
-            return parser_raise_invalid_type(parser, name, args, "String");
         if (!parse_v2(parser, name, args, &pos))
             return false;
         if (!csp_set_reserved_space(obj, expected, pos))
