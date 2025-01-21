@@ -1,6 +1,8 @@
 #include "cJSON.h"
+#include "orientation.h"
 #include "parser.h"
 #include "v2.h"
+#include <strings.h>
 
 bool parse_int(parser_t *parser, const char *name, cJSON *item, int *buf)
 {
@@ -86,7 +88,7 @@ bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf)
 
 bool parser_get_csp_arg(parser_t *parser, cJSON *args, unsigned int index, cJSON **buf)
 {
-    if (!buf)
+    if (!buf || !parser)
         return false;
     for (unsigned int i = 0; args && i < index; i++) {
         args = args->next;
@@ -95,4 +97,34 @@ bool parser_get_csp_arg(parser_t *parser, cJSON *args, unsigned int index, cJSON
         return parser_raise_error(parser, "Failed to get csp argument %ld", index);
     *buf = args;
     return true;
+}
+
+bool parse_orient(parser_t *parser, const char *name, cJSON *item, orient_t *buf)
+{
+    const char *orient_str = NULL;
+
+    if (!parser || !buf)
+        return false;
+    if (!item)
+        return parser_raise_missing_value(parser, name, "String");
+    if (!cJSON_IsString(item))
+        return parser_raise_invalid_type(parser, name, item, "String");
+    orient_str = cJSON_GetStringValue(item);
+    if (strcasecmp(orient_str, "UP")) {
+        *buf = ORIENT_UP;
+        return true;
+    }
+    if (strcasecmp(orient_str, "DOWN")) {
+        *buf = ORIENT_DOWN;
+        return true;
+    }
+    if (strcasecmp(orient_str, "LEFT")) {
+        *buf = ORIENT_LEFT;
+        return true;
+    }
+    if (strcasecmp(orient_str, "RIGHT")) {
+        *buf = ORIENT_RIGHT;
+        return true;
+    }
+    return parser_raise_invalid_value(parser, name, "String", "String (Orientation)");
 }

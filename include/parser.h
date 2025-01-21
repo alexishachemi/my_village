@@ -96,7 +96,7 @@ bool parse_csp_global_constraint(parser_t *parser, const char *name, cJSON *item
 bool parse_csp_global_constraints(parser_t *parser, const char *name, cJSON *item, csp_room_t *room);
 bool parse_terrain(parser_t *parser, cJSON *item, const char *name, terrain_t **buf);
 bool parse_csp_room(parser_t *parser, const char *name, cJSON *item, csp_room_t *buf);
-
+bool parse_orient(parser_t *parser, const char *name, cJSON *item, orient_t *buf);
 
 /// Constraints
 
@@ -129,6 +129,13 @@ bool parse_csp_set_adjacent_to_prop(
     cJSON *args
 );
 bool parse_csp_set_adjacent_to_wall(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+);
+bool parse_csp_set_has_orient(
     parser_t *parser,
     const char *name,
     csp_object_t *obj,

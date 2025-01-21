@@ -1,6 +1,31 @@
 #include "csp.h"
 #include "orientation.h"
 #include "utils.h"
+#include "parser.h"
+
+bool parse_csp_set_has_orient(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+)
+{
+    orient_t orient = 0;
+
+    if (!args)
+        return parser_raise_error(parser, "Failed to get csp argument");
+    while (args) {
+        if (!cJSON_IsString(args))
+            return parser_raise_invalid_type(parser, name, args, "String");
+        if (!parse_orient(parser, name, args, &orient))
+            return false;
+        if (!csp_set_has_orient(obj, expected, orient))
+            return parser_raise_error(parser, "Failed to set csp constraint");
+        args = args->next;
+    }
+    return true;
+}
 
 static bool validate(
     UNUSED csp_map_t *map,
