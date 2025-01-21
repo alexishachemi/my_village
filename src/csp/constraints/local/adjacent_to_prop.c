@@ -1,8 +1,38 @@
+#include "cJSON.h"
 #include "csp.h"
 #include "orientation.h"
 #include "prop.h"
 #include "v2.h"
 #include "utils.h"
+#include "parser.h"
+#include "world.h"
+
+bool parse_csp_set_adjacent_to_prop(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+)
+{
+    prop_t *prop = NULL;
+    const char *prop_name = NULL;
+
+    if (!args)
+        return parser_raise_error(parser, "Failed to get csp argument");
+    while (args) {
+        if (!cJSON_IsString(args))
+            return parser_raise_invalid_type(parser, name, args, "String");
+        prop_name = cJSON_GetStringValue(args);
+        prop = world_get_prop(parser->world, prop_name);
+        if (!prop)
+            return parser_raise_error(parser, "Unknown prop %s", prop_name);
+        if (!csp_set_adjacent_to_prop(obj, expected, prop))
+            return parser_raise_error(parser, "Failed to set csp constraint");
+        args = args->next;
+    }
+    return true;
+}
 
 static bool validate(
     csp_map_t *map, 

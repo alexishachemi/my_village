@@ -83,3 +83,16 @@ bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf)
         return parser_raise_invalid_value(parser, name, "Number", "Number (0.0 to 1.0)");
     return true;
 }
+
+bool parser_get_csp_arg(parser_t *parser, cJSON *args, unsigned int index, cJSON **buf)
+{
+    if (!buf)
+        return false;
+    for (unsigned int i = 0; args && i < index; i++) {
+        args = args->next;
+    }
+    if (!args)
+        return parser_raise_error(parser, "Failed to get csp argument %ld", index);
+    *buf = args;
+    return true;
+}
