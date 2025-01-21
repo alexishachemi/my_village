@@ -76,6 +76,7 @@ bool parse_assets(parser_t *parser);
 bool parse_terrains(parser_t *parser);
 bool parse_props(parser_t *parser);
 bool parse_biomes(parser_t *parser);
+bool parse_csp_rooms(parser_t *parser);
 
 bool parse_int(parser_t *parser, const char *name, cJSON *item, int *buf);
 bool parse_positive_int(parser_t *parser, const char *name, cJSON *item, int *buf);
@@ -85,6 +86,7 @@ bool parse_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *bu
 bool parse_non_zero_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *buf);
 bool parse_texture(parser_t *parser, cJSON *item, texture_t **texture);
 bool parse_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asset);
+bool parse_array_asset(parser_t *parser, cJSON *item, const char *name, asset_t **buf);
 bool parse_prop(parser_t *parser, const char *name);
 bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf);
 bool parse_csp_obj(parser_t *parser, cJSON *item, csp_object_t *buf);
@@ -92,3 +94,5 @@ bool parse_csp_local_constraint(parser_t *parser, const char *name, cJSON *item,
 bool parse_csp_local_constraints(parser_t *parser, const char *name, cJSON *item, csp_object_t *obj);
 bool parse_csp_global_constraint(parser_t *parser, const char *name, cJSON *item, csp_room_t *room);
 bool parse_csp_global_constraints(parser_t *parser, const char *name, cJSON *item, csp_room_t *room);
+bool parse_terrain(parser_t *parser, cJSON *item, const char *name, terrain_t **buf);
+bool parse_csp_room(parser_t *parser, const char *name, cJSON *item, csp_room_t *buf);

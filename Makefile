@@ -71,6 +71,7 @@ SRC						=	main.c 										\
 							parser/parser_biome.c						\
 							parser/parser_csp_constraint.c				\
 							parser/parser_csp_obj.c						\
+							parser/parser_csp_room.c					\
 
 TSRC					=	
 

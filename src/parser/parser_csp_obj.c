@@ -57,6 +57,8 @@ static bool parse_amount(parser_t *parser, cJSON *item, csp_object_t *obj)
 
 bool parse_csp_obj(parser_t *parser, cJSON *item, csp_object_t *buf)
 {
+    cJSON *c_item = cJSON_GetObjectItem(item, "constraints");
+
     if (!item)
         parser_raise_missing_value(parser, NULL, "Object");
     if (!parser || !buf)
@@ -66,5 +68,5 @@ bool parse_csp_obj(parser_t *parser, cJSON *item, csp_object_t *buf)
     return add_prop(parser, cJSON_GetObjectItem(item, "prop"), buf)
         && parse_rate(parser, "chance", cJSON_GetObjectItem(item, "chance"), &buf->chance)
         && parse_amount(parser, cJSON_GetObjectItem(item, "amount"), buf)
-        && parse_csp_local_constraints(parser, NULL, cJSON_GetObjectItem(item, "constraints"), buf);
+        && (!c_item || parse_csp_local_constraints(parser, NULL, c_item, buf));
 }

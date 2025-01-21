@@ -143,34 +143,6 @@ static void setup_room(world_t *world)
         printf("-- Room generation failed --\n");
 }
 
-int MAIN(void)
-{
-    world_t world = {0};
-    renderer_t renderer = {0};
-    unsigned int seed = time(NULL);
-
-    srand(seed);
-    SetRandomSeed(seed);
-    if (!world_init(&world, 50, 0)) {
-        dprintf(2, "ERROR: Failed to initialize world\n");
-        return EXIT_FAILURE;
-    }
-    renderer_init(&renderer, &(display_settings_t){
-        .screen_width=800,
-        .screen_height=600,
-        .tile_size_px=32
-    });
-    setup_debug_map(&renderer, &world);
-    setup_room(&world);
-    render_and_display(&renderer, &world);
-    renderer_deinit(&renderer);
-    world_deinit(&world);
-    return EXIT_SUCCESS;
-}
-
-// #include <stdio.h>
-// #include "parser.h"
-
 // int MAIN(void)
 // {
 //     world_t world = {0};
@@ -178,11 +150,39 @@ int MAIN(void)
 //     unsigned int seed = time(NULL);
 
 //     srand(seed);
-//     if (!parse_config(&world, &renderer, "examples/config/interiors.json"))
+//     SetRandomSeed(seed);
+//     if (!world_init(&world, 50, 0)) {
+//         dprintf(2, "ERROR: Failed to initialize world\n");
 //         return EXIT_FAILURE;
+//     }
+//     renderer_init(&renderer, &(display_settings_t){
+//         .screen_width=800,
+//         .screen_height=600,
+//         .tile_size_px=32
+//     });
 //     setup_debug_map(&renderer, &world);
+//     setup_room(&world);
 //     render_and_display(&renderer, &world);
-//     world_deinit(&world);
 //     renderer_deinit(&renderer);
+//     world_deinit(&world);
 //     return EXIT_SUCCESS;
 // }
+
+#include <stdio.h>
+#include "parser.h"
+
+int MAIN(void)
+{
+    world_t world = {0};
+    renderer_t renderer = {0};
+    unsigned int seed = time(NULL);
+
+    srand(seed);
+    if (!parse_config(&world, &renderer, "examples/config/interiors.json"))
+        return EXIT_FAILURE;
+    setup_debug_map(&renderer, &world);
+    render_and_display(&renderer, &world);
+    world_deinit(&world);
+    renderer_deinit(&renderer);
+    return EXIT_SUCCESS;
+}

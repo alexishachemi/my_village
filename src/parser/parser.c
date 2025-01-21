@@ -38,7 +38,8 @@ static bool parse(parser_t *parser)
         && parse_assets(parser)
         && parse_terrains(parser)
         && parse_props(parser)
-        && parse_biomes(parser);
+        && parse_biomes(parser)
+        && parse_csp_rooms(parser);
 }
 
 bool parse_config(world_t *world, renderer_t *renderer, const char *path)

@@ -3,7 +3,7 @@
 #include "parser.h"
 #include "str.h"
 
-///////////////////////////////////////////////////////////////////// LOCAL
+////////////////////////////////////////////////////////////// LOCAL
 
 constraint_parser_map_t c_parsers[] = {
     {NULL, NULL}
@@ -66,13 +66,13 @@ bool parse_csp_local_constraints(parser_t *parser, const char *name, cJSON *item
     if (!cJSON_IsArray(item))
         return parser_raise_invalid_type(parser, name, item, "Array");
     cJSON_ArrayForEach(curr, item) {
-        if (parse_csp_local_constraint(parser, name, curr, obj))
+        if (!parse_csp_local_constraint(parser, name, curr, obj))
             return false;
     }
     return true;
 }
 
-///////////////////////////////////////////////////////////////////// GLOBAL
+///////////////////////////////////////////////////////////// GLOBAL
 
 global_constraint_parser_map_t gc_parsers[] = {
     {NULL, NULL}
@@ -142,7 +142,7 @@ bool parse_csp_global_constraints(parser_t *parser, const char *name, cJSON *ite
     if (!cJSON_IsArray(item))
         return parser_raise_invalid_type(parser, name, item, "Array");
     cJSON_ArrayForEach(curr, item) {
-        if (parse_csp_global_constraint(parser, name, curr, room))
+        if (!parse_csp_global_constraint(parser, name, curr, room))
             return false;
     }
     return true;
