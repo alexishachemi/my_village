@@ -9,7 +9,7 @@ biome_t *world_new_biome(world_t *world, const char *name)
 
     if (!world || !name || world_get_biome(world, name))
         return NULL;
-    biome = reg_new_elem(&world->biome_reg);
+    biome = reg_new_elem(&world->biomes);
     if (!biome)
         return NULL;
     biome_init(biome, name);
@@ -22,8 +22,8 @@ biome_t *world_get_biome(world_t *world, const char *name)
 
     if (!world || !name)
         return NULL;
-    for (size_t i = 0; i < REG_SIZE(world->biome_reg); i++) {
-        biome = REG_AT(biome_t, &world->biome_reg, i);
+    for (size_t i = 0; i < REG_SIZE(world->biomes); i++) {
+        biome = REG_AT(biome_t, &world->biomes, i);
         if (biome && STR_EQ(biome->name, name))
             return biome;
     }

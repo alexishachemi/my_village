@@ -52,14 +52,19 @@ static bool parse_array_asset_rect(parser_t *parser, cJSON *item, Rectangle *buf
     return true;
 }
 
-static bool parse_array_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asset)
+bool parse_array_asset(parser_t *parser, cJSON *item, const char *name, asset_t **buf)
 {
     cJSON *curr = NULL;
     Rectangle rect = {0};
     char *texture_name = NULL;
-    unsigned int size = cJSON_GetArraySize(item);
 
-    if (size != 5)
+    if (!parser || !buf)
+        return false;
+    if (!item)
+        return parser_raise_missing_value(parser, name, "Array (5)");
+    if (!cJSON_IsArray(item))
+        return parser_raise_invalid_type(parser, name, item, "Array (5)");
+    if (cJSON_GetArraySize(item) != 5)
         return parser_raise_invalid_value(parser, name, get_json_array_size(item), "Array (5)");
     curr = cJSON_GetArrayItem(item, 0);
     if (!cJSON_IsString(curr))
@@ -67,14 +72,14 @@ static bool parse_array_asset(parser_t *parser, cJSON *item, const char *name, a
     texture_name = cJSON_GetStringValue(curr);
     if (!parse_array_asset_rect(parser, item, &rect))
         return false;
-    if (!new_asset(parser, name, texture_name, rect, asset))
+    if (!new_asset(parser, name, texture_name, rect, buf))
         return parser_raise_error(parser, "Failed to create asset \"%s\"", name);
     return true;
 }
 
 bool parse_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asset)
 {
-    if (!asset)
+    if (!parser || !item || !asset)
         return false;
     if (cJSON_IsString(item))
         return get_asset(parser, cJSON_GetStringValue(item), asset);

@@ -141,8 +141,8 @@ void world_print(world_t *world)
     if (!world)
         return;
     printf("-- World --\n\t- size: %ld\n\t- chunk_size: %ld\n", world->size, world->chunk_size);
-    print_assets(&world->asset_reg);
-    print_terrains(&world->terrain_reg);
-    print_props(&world->prop_reg);
-    print_biomes(&world->biome_reg);
+    print_assets(&world->assets);
+    print_terrains(&world->terrains);
+    print_props(&world->props);
+    print_biomes(&world->biomes);
 }

@@ -28,6 +28,7 @@ SRC						=	main.c 										\
 							world/world_tile.c							\
 							chunk.c										\
 							world/world_chunk.c							\
+							world/world_room.c							\
 							render/renderer/renderer.c					\
 							render/renderer/renderer_display.c			\
 							render/renderer/renderer_debug.c			\
@@ -45,11 +46,10 @@ SRC						=	main.c 										\
 							csp/constraints/local/on_top_of_prop.c		\
 							csp/constraints/global/all_cells_connected.c\
 							csp/object.c								\
-							csp/collection.c							\
+							csp/room.c									\
 							csp/global_constraint.c						\
 							csp/map/map_factory.c						\
 							csp/map/map_handling.c						\
-							csp/map/map_obj.c							\
 							csp/map/map_dfs.c							\
 							csp/map/map_apply.c							\
 							csp/map/map_placement.c						\
@@ -69,6 +69,9 @@ SRC						=	main.c 										\
 							parser/parser_terrain.c						\
 							parser/parser_prop.c						\
 							parser/parser_biome.c						\
+							parser/parser_csp_constraint.c				\
+							parser/parser_csp_obj.c						\
+							parser/parser_csp_room.c					\
 
 TSRC					=	
 
