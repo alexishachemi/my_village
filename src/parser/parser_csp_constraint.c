@@ -7,6 +7,7 @@
 
 constraint_parser_map_t c_parsers[] = {
     {"adjacent_to_prop", parse_csp_set_adjacent_to_prop},
+    {"adjacent_to_wall", parse_csp_set_adjacent_to_wall},
     {NULL, NULL}
 };
 

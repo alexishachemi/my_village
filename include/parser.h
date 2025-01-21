@@ -128,3 +128,10 @@ bool parse_csp_set_adjacent_to_prop(
     bool expected,
     cJSON *args
 );
+bool parse_csp_set_adjacent_to_wall(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+);

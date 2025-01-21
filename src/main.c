@@ -170,17 +170,21 @@ static void setup_room(world_t *world)
 
 #include <stdio.h>
 #include "parser.h"
+#include "p_color.h"
 
 int MAIN(void)
 {
     world_t world = {0};
     renderer_t renderer = {0};
     unsigned int seed = time(NULL);
+    const char *room = "living_room";
 
     srand(seed);
     if (!parse_config(&world, &renderer, "examples/config/interiors.json"))
         return EXIT_FAILURE;
-    setup_debug_map(&renderer, &world);
+    // setup_debug_map(&renderer, &world);
+    if (!world_generate_room(&world, room, (Rectangle){0, 0, 10, 10}))
+        dprintf(2, P_RED "[ERROR]" P_END ": Failed to generate room %s\n", room);
     render_and_display(&renderer, &world);
     world_deinit(&world);
     renderer_deinit(&renderer);

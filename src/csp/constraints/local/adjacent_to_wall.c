@@ -2,6 +2,20 @@
 #include "orientation.h"
 #include "prop.h"
 #include "utils.h"
+#include "parser.h"
+
+bool parse_csp_set_adjacent_to_wall(
+    parser_t *parser,
+    UNUSED const char *name,
+    csp_object_t *obj,
+    bool expected,
+    UNUSED cJSON *args
+)
+{
+    if (!csp_set_adjacent_to_wall(obj, expected))
+        return parser_raise_error(parser, "Failed to set csp constraint");
+    return true;
+}
 
 static bool validate(
     csp_map_t *map,
