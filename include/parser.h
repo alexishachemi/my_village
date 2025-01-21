@@ -163,3 +163,10 @@ bool parse_csp_set_on_top_of_prop(
     bool expected,
     cJSON *args
 );
+bool parse_csp_set_reserved_space(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+);

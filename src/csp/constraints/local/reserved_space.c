@@ -2,6 +2,31 @@
 #include "orientation.h"
 #include "registry.h"
 #include "v2.h"
+#include "parser.h"
+
+bool parse_csp_set_reserved_space(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+)
+{
+    v2_t pos = {0};
+
+    if (!args)
+        return parser_raise_error(parser, "Failed to get csp argument");
+    while (args) {
+        if (!cJSON_IsString(args))
+            return parser_raise_invalid_type(parser, name, args, "String");
+        if (!parse_v2(parser, name, args, &pos))
+            return false;
+        if (!csp_set_reserved_space(obj, expected, pos))
+            return parser_raise_error(parser, "Failed to set csp constraint");
+        args = args->next;
+    }
+    return true;
+}
 
 static bool validate(
     csp_map_t *map,

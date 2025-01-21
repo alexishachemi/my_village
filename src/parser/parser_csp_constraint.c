@@ -12,6 +12,7 @@ constraint_parser_map_t c_parsers[] = {
     {"in_corner", parse_csp_set_in_corner},
     {"on_ground", parse_csp_set_on_ground},
     {"on_top_of_prop", parse_csp_set_on_top_of_prop},
+    {"reserved_space", parse_csp_set_reserved_space},
     {NULL, NULL}
 };
 
