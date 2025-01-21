@@ -110,19 +110,19 @@ bool parse_orient(parser_t *parser, const char *name, cJSON *item, orient_t *buf
     if (!cJSON_IsString(item))
         return parser_raise_invalid_type(parser, name, item, "String");
     orient_str = cJSON_GetStringValue(item);
-    if (strcasecmp(orient_str, "UP")) {
+    if (strcasecmp(orient_str, "UP") == 0) {
         *buf = ORIENT_UP;
         return true;
     }
-    if (strcasecmp(orient_str, "DOWN")) {
+    if (strcasecmp(orient_str, "DOWN") == 0) {
         *buf = ORIENT_DOWN;
         return true;
     }
-    if (strcasecmp(orient_str, "LEFT")) {
+    if (strcasecmp(orient_str, "LEFT") == 0) {
         *buf = ORIENT_LEFT;
         return true;
     }
-    if (strcasecmp(orient_str, "RIGHT")) {
+    if (strcasecmp(orient_str, "RIGHT") == 0) {
         *buf = ORIENT_RIGHT;
         return true;
     }
