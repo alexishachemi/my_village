@@ -69,6 +69,8 @@ SRC						=	main.c 										\
 							parser/parser_terrain.c						\
 							parser/parser_prop.c						\
 							parser/parser_biome.c						\
+							parser/parser_csp_constraint.c				\
+							parser/parser_csp_obj.c						\
 
 TSRC					=	
 

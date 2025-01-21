@@ -31,12 +31,18 @@ typedef struct {
     reg_t history;
 } parser_t;
 
-typedef bool (*constraint_parser_t)(csp_object_t*, bool, cJSON*);
 
+typedef bool (*constraint_parser_t)(parser_t*, const char*, csp_object_t*, bool, cJSON*);
 typedef struct {
     const char *name;
     constraint_parser_t parse;
 } constraint_parser_map_t;
+
+typedef bool (*global_constraint_parser_t)(parser_t*, const char*, csp_room_t*, bool, cJSON*);
+typedef struct {
+    const char *name;
+    global_constraint_parser_t parse;
+} global_constraint_parser_map_t;
 
 bool parser_init(parser_t *parser);
 void parser_deinit(parser_t *parser);
@@ -73,9 +79,16 @@ bool parse_biomes(parser_t *parser);
 
 bool parse_int(parser_t *parser, const char *name, cJSON *item, int *buf);
 bool parse_positive_int(parser_t *parser, const char *name, cJSON *item, int *buf);
+bool parse_non_zero_positive_int(parser_t *parser, const char *name, cJSON *item, int *buf);
 bool parse_v2(parser_t *parser, const char *name, cJSON *item, v2_t *buf);
 bool parse_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *buf);
+bool parse_non_zero_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *buf);
 bool parse_texture(parser_t *parser, cJSON *item, texture_t **texture);
 bool parse_asset(parser_t *parser, cJSON *item, const char *name, asset_t **asset);
 bool parse_prop(parser_t *parser, const char *name);
 bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf);
+bool parse_csp_obj(parser_t *parser, cJSON *item, csp_object_t *buf);
+bool parse_csp_local_constraint(parser_t *parser, const char *name, cJSON *item, csp_object_t *obj);
+bool parse_csp_local_constraints(parser_t *parser, const char *name, cJSON *item, csp_object_t *obj);
+bool parse_csp_global_constraint(parser_t *parser, const char *name, cJSON *item, csp_room_t *room);
+bool parse_csp_global_constraints(parser_t *parser, const char *name, cJSON *item, csp_room_t *room);

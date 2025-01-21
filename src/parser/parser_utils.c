@@ -28,6 +28,15 @@ bool parse_positive_int(parser_t *parser, const char *name, cJSON *item, int *bu
     return true;
 }
 
+bool parse_non_zero_positive_int(parser_t *parser, const char *name, cJSON *item, int *buf)
+{
+    if (!parse_positive_int(parser, name, item, buf))
+        return false;
+    if (*buf == 0)
+       return parser_raise_invalid_value(parser, name, "Number (Zero)", "Number (Positive, Non Zero)"); 
+    return true;
+}
+
 bool parse_v2(parser_t *parser, const char *name, cJSON *item, v2_t *buf)
 {
     if (!item)
@@ -50,6 +59,15 @@ bool parse_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *bu
         return parser_raise_invalid_type(parser, item->string, item, "Vector2");
     return parse_positive_int(parser, name, cJSON_GetArrayItem(item, 0), &buf->x)
         && parse_positive_int(parser, name, cJSON_GetArrayItem(item, 1), &buf->y);
+}
+
+bool parse_non_zero_positive_v2(parser_t *parser, const char *name, cJSON *item, v2_t *buf)
+{
+    if (!parse_positive_v2(parser, name, item, buf))
+        return false;
+    if (buf->x == 0 || buf->y == 0)
+       return parser_raise_invalid_value(parser, name, "Vector2 (Zero)", "Vector2 (Positive, Non Zero)"); 
+    return true;
 }
 
 bool parse_rate(parser_t *parser, const char *name, cJSON *item, float *buf)
