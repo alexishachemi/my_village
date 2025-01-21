@@ -132,7 +132,9 @@ static void setup_room(world_t *world)
     csp_set_on_ground(obj, true);
     csp_set_reserved_space(obj, true, (v2_t){1, 0});
     csp_set_adjacent_to_wall(obj, true);
-    csp_set_amount_range(obj, 1, 3);
+    csp_set_amount(obj, 3);
+    obj->chance = 0.5;
+    csp_set_adjacent_to_prop(obj, false, world_get_prop(world, "sofa"));
     csp_set_has_orient(obj, true, ORIENT_RIGHT);
     csp_set_has_orient(obj, true, ORIENT_LEFT);
     csp_set_has_orient(obj, true, ORIENT_DOWN);
@@ -145,8 +147,10 @@ int MAIN(void)
 {
     world_t world = {0};
     renderer_t renderer = {0};
+    unsigned int seed = time(NULL);
 
-    srand(time(NULL));
+    srand(seed);
+    SetRandomSeed(seed);
     if (!world_init(&world, 50, 0)) {
         dprintf(2, "ERROR: Failed to initialize world\n");
         return EXIT_FAILURE;
