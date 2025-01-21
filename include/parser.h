@@ -96,3 +96,35 @@ bool parse_csp_global_constraint(parser_t *parser, const char *name, cJSON *item
 bool parse_csp_global_constraints(parser_t *parser, const char *name, cJSON *item, csp_room_t *room);
 bool parse_terrain(parser_t *parser, cJSON *item, const char *name, terrain_t **buf);
 bool parse_csp_room(parser_t *parser, const char *name, cJSON *item, csp_room_t *buf);
+
+
+/// Constraints
+
+bool parser_get_csp_arg(parser_t *parser, cJSON *args, unsigned int index, cJSON **buf);
+
+// Global Constraints
+
+bool parse_csp_all_cell_connected(
+    parser_t *parser,
+    const char *name,
+    csp_room_t *room,
+    bool expected,
+    cJSON *args
+);
+
+// Local Constraints
+
+bool parse_csp_all_cell_connected(
+    parser_t *parser,
+    const char *name,
+    csp_room_t *room,
+    bool expected,
+    cJSON *args
+);
+bool parse_csp_set_adjacent_to_prop(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+);

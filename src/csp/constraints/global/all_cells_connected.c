@@ -2,6 +2,20 @@
 #include "registry.h"
 #include "utils.h"
 #include "v2.h"
+#include "parser.h"
+
+bool parse_csp_all_cell_connected(
+    parser_t *parser,
+    UNUSED const char *name,
+    csp_room_t *room,
+    bool expected,
+    UNUSED cJSON *args
+)
+{
+    if (!csp_set_all_cell_connected(room, expected))
+        return parser_raise_error(parser, "Failed to set global constraint");
+    return true;
+}
 
 static bool validate(csp_map_t *map, UNUSED csp_global_constraint_t *gconstraint, v2_t pos, unsigned int layer)
 {

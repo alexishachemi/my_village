@@ -52,7 +52,7 @@ bool parse_csp_local_constraint(
     if (!cJSON_IsString(curr))
         return parser_raise_invalid_type(parser, name, curr, "String");
     c_name = cJSON_GetStringValue(curr);
-    return run_constraint_parser(parser, c_name, name, obj, c_expected, cJSON_GetArrayItem(item, 1));
+    return run_constraint_parser(parser, c_name, name, obj, c_expected, cJSON_GetArrayItem(item, 2));
 }
 
 bool parse_csp_local_constraints(parser_t *parser, const char *name, cJSON *item, csp_object_t *obj)
@@ -75,6 +75,7 @@ bool parse_csp_local_constraints(parser_t *parser, const char *name, cJSON *item
 ///////////////////////////////////////////////////////////// GLOBAL
 
 global_constraint_parser_map_t gc_parsers[] = {
+    {"all_cells_connected", parse_csp_all_cell_connected},
     {NULL, NULL}
 };
 
@@ -127,7 +128,7 @@ bool parse_csp_global_constraint(
         name,
         room,
         c_expected,
-        cJSON_GetArrayItem(item, 1)
+        cJSON_GetArrayItem(item, 2)
     );
 }
 
