@@ -2,6 +2,20 @@
 #include "orientation.h"
 #include "utils.h"
 #include "v2.h"
+#include "parser.h"
+
+bool parse_csp_set_in_corner(
+    parser_t *parser,
+    UNUSED const char *name,
+    csp_object_t *obj,
+    bool expected,
+    UNUSED cJSON *args
+)
+{
+    if (!csp_set_in_corner(obj, expected))
+        return parser_raise_error(parser, "Failed to set csp constraint");
+    return true;
+}
 
 static bool validate(
     csp_map_t *map,

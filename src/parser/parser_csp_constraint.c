@@ -9,6 +9,7 @@ constraint_parser_map_t c_parsers[] = {
     {"adjacent_to_prop", parse_csp_set_adjacent_to_prop},
     {"adjacent_to_wall", parse_csp_set_adjacent_to_wall},
     {"has_orient", parse_csp_set_has_orient},
+    {"in_corner", parse_csp_set_in_corner},
     {NULL, NULL}
 };
 
