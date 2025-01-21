@@ -156,3 +156,10 @@ bool parse_csp_set_on_ground(
     bool expected,
     cJSON *args
 );
+bool parse_csp_set_on_top_of_prop(
+    parser_t *parser,
+    const char *name,
+    csp_object_t *obj,
+    bool expected,
+    cJSON *args
+);
