@@ -68,7 +68,6 @@ static bool try_possible_positions(
 {
     list_t possible_positions = {0};
     csp_pos_t *pos = {0};
-    csp_placement_t *placement = NULL;
     prop_t *prop = csp_obj_pick_prop(obj);
     bool is_last = nb_placements == 1 && idx == map->objs->last_free_index - 1;
 
