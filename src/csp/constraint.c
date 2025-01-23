@@ -2,7 +2,8 @@
 #include "prop.h"
 #include "registry.h"
 
-csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type)
+csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool expected_match)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -13,11 +14,12 @@ csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t ty
         return NULL;
     constraint->type = type;
     constraint->validate = NULL;
-    constraint->expected = true;
+    constraint->expected = expected_match;
     return constraint;
 }
 
-csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type, bool add_if_absent)
+csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool add_if_absent, bool expected_match)
 {
     csp_constraint_t *constraint = NULL;
 
@@ -25,14 +27,39 @@ csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t ty
         return false;
     for (unsigned int i = 0; i < REG_SIZE(obj->constraints); i++) {
         constraint = REG_AT(csp_constraint_t, &obj->constraints, i);
-        if (constraint->type == type)
+        if (constraint->type == type && constraint->expected == expected_match)
             return constraint;
     }
     if (add_if_absent)
-        return csp_add_constraint(obj, type);
+        return csp_add_constraint(obj, type, expected_match);
     return NULL;
 }
 
+csp_constraint_t *csp_get_props_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool add_if_absent, bool expected_match)
+{
+    csp_constraint_t *constraint = csp_get_constraint(obj, type, false, expected_match);
+
+    if (constraint || (!constraint && !add_if_absent))
+        return constraint;
+    constraint = csp_add_constraint(obj, type, expected_match);
+    if (!constraint)
+        return NULL;
+    if (!reg_init(&constraint->props, sizeof(prop_t *), CSP_PROP_REG_BASE_SIZE))
+        NULL;
+    return constraint;
+}
+
+bool csp_constraint_has_prop(csp_constraint_t *constraint, prop_t *prop)
+{
+    if (!constraint || !prop)
+        return false;
+    REG_FOREACH(&constraint->props, prop_t*, curr, {
+        if (*curr == prop)
+            return true;
+    });
+    return false;
+}
 
 void csp_constraint_deinit(csp_constraint_t *constraint)
 {
@@ -60,7 +87,7 @@ Test(csp_constraint, add)
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
-    constraint = csp_add_constraint(&obj, type);
+    constraint = csp_add_constraint(&obj, type, true);
     cr_assert_not_null(constraint);
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     cr_assert_eq(constraint->type, type);
@@ -79,12 +106,12 @@ Test(csp_constraint, get)
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
-    constraint = csp_add_constraint(&obj, type);
+    constraint = csp_add_constraint(&obj, type, true);
     cr_assert_not_null(constraint);
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     cr_assert_eq(constraint->type, type);
 
-    constraint2 = csp_get_constraint(&obj, type, false);
+    constraint2 = csp_get_constraint(&obj, type, false, true);
     cr_assert_not_null(constraint2);
     cr_assert_eq(constraint, constraint2);
     
@@ -101,7 +128,7 @@ Test(csp_constraint, enforce_get)
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
 
-    constraint = csp_get_constraint(&obj, type, true);
+    constraint = csp_get_constraint(&obj, type, true, true);
     cr_assert_not_null(constraint);
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     cr_assert_eq(constraint->type, type);
@@ -119,12 +146,12 @@ Test(csp_constraint, bad_get)
     cr_assert(csp_obj_init(&obj));
     cr_assert_eq(REG_SIZE(obj.constraints), 0);
     cr_assert_null(constraint);
-    constraint = csp_add_constraint(&obj, type);
+    constraint = csp_add_constraint(&obj, type, true);
     cr_assert_not_null(constraint);
     cr_assert_eq(REG_SIZE(obj.constraints), 1);
     cr_assert_eq(constraint->type, type);
 
-    cr_assert_null(csp_get_constraint(&obj, not_type, false));
+    cr_assert_null(csp_get_constraint(&obj, not_type, false, true));
 
     csp_obj_deinit(&obj);
 }

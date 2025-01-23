@@ -2,6 +2,7 @@
 #include "csp.h"
 #include "orientation.h"
 #include "prop.h"
+#include "registry.h"
 #include "v2.h"
 #include "utils.h"
 #include "parser.h"
@@ -45,7 +46,6 @@ static bool validate(
 {
     const v2_t directions[] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
     csp_cell_t *cell = NULL;
-    prop_t *target = constraint->prop;
     prop_t *occupant = NULL;
 
     for (unsigned int i = 0; i < 4; i++) {
@@ -53,8 +53,8 @@ static bool validate(
         occupant = cell ? cell->occupant : NULL;
         if (!cell || !occupant)
             continue;
-        if ( (occupant->type == PTYPE_PARENT && occupant == target) || 
-             (occupant->type == PTYPE_CHILD && occupant->parent == target) )
+        if ( (occupant->type == PTYPE_PARENT && csp_constraint_has_prop(constraint, occupant)) || 
+             (occupant->type == PTYPE_CHILD && csp_constraint_has_prop(constraint, occupant->parent)) )
             return true;
     }
     return false;
@@ -66,12 +66,11 @@ bool csp_set_adjacent_to_prop(csp_object_t *obj, bool expected, prop_t *prop)
 
     if (!obj || !prop)
         return false;
-    constraint = csp_add_constraint(obj, C_ADJACENT_TO_PROP);
+    constraint = csp_get_props_constraint(obj, C_ADJACENT_TO_PROP, true, expected);
     if (!constraint)
         return false;
-    constraint->prop = prop;
+    reg_push_back(&constraint->props, &prop);
     constraint->validate = validate;
-    constraint->expected = expected;
     return true;
 }
 
@@ -94,7 +93,7 @@ Test(csp_constraint, adjacent_to_prop)
     constraint = REG_AT(csp_constraint_t, &obj.constraints, 0);
     cr_assert_not_null(constraint);
     cr_assert_eq(constraint->type, C_ADJACENT_TO_PROP);
-    cr_assert_eq(constraint->prop, &prop);
+    cr_assert_eq(*REG_AT(prop_t*, &constraint->props, 0), &prop);
     csp_obj_deinit(&obj);
 }
 

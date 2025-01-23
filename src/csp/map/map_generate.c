@@ -49,7 +49,7 @@ static unsigned int get_placement_count(csp_object_t *obj)
  
     if (!obj)
         return 0;
-    amount_constraint = csp_get_constraint(obj, C_AMOUNT_RANGE, false);
+    amount_constraint = csp_get_constraint(obj, C_AMOUNT_RANGE, false, true);
     if (!amount_constraint)
         return 1;
     return GetRandomValue(amount_constraint->range[0], amount_constraint->range[1]);
@@ -107,7 +107,7 @@ static bool place_obj(csp_map_t *map, unsigned int idx, unsigned int nb_placemen
         max_placements = get_placement_count(obj);
         nb_placements = max_placements;
     }
-    orients_size = get_possible_orientations(csp_get_constraint(obj, C_HAS_ORIENT, false));
+    orients_size = get_possible_orientations(csp_get_constraint(obj, C_HAS_ORIENT, false, true));
     for (unsigned int i = 0; i < orients_size; i++) {
         orient = possible_orientations[i];
         if (try_possible_positions(map, obj, orient, idx, nb_placements, max_placements))
