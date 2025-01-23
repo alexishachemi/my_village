@@ -4,14 +4,27 @@
 #include "linked.h"
 #include <unistd.h>
 
+#define _RITT_TYPE unsigned int
+#define _RITT __reg_itt_idx
 #define REG_AT(type, regp, i) ((type*)vec_fast_at(&(regp)->vec, i))
 #define REG_SIZE(reg) ((reg).last_free_index)
 #define REG_EMPTY(reg) (REG_SIZE(reg) == 0)
+#define REG_FOREACH(regp, type, itt, body) { \
+    type *(itt) = NULL; \
+    for (_RITT_TYPE _RITT = 0; _RITT < (regp)->last_free_index; _RITT++) \
+    { \
+        (itt) = REG_AT(type, (regp), _RITT); \
+        if ((itt) == NULL) \
+            break; \
+        body; \
+    }}
 
 typedef struct {
     vec_t vec;
     size_t last_free_index;
 } reg_t;
+
+
 
 typedef void (*reg_callback_t)(void *);
 
