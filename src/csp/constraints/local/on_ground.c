@@ -35,7 +35,7 @@ bool csp_set_on_ground(csp_object_t *obj, bool expected)
 
     if (!obj)
         return false;
-    constraint = csp_get_constraint(obj, C_ON_GROUND, true);
+    constraint = csp_get_constraint(obj, C_ON_GROUND, true, expected);
     if (!constraint)
         return NULL;
     constraint->validate = validate;
@@ -76,7 +76,7 @@ Test(csp_constraint, on_ground_validation)
     cr_assert(csp_obj_init(&obj));
     cr_assert(csp_map_init(&map, &room, (v2_t){10, 10}));
     cr_assert(csp_set_on_ground(&obj, true));
-    constraint = csp_get_constraint(&obj, C_ON_GROUND, false);
+    constraint = csp_get_constraint(&obj, C_ON_GROUND, false, true);
     cr_assert_not_null(constraint);
     cr_assert_not_null(constraint->validate);
 

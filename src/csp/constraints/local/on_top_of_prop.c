@@ -71,9 +71,9 @@ bool csp_set_on_top_of_prop(csp_object_t *obj, bool expected, prop_t *prop)
 
     if (!obj || !prop)
         return false;
-    constraint = csp_get_constraint(obj, C_ON_TOP_OF_PROP, false);
+    constraint = csp_get_constraint(obj, C_ON_TOP_OF_PROP, false, expected);
     if (!constraint) {
-        constraint = csp_add_constraint(obj, C_ON_TOP_OF_PROP);
+        constraint = csp_add_constraint(obj, C_ON_TOP_OF_PROP, expected);
         if (!constraint || !reg_init(&constraint->props, sizeof(prop_t*), CSP_PROP_REG_BASE_SIZE))
             return false;        
         constraint->validate = validate;

@@ -89,7 +89,7 @@ csp_placement_t *csp_obj_make_placement(csp_object_t *obj, prop_t *prop, v2_t po
         list_destroy(placement, NULL);
         return NULL;
     }
-    constraint = csp_get_constraint(obj, C_RESERVED_SPACE, false);
+    constraint = csp_get_constraint(obj, C_RESERVED_SPACE, false, true);
     if (constraint && !add_positions(placement, constraint, pos, orient)) {
         list_destroy_free(placement);
         return NULL;

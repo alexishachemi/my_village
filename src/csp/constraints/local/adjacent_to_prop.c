@@ -66,12 +66,11 @@ bool csp_set_adjacent_to_prop(csp_object_t *obj, bool expected, prop_t *prop)
 
     if (!obj || !prop)
         return false;
-    constraint = csp_add_constraint(obj, C_ADJACENT_TO_PROP);
+    constraint = csp_add_constraint(obj, C_ADJACENT_TO_PROP, expected);
     if (!constraint)
         return false;
     constraint->prop = prop;
     constraint->validate = validate;
-    constraint->expected = expected;
     return true;
 }
 

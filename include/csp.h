@@ -125,8 +125,10 @@ struct csp_map_s {
 
 /// Contraint
 
-csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type, bool add_if_absent);
-csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type);
+csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool add_if_absent, bool expected_match);
+csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool expected_match);
 void csp_constraint_deinit(csp_constraint_t *constraint);
 
 bool csp_set_adjacent_to_wall(csp_object_t *obj, bool expected);

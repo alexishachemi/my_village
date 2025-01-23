@@ -6,7 +6,7 @@ bool csp_set_amount_range(csp_object_t *obj, unsigned int min, unsigned int max)
 
     if (!obj || min > max)
         return false;
-    constraint = csp_get_constraint(obj, C_AMOUNT_RANGE, true);
+    constraint = csp_get_constraint(obj, C_AMOUNT_RANGE, true, true);
     if (!constraint)
         return false;
     constraint->range[0] = min;

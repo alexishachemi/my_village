@@ -63,9 +63,9 @@ bool csp_set_reserved_space(csp_object_t *obj, bool expected, v2_t position)
 
     if (!obj)
         return false;
-    constraint = csp_get_constraint(obj, C_RESERVED_SPACE, false);
+    constraint = csp_get_constraint(obj, C_RESERVED_SPACE, false, true);
     if (!constraint) {
-        constraint = csp_add_constraint(obj, C_RESERVED_SPACE);
+        constraint = csp_add_constraint(obj, C_RESERVED_SPACE, true);
         if (!constraint || !reg_init(&constraint->positions, sizeof(v2_t), CSP_POS_REG_BASE_SIZE))
             return false;
         constraint->validate = validate;
@@ -136,7 +136,7 @@ Test(csp_constraint, reserved_space_validation)
     csp_map_occupy_cell(&map, (v2_t){5, 5}, 1);
     csp_map_occupy_cell(&map, (v2_t){1, 1}, 2);
 
-    constraint = csp_get_constraint(&obj, C_RESERVED_SPACE, false);
+    constraint = csp_get_constraint(&obj, C_RESERVED_SPACE, false, true);
     cr_assert_not_null(constraint);
     cr_assert_not_null(constraint->validate);
 
