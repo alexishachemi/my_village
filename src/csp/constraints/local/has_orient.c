@@ -49,6 +49,7 @@ bool csp_set_has_orient(csp_object_t *obj, bool expected, orient_t orient)
         constraint->expected = expected;
         if (!constraint || !reg_init(&constraint->orientations, sizeof(orient_t), 4))
             return false;
+        constraint->validate = validate;
     } else if (reg_get_if(&constraint->orientations, (comparator_t)orient_eq, &orient)) {
         return true;
     }

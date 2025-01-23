@@ -13,4 +13,4 @@ compile_commands.json
 .bashrc
 *.log
 venv/
-tests/
+!lib/bsp/include/

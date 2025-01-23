@@ -77,13 +77,13 @@ TSRC					=
 
 SRC_ROOT				=	./src/
 
-TSRC_ROOT				=	./tests/src/
+TSRC_ROOT				=	
 
 NAME					=	my_village
 
 CC						=	gcc
 
-LIBS					=	raylib linked cvec cjson
+LIBS					=	raylib linked cvec cjson bsp
 
 CFLAGS					=	-Wall -Wextra -Iinclude
 
@@ -158,7 +158,7 @@ $(ASAN_DIR): 		| $(BUILD_DIR)
 $(TEST_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(TEST_DIR)
 	rsync -a -f"+ */" -f"- *" $(SRC_ROOT) $(TEST_DIR)
-	rsync -a -f"+ */" -f"- *" $(TSRC_ROOT) $(TEST_DIR)
+	for root in $(TSRC_ROOT); do rsync -a -f"+ */" -f"- *" $$root $(TEST_DIR); done
 
 $(DEBUG_DIR): 		| $(BUILD_DIR)
 	mkdir -p $(DEBUG_DIR)
