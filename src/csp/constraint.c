@@ -1,4 +1,5 @@
 #include "csp.h"
+#include "prop.h"
 #include "registry.h"
 
 csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type,
@@ -34,6 +35,31 @@ csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t ty
     return NULL;
 }
 
+csp_constraint_t *csp_get_props_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool add_if_absent, bool expected_match)
+{
+    csp_constraint_t *constraint = csp_get_constraint(obj, type, false, expected_match);
+
+    if (constraint || (!constraint && !add_if_absent))
+        return constraint;
+    constraint = csp_add_constraint(obj, type, expected_match);
+    if (!constraint)
+        return NULL;
+    if (!reg_init(&constraint->props, sizeof(prop_t *), CSP_PROP_REG_BASE_SIZE))
+        NULL;
+    return constraint;
+}
+
+bool csp_constraint_has_prop(csp_constraint_t *constraint, prop_t *prop)
+{
+    if (!constraint || !prop)
+        return false;
+    REG_FOREACH(&constraint->props, prop_t*, curr, {
+        if (*curr == prop)
+            return true;
+    });
+    return false;
+}
 
 void csp_constraint_deinit(csp_constraint_t *constraint)
 {

@@ -34,20 +34,6 @@ bool parse_csp_set_on_top_of_prop(
     return true;
 }
 
-static bool valid_under(prop_t *under, reg_t *expected)
-{
-    prop_t *current = NULL;
-    
-    for (unsigned int i = 0; i < expected->last_free_index; i++) {
-        current = *REG_AT(prop_t*, expected, i);
-        if (!current)
-            return false;
-        if (current == under || (under->type == PTYPE_CHILD && under->parent == current))
-            return true;
-    }
-    return false;
-}
-
 static bool validate(
     csp_map_t *map,
     UNUSED prop_t *prop,
@@ -62,7 +48,8 @@ static bool validate(
     if (layer == 0)
         return false;
     under = csp_map_get_cell(map, pos, layer - 1);
-    return under && under->occupant && valid_under(under->occupant, &constraint->props);
+    return under && under->occupant 
+        && csp_constraint_has_prop(constraint, under->occupant);
 }
 
 bool csp_set_on_top_of_prop(csp_object_t *obj, bool expected, prop_t *prop)
@@ -71,15 +58,12 @@ bool csp_set_on_top_of_prop(csp_object_t *obj, bool expected, prop_t *prop)
 
     if (!obj || !prop)
         return false;
-    constraint = csp_get_constraint(obj, C_ON_TOP_OF_PROP, false, expected);
-    if (!constraint) {
-        constraint = csp_add_constraint(obj, C_ON_TOP_OF_PROP, expected);
-        if (!constraint || !reg_init(&constraint->props, sizeof(prop_t*), CSP_PROP_REG_BASE_SIZE))
-            return false;        
-        constraint->validate = validate;
-        constraint->expected = expected;
-    }
-    return reg_push_back(&constraint->props, &prop);
+    constraint = csp_get_props_constraint(obj, C_ON_TOP_OF_PROP, true, expected);
+    if (!constraint)
+        return false;
+    reg_push_back(&constraint->props, &prop);
+    constraint->validate = validate;
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

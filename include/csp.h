@@ -50,7 +50,6 @@ struct csp_constraint_s {
     csp_validator_t validate;
     bool expected;
     union {
-        prop_t *prop;
         unsigned int range[2];
         reg_t positions;
         reg_t orientations;
@@ -129,6 +128,9 @@ csp_constraint_t *csp_get_constraint(csp_object_t *obj, csp_constraint_type_t ty
     bool add_if_absent, bool expected_match);
 csp_constraint_t *csp_add_constraint(csp_object_t *obj, csp_constraint_type_t type,
     bool expected_match);
+csp_constraint_t *csp_get_props_constraint(csp_object_t *obj, csp_constraint_type_t type,
+    bool add_if_absent, bool expected_match);
+bool csp_constraint_has_prop(csp_constraint_t *constraint, prop_t *prop);
 void csp_constraint_deinit(csp_constraint_t *constraint);
 
 bool csp_set_adjacent_to_wall(csp_object_t *obj, bool expected);
