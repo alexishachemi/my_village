@@ -1,4 +1,5 @@
 #include "csp.h"
+#include "linked.h"
 #include "orientation.h"
 #include "prop.h"
 #include "utils.h"
@@ -26,7 +27,21 @@ static bool validate(
     UNUSED orient_t orient
 )
 {
-    return (pos.x == 0 || pos.x == map->size.x - 1) || (pos.y == 0 || pos.y == map->size.y - 1);
+    v2_t *curr = NULL;
+    list_t *cov = prop_get_coverage(prop, pos, orient);
+
+    if (!cov)
+        return false;
+    for (node_t *n = cov->head; n; n = n->next) {
+        curr = n->data;
+        if ( (curr->x == 0 || curr->x == map->size.x - 1) ||
+             (curr->y == 0 || curr->y == map->size.y - 1) ) {
+            list_destroy_free(cov);
+            return true;
+        }
+    }
+    list_destroy_free(cov);
+    return false;
 }
 
 bool csp_set_adjacent_to_wall(csp_object_t *obj, bool expected)

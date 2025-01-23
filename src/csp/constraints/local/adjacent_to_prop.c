@@ -46,10 +46,15 @@ static bool validate(
     const v2_t directions[] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
     csp_cell_t *cell = NULL;
     prop_t *target = constraint->prop;
+    prop_t *occupant = NULL;
 
     for (unsigned int i = 0; i < 4; i++) {
         cell = csp_map_get_cell(map, V2_ADD(pos, directions[i]), layer);
-        if (cell && cell->occupant == target)
+        occupant = cell ? cell->occupant : NULL;
+        if (!cell || !occupant)
+            continue;
+        if ( (occupant->type == PTYPE_PARENT && occupant == target) || 
+             (occupant->type == PTYPE_CHILD && occupant->parent == target) )
             return true;
     }
     return false;

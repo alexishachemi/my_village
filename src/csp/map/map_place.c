@@ -1,5 +1,7 @@
 #include "csp.h"
 #include "linked.h"
+#include "orientation.h"
+#include "prop.h"
 #include "registry.h"
 #include "utils.h"
 #include "v2.h"
@@ -80,7 +82,7 @@ static bool place_at(csp_map_t *map, v2_t pos, unsigned int layer, prop_t *occup
     csp_cell_t *cell = NULL;
 
     cell = csp_map_get_cell(map, pos, layer);
-    if (!cell)
+    if (!cell || cell->occupied)
         return false;
     cell->occupied = true;
     cell->occupant = occupant;
@@ -100,4 +102,42 @@ bool csp_place_prop(csp_map_t *map, prop_t *prop, v2_t pos, unsigned int layer, 
             return false;
     }
     return true;
+}
+
+static void remove_children(csp_map_t *map, csp_cell_t *cell, v2_t pos, unsigned int layer)
+{
+    orient_t orient = cell->occupant_orient;
+    prop_t *prop = cell->occupant;
+    prop_t *child = NULL;
+    v2_t offset = {0};
+
+    cell->occupant = NULL;
+    cell->occupied = false;
+    if (!prop_has_child(prop))
+        return;
+    for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
+        child = REG_AT(prop_t, &prop->children, i);
+        offset = v2_orient(V2_ADD(pos, child->offset), orient);
+        cell = csp_map_get_cell(map, offset, layer);
+        if (!cell)
+            continue;
+        cell->occupant = NULL;
+        cell->occupied = false;
+    }
+}
+
+void csp_map_remove_at(csp_map_t *map, v2_t pos, unsigned int layer)
+{
+    csp_cell_t *cell = NULL;
+    v2_t new_pos = {0}; 
+
+    cell = csp_map_get_cell(map, pos, layer);
+    if (!cell || !cell->occupant)
+        return;
+    if (cell->occupant->type == PTYPE_CHILD) {
+        new_pos = V2_SUB(v2_orient(pos, cell->occupant_orient), pos);
+        csp_map_remove_at(map, new_pos, layer);
+        return;
+    }
+    remove_children(map, cell, pos, layer);
 }

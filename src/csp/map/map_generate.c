@@ -82,9 +82,7 @@ static bool try_possible_positions(
             list_clear_free(&possible_positions);
             return true;
         }
-        placement = csp_obj_make_placement(obj, prop, pos->position, pos->layer, orient);
-        csp_map_clear_placement(map, placement);
-        csp_placement_destroy(placement);
+        csp_map_remove_at(map, pos->position, pos->layer);
     }
     list_clear_free(&possible_positions);
     if (nb_placements == max_placements && obj->chance < 1.0) {
