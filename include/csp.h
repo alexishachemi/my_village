@@ -186,11 +186,9 @@ bool csp_get_possible_pos(
     list_t *buf
 );
 bool csp_place_prop(csp_map_t *map, prop_t *prop, v2_t pos, unsigned int layer, orient_t orient);
-
 bool csp_map_dfs_cells(csp_map_t *map, unsigned int layer);
-
 bool csp_map_generate(csp_map_t *map);
+void csp_map_remove_at(csp_map_t *map, v2_t pos, unsigned int layer);
 
-// bool csp_map_generate(csp_map_t *map);
 
 bool csp_map_apply(csp_map_t *map, world_t *world, v2_t pos);

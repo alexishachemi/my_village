@@ -65,7 +65,4 @@ asset_t *prop_get_asset(const prop_t *prop, orient_t orient);
 bool prop_has_child(const prop_t *prop);
 prop_t *prop_add_child(prop_t *prop, v2_t offset);
 prop_t *prop_get_child(prop_t *prop, v2_t offset);
-
-// Maybe
-// bool prop_get_placement_map(prop_t *prop, reg_t *buf)
-// buf = array of positions occupied by the prop and its children
+list_t *prop_get_coverage(prop_t *prop, v2_t origin, orient_t orient);

@@ -1,4 +1,7 @@
+#include "linked.h"
+#include "orientation.h"
 #include "prop.h"
+#include "v2.h"
 
 bool prop_set_z_index(prop_t *prop, z_index_t z_index)
 {
@@ -51,6 +54,34 @@ asset_t *prop_get_asset(const prop_t *prop, orient_t orient)
         case ORIENT_RIGHT: return prop->asset_map.asset_right;
     }
     return NULL;
+}
+
+list_t *prop_get_coverage(prop_t *prop, v2_t origin, orient_t orient)
+{
+    list_t *cov = NULL;
+    prop_t *child = NULL;
+    v2_t offset = {0};
+
+    if (!prop)
+        return NULL;
+    cov = list_create();
+    if (!cov)
+        return NULL;
+    if (!list_add_copy(cov, &origin, sizeof(v2_t))) {
+        list_destroy_free(cov);
+        return NULL;
+    }
+    if (prop->type != PTYPE_PARENT || !prop->has_child)
+        return cov;
+    for (unsigned int i = 0; i < REG_SIZE(prop->children); i++) {
+        child = REG_AT(prop_t, &prop->children, i);
+        offset = v2_orient(child->offset, orient);
+        if (!list_add_copy(cov, &offset, sizeof(v2_t))) {
+            list_destroy_free(cov);
+            return NULL;
+        }
+    }
+    return cov;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
