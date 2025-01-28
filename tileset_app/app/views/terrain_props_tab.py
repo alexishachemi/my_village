@@ -4,9 +4,12 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QPixmap, QDrag
 from PySide6.QtCore import Qt, QMimeData, QSize
-from models.terrain_prop import TerrainProp
-from models.tileset import Tile
+from app.models.terrain_prop import TerrainProp
+from app.models.tileset import Tile
 from PySide6.QtWidgets import QListWidgetItem
+from app.data_manager import DataManager
+from PySide6.QtWidgets import QListWidget, QListWidgetItem, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QPushButton
+from PySide6.QtGui import QIcon, QPixmap
 
 class TileListWidget(QListWidget):
     def __init__(self):
@@ -57,7 +60,7 @@ class TileDropArea(QListWidget):
             event.accept()
 
 class TerrainPropsTab(QWidget):
-    def __init__(self, data_manager):
+    def __init__(self, data_manager : DataManager):
         super().__init__()
         self.data_manager = data_manager
         self.init_ui()
@@ -72,7 +75,6 @@ class TerrainPropsTab(QWidget):
         self.tile_list.setSpacing(10)
         self.tile_list.setAcceptDrops(False)
         self.tile_list.setDragEnabled(True)
-        # TODO: Populate tile_list with tiles
         self.main_layout.addWidget(self.tile_list)
 
         # Right column: Terrain & Props list and form
@@ -132,12 +134,14 @@ class TerrainPropsTab(QWidget):
         self.main_layout.addLayout(self.right_layout)
         self.setLayout(self.main_layout)
 
-        self.tile_list = TileListWidget()
-        self.tile_list.populate(self.data_manager.tiles)
-        self.main_layout.addWidget(self.tile_list)
 
-        self.tiles_area = TileDropArea()
-        self.form_layout.addWidget(self.tiles_area)
+    def populate_tiles(self):
+        # add all tiles from data_manager to tile_list
+        for tile in self.data_manager.tiles:
+            item = QListWidgetItem()
+            item.setIcon(QIcon(tile.get_pixmap()))
+            item.setData(Qt.UserRole, tile)
+            self.tile_list.addItem(item)
 
     def toggle_prop_type(self, text):
         is_prop = text == "Prop"
@@ -151,6 +155,11 @@ class TerrainPropsTab(QWidget):
         self.prop_type_combo.setCurrentIndex(0)
         self.tiles_area.clear()
         self.form_widget.show()
+        # set name to new_(index) and add it to the prop/terrain list
+        index = self.terrain_prop_list.count() + 1
+        name = f"new_{index}"
+        self.terrain_prop_list.addItem(name)
+        self.name_input.setText(name)
 
     def display_terrain_prop_form(self, item):
         # Load selected terrain/prop details into the form

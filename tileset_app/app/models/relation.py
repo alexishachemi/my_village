@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Literal
-from models.terrain_prop import TerrainProp
+from app.models.terrain_prop import TerrainProp
 
 Direction = Literal['top', 'right', 'bottom', 'left', 'all']
 

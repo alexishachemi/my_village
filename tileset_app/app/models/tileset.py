@@ -22,7 +22,7 @@ class Tileset:
     name: str
     path: Path
     tile_size: int  # Pixel size of a tile
-    image: QPixmap = None
+    image: QPixmap
     tiles: List[Tile] = field(default_factory=list)
 
     def load_tiles(self) -> None:

@@ -3,8 +3,8 @@ from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QComboBox, QPushButton
 )
 from PySide6.QtCore import Qt
-from models.relation import Relation
-from models.terrain_prop import TerrainProp
+from app.models.relation import Relation
+from app.models.terrain_prop import TerrainProp
 
 class RelationsTab(QWidget):
     def __init__(self, data_manager):

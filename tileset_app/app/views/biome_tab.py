@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QLabel, QComboBox, QListWidget, QSpinBox, QPushButton
 )
 from PySide6.QtCore import Qt
-from models.biome import Biome
+from app.models.biome import Biome
 # views/biome_tab.py
 from PySide6.QtWidgets import QInputDialog
 from PySide6.QtWidgets import QLineEdit

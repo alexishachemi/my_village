@@ -2,8 +2,8 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Dict, List
-from models.terrain_prop import TerrainProp
-from models.relation import Relation
+from app.models.terrain_prop import TerrainProp
+from app.models.relation import Relation
 
 
 @dataclass

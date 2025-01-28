@@ -1,8 +1,8 @@
 # data_manager.py
-from models.tileset import Tileset
-from models.terrain_prop import TerrainProp
-from models.relation import Relation
-from models.biome import Biome
+from app.models.tileset import Tileset, Tile
+from app.models.terrain_prop import TerrainProp
+from app.models.relation import Relation
+from app.models.biome import Biome
 from typing import List
 
 class DataManager:

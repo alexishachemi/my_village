@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Literal
-from models.tileset import Tile
+from app.models.tileset import Tile
 
 PropType = Literal['type1', 'type2', 'type3', 'type4']
 

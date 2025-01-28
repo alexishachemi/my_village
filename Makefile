@@ -157,4 +157,7 @@ do_grind:			grind
 tests_run:			unit_tests
 	./$(TEST_DIR)$(NAME)
 
-.PHONY: all clean fclean re lib grind sanitize unit_tests
+tileset_app:
+	cd tileset_app && poetry run python3 -m app.main
+
+.PHONY: all clean fclean re lib grind sanitize unit_tests tileset_app

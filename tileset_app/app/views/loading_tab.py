@@ -5,14 +5,20 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QFileDialog
 )
 from PySide6.QtCore import Qt
-from models.tileset import Tileset
+from app.models.tileset import Tileset
+from pathlib import Path
+from PySide6.QtGui import QPixmap
+from app.data_manager import DataManager
+from app.models.tileset import Tile
+
 # views/loading_tab.py
 class LoadingTab(QWidget):
-    def __init__(self, data_manager):
+    def __init__(self, data_manager : DataManager):
         super().__init__()
         self.data_manager = data_manager
         self.init_ui()
         self.tilesets = []  # List to store Tileset instances
+        self.current_tileset = None
 
     def add_tileset(self):
         options = QFileDialog.Options()
@@ -21,7 +27,8 @@ class LoadingTab(QWidget):
         )
         if file_path:
             tileset_name = Path(file_path).stem
-            tileset = Tileset(name=tileset_name, path=Path(file_path), tile_size=0)
+            image = QPixmap(file_path)
+            tileset = Tileset(name=tileset_name, path=Path(file_path), tile_size=0, image=image)
             self.data_manager.add_tileset(tileset)
             self.tileset_list.addItem(tileset_name)
 
@@ -39,6 +46,8 @@ class LoadingTab(QWidget):
             tile_size = int(self.tile_size_input.text())
             self.current_tileset.tile_size = tile_size
             self.current_tileset.load_tiles()
+            self.data_manager.tiles.extend(self.current_tileset.tiles)
+            print(f"Tileset {self.current_tileset.name} has been loaded with {len(self.current_tileset.tiles)} tiles.")
 
     def init_ui(self):
         self.main_layout = QVBoxLayout()
@@ -75,7 +84,9 @@ class LoadingTab(QWidget):
         self.tile_size_label = QLabel("Tile Size (pixels):")
         self.tile_size_input = QLineEdit()
         self.tileset_form_layout.addWidget(self.tile_size_label)
-        self.tileset_form_layout.addWidget(self.tile_size_input)
+        self.tileset_form_layout.addWidget(self.tile_size_input) 
+        # update tile size
+        self.tile_size_input.editingFinished.connect(self.save_tile_size)
 
         self.tileset_layout.addLayout(self.left_layout)
         self.tileset_layout.addWidget(self.tileset_form_widget)
