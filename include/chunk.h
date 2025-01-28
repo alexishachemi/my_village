@@ -2,6 +2,7 @@
 
 #include "cvec.h"
 #include "tile.h"
+#include "v2.h"
 
 #define CHUNK_REGISTRY_BASE_SIZE 1
 
@@ -19,7 +20,7 @@ typedef struct {
 
 /// Bounds
 
-bool chunk_bounds_size(const chunk_bounds_t *bounds, int *x, int *y);
+bool chunk_bounds_size(const chunk_bounds_t *bounds, v2_t *buf);
 int chunk_bounds_area(const chunk_bounds_t *bounds);
 
 /// Chunk
@@ -39,7 +40,7 @@ void chunk_deinit(chunk_t *chunk);
 /// @param x The x coordinate of the tile.
 /// @param y The y coordinate of the tile.
 /// @return The tile at the given coordinates. NULL on error.
-tile_t *chunk_get_tile_absolute(chunk_t *chunk, size_t x, size_t y);
+tile_t *chunk_get_tile_absolute(chunk_t *chunk, v2_t pos);
 
 /// @brief Gets a tile from a chunk. The coordinates are absolute.
 /// (0, 0) is the top-left of the chunk.
@@ -47,6 +48,6 @@ tile_t *chunk_get_tile_absolute(chunk_t *chunk, size_t x, size_t y);
 /// @param x The x coordinate of the tile.
 /// @param y The y coordinate of the tile.
 /// @return The tile at the given coordinates. NULL on error.
-tile_t *chunk_get_tile_relative(chunk_t *chunk, size_t x, size_t y);
+tile_t *chunk_get_tile_relative(chunk_t *chunk, v2_t pos);
 
 void chunk_print(chunk_t *chunk);
