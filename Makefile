@@ -228,7 +228,18 @@ log_grind:
 tests_run:			unit_tests
 	./$(TEST_DIR)$(NAME)
 
-tileset_app:
+install-tileset_app:
+	cd tileset_app && poetry install --no-root
+
+format-tileset_app:
+	cd tileset_app && poetry run isort .
+	cd tileset_app && poetry run black .
+
+lint-tileset_app:
+	cd tileset_app && poetry run pylint app
+	cd tileset_app && poetry run pyright
+
+tileset_app: install-tileset_app
 	cd tileset_app && poetry run python3 -m app.main
 
 .PHONY: all clean fclean re lib grind do_grind log_grind sanitize unit_tests tileset_app
