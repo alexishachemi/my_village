@@ -31,8 +31,8 @@ line_length = 80
 
 [tool.pylint]
 max-line-length = 80
+extension-pkg-whitelist = "PySide6"
 
 [tool.pyright]
 pythonVersion = "3.11"
-include = ["app"]
 exclude = ["**/__pycache__"]

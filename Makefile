@@ -232,14 +232,12 @@ install-tileset_app:
 	cd tileset_app && poetry install --no-root
 
 format-tileset_app:
-	cd tileset_app && poetry run isort .
-	cd tileset_app && poetry run black .
+	cd tileset_app && (poetry run isort app ; poetry run black app)
 
 lint-tileset_app:
-	cd tileset_app && poetry run pylint app
-	cd tileset_app && poetry run pyright
+	cd tileset_app && (poetry run pylint app ; poetry run pyright app)
 
 tileset_app: install-tileset_app
-	cd tileset_app && poetry run python3 -m app.main
+	cd tileset_app && poetry run python3 -m app.main3
 
 .PHONY: all clean fclean re lib grind do_grind log_grind sanitize unit_tests tileset_app
