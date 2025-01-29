@@ -2,15 +2,12 @@
 Module containg a dialog for setting offsets for assets.
 """
 
-from PySide6.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QFormLayout,
-    QSpinBox,
-)
+from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFormLayout, QSpinBox
+
 
 class OffsetDialog(QDialog):
     """Dialog for setting offsets for assets."""
+
     def __init__(
         self,
         left: int,

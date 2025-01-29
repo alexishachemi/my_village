@@ -3,6 +3,7 @@ Module containg the tileset tab, which is used to
 display and edit tilesets for assets.
 """
 
+from PySide6.QtCore import Signal
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import (
     QHBoxLayout,
@@ -13,9 +14,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.core import TilesetInfos
 from app.items import UnnamedMonoAsset
 
 from .tileset_view import TilesetView
+
 
 class TilesetTab(QWidget):
     """
@@ -25,11 +28,13 @@ class TilesetTab(QWidget):
       - A QStackedWidget of TilesetView on the right.
     """
 
+    selected_changed = Signal(list)
+
     def __init__(
-        self, textures: list[tuple[str, str]], tile_size: int, has_pen: bool
+        self, tileset_infos: TilesetInfos, tile_size: int, has_pen: bool
     ):
         super().__init__()
-        self.textures = textures
+        self.tileset_infos = tileset_infos
         self.tile_size = tile_size
         self.has_pen = has_pen
 
@@ -50,15 +55,17 @@ class TilesetTab(QWidget):
 
         # Create a TilesetView per path
         self.views: list[TilesetView] = []
-        for p in textures:
-            view = TilesetView(p, tile_size, has_pen)
+        for key, info in self.tileset_infos.items():
+            view = TilesetView((key, info["path"]), tile_size, has_pen)
             self.stack.addWidget(view)
             self.views.append(view)
             # Also add to the list widget
-            self.listWidget.addItem(p[0])
+            self.listWidget.addItem(key)
+            # connect signals
+            view.selected_changed.connect(self.emitSelectedChanged)
 
         # Make the first item selected by default
-        if textures:
+        if self.tileset_infos:
             self.listWidget.setCurrentRow(0)
             self.stack.setCurrentIndex(0)
 
@@ -114,3 +121,7 @@ class TilesetTab(QWidget):
         for view in self.views:
             coords.extend(view.getAllSelected())
         return coords
+
+    def emitSelectedChanged(self):
+        """Emit the selected changed signal."""
+        self.selected_changed.emit(self.getAllSelected())

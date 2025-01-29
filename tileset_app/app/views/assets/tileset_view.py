@@ -3,24 +3,22 @@ Module containing a view for a single tileset.
 Allows advanced selection and settings.
 """
 
-
-from PySide6.QtCore import QRect, Qt
+from PySide6.QtCore import QRect, Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
-from PySide6.QtWidgets import (
-    QDialog,
-    QWidget,
-    QSizePolicy,
-)
+from PySide6.QtWidgets import QDialog, QSizePolicy, QWidget
 
 from app.items import UnnamedMonoAsset
 
 from .offset_dialog import OffsetDialog
+
 
 class TilesetView(QWidget):
     """
     Handles selection, painting, and pen-mode offset for a single tileset,
     with scaling + aspect ratio preserved.
     """
+
+    selected_changed = Signal(list)
 
     def __init__(self, texture: tuple[str, str], tile_size: int, has_pen: bool):
         super().__init__()
@@ -38,7 +36,9 @@ class TilesetView(QWidget):
         self.endTile = (0, 0)
         self.setMouseTracking(True)
 
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
 
     def sizeHint(self):
         return self.pixmap.size()
@@ -53,7 +53,9 @@ class TilesetView(QWidget):
         """
         available = self.size()
         scaled_pixmap = self.pixmap.scaled(
-            available, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.FastTransformation
+            available,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.FastTransformation,
         )
         scale_factor = scaled_pixmap.width() / self.pixmap.width()
         # center offsets
@@ -75,7 +77,7 @@ class TilesetView(QWidget):
     def _rectToScaledRect(self, rect: QRect) -> QRect:
         """
         Scales an unscaled QRect to the widget coordinates
-        for drawing. 
+        for drawing.
         """
         scale_factor, x_off, y_off, _ = self._getScaleParams()
         sx = int(rect.x() * scale_factor + x_off)
@@ -161,7 +163,9 @@ class TilesetView(QWidget):
                         if key not in self.selected:
                             x = col * self.tile_size
                             y = row * self.tile_size
-                            self.selected[key] = QRect(x, y, self.tile_size, self.tile_size)
+                            self.selected[key] = QRect(
+                                x, y, self.tile_size, self.tile_size
+                            )
                     else:  # remove
                         if key in self.selected:
                             del self.selected[key]
@@ -180,7 +184,8 @@ class TilesetView(QWidget):
             if dialog.exec() == QDialog.DialogCode.Accepted:
                 self.selected[(row, col)] = QRect(*dialog.get_offsets())
             self.update()
-        
+
+        self.selected_changed.emit(self.getAllSelected())
 
     # ------------------------------------------------------------------------
     # Painting
