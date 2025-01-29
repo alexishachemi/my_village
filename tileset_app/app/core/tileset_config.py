@@ -2,9 +2,10 @@
 Module containing the world configuration model.
 """
 
-from typing import NotRequired, TypedDict
+from typing import NotRequired  # , TypedDict
 
 from pydantic import BaseModel, PositiveInt
+from typing_extensions import TypedDict
 
 from app.items import (
     Asset,
@@ -31,12 +32,17 @@ class WorldConfigDict(TypedDict):
     chunk_size: PositiveInt
 
 
-class TilesetConfigDict(TypedDict):
+class StarterTilesetConfigDict(TypedDict):
     """Main configuration dictionary for configuration."""
 
     render: RenderConfigDict
     world: WorldConfigDict
-    textures: dict[str, str]
+    textures: dict[str, str]  # name, path
+
+
+class TilesetConfigDict(StarterTilesetConfigDict):
+    """Main configuration dictionary for configuration."""
+
     terrains: dict[str, AssetDict]
     props: PropDict
     rooms: RoomDict
