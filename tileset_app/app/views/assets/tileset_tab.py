@@ -30,13 +30,12 @@ class TilesetTab(QWidget):
 
     selected_changed = Signal(list)
 
-    def __init__(
-        self, tileset_infos: TilesetInfos, tile_size: int, has_pen: bool
-    ):
+    def __init__(self, tileset_infos: TilesetInfos, tile_size: int):
         super().__init__()
+
+        print(tileset_infos.keys())
         self.tileset_infos = tileset_infos
         self.tile_size = tile_size
-        self.has_pen = has_pen
 
         # Layout
         main_layout = QVBoxLayout(self)
@@ -56,7 +55,7 @@ class TilesetTab(QWidget):
         # Create a TilesetView per path
         self.views: list[TilesetView] = []
         for key, info in self.tileset_infos.items():
-            view = TilesetView((key, info["path"]), tile_size, has_pen)
+            view = TilesetView((key, info["path"]), tile_size)
             self.stack.addWidget(view)
             self.views.append(view)
             # Also add to the list widget
@@ -81,11 +80,9 @@ class TilesetTab(QWidget):
         self.act_add.triggered.connect(self.on_add_triggered)
         self.act_remove.triggered.connect(self.on_remove_triggered)
 
-        # Optionally pen
-        if has_pen:
-            self.act_pen = QAction(QIcon("assets/cogwheel.png"), "Pen")
-            self.toolbar.addAction(self.act_pen)
-            self.act_pen.triggered.connect(self.on_pen_triggered)
+        self.act_pen = QAction(QIcon("assets/cogwheel.png"), "Pen")
+        self.toolbar.addAction(self.act_pen)
+        self.act_pen.triggered.connect(self.on_pen_triggered)
 
     def on_add_triggered(self):
         """Set the mode to add."""
@@ -125,3 +122,19 @@ class TilesetTab(QWidget):
     def emit_selected_changed(self):
         """Emit the selected changed signal."""
         self.selected_changed.emit(self.get_all_selected())
+
+    def reload_tilesets(self, tileset_infos: TilesetInfos, tile_size: int):
+        """Reload the tileset infos."""
+        # Create a TilesetView per path
+        for key, info in tileset_infos.items():
+            if key in self.tileset_infos.keys():
+                continue
+            view = TilesetView((key, info["path"]), tile_size)
+            self.stack.addWidget(view)
+            self.views.append(view)
+            # Also add to the list widget
+            self.list_widget.addItem(key)
+            # connect signals
+            view.selected_changed.connect(self.emit_selected_changed)
+        self.tileset_infos = tileset_infos
+        self.tile_size = tile_size

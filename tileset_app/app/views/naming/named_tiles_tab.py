@@ -78,7 +78,7 @@ class NamedTilesTab(QWidget):
                 loaded_pix = QPixmap.fromImage(cropped)
             else:
                 # fallback grey
-                loaded_pix = QPixmap(*key[3:5])
+                loaded_pix = QPixmap(32, 32)
                 loaded_pix.fill(Qt.GlobalColor.gray)
             # scale if needed
             loaded_pix = loaded_pix.scaled(
@@ -160,3 +160,7 @@ class NamedTilesTab(QWidget):
         for sel in selected_list:
             coords.append(sel)
         self.add_or_update_items(coords)
+
+    def reload_tilesets(self, tileset_infos: TilesetInfos):
+        """Reload the tileset infos."""
+        self.tileset_infos = tileset_infos
