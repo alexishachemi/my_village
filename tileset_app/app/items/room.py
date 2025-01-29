@@ -52,15 +52,16 @@ class Room(BaseItem):
         }
 
     @classmethod
-    def from_config_dict(cls, data: SubRoomDict) -> "Room":
+    def from_config_dict(cls, data: RoomDict) -> "Room":
         """Create a room from a configuration dictionary."""
+        sub_data = list(data.values())[0]
         return cls(
             name=list(data.keys())[0],
-            terrain=data["terrain"],
-            layers=data["layers"],
-            constraints=data.get("constraints", []),
+            terrain=sub_data["terrain"],
+            layers=sub_data["layers"],
+            constraints=sub_data.get("constraints", []),
             objects=[
                 RoomObject.from_config_dict(obj)
-                for obj in data.get("objects", [])
+                for obj in sub_data.get("objects", [])
             ],
         )
