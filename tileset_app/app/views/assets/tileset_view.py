@@ -4,12 +4,38 @@ Allows advanced selection and settings.
 """
 
 from PySide6.QtCore import QRect, Qt, Signal
-from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
+from PySide6.QtGui import QColor, QImage, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import QDialog, QSizePolicy, QWidget
 
 from app.items import UnnamedMonoAsset
 
 from .offset_dialog import OffsetDialog
+
+
+def is_rect_transparent(pixmap: QPixmap, rect: QRect) -> bool:
+    """
+    Check if all pixels in a Qrect of a QPixmap are fully transparent.
+    """
+    # Handle null pixmap or empty rect upfront
+    if pixmap.isNull() or rect.isEmpty():
+        return False
+
+    # Convert pixmap to ARGB32 format to ensure alpha channel is available
+    image = pixmap.toImage().convertToFormat(QImage.Format.Format_ARGB32)
+    if image.isNull():
+        return False
+
+    # Ensure the rect is within the image bounds
+    if not image.rect().contains(rect):
+        return False
+
+    # Check each pixel in the rect
+    for x in range(rect.x(), rect.x() + rect.width()):
+        for y in range(rect.y(), rect.y() + rect.height()):
+            if image.pixelColor(x, y).alpha() != 0:
+                return False
+
+    return True
 
 
 class TilesetView(QWidget):
@@ -20,12 +46,11 @@ class TilesetView(QWidget):
 
     selected_changed = Signal(list)
 
-    def __init__(self, texture: tuple[str, str], tile_size: int, has_pen: bool):
+    def __init__(self, texture: tuple[str, str], tile_size: int):
         super().__init__()
         self.texture = texture
         self.tile_size = tile_size
         self.pixmap = QPixmap(texture[1])
-        self.has_pen = has_pen
 
         self.selected: dict[tuple[int, int], QRect] = {}
 
@@ -127,9 +152,8 @@ class TilesetView(QWidget):
         self.mode = "remove"
 
     def set_pen_mode(self):
-        """Set the mode to pen if available."""
-        if self.has_pen:
-            self.mode = "pen"
+        """Set the mode to pen."""
+        self.mode = "pen"
 
     # ------------------------------------------------------------------------
     # Mouse events
@@ -183,7 +207,8 @@ class TilesetView(QWidget):
                             rect = self._create_unscaled_rect(
                                 row, row, col, col
                             )
-                            self.selected[key] = rect
+                            if not is_rect_transparent(self.pixmap, rect):
+                                self.selected[key] = rect
                     else:  # remove
                         if key in self.selected:
                             del self.selected[key]
