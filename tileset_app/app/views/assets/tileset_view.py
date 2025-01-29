@@ -86,6 +86,35 @@ class TilesetView(QWidget):
         sh = int(rect.height() * scale_factor)
         return QRect(sx, sy, sw, sh)
 
+    def _compute_bounded_rectangle(
+        self, start_tile: tuple[int, int], end_tile: tuple[int, int]
+    ) -> tuple[int, int, int, int, int, int]:
+        """Calculate a bounded rectangle based on start and end tiles."""
+        row1, col1 = start_tile
+        row2, col2 = end_tile
+        r_top, r_bottom = min(row1, row2), max(row1, row2)
+        c_left, c_right = min(col1, col2), max(col1, col2)
+
+        max_row = self.pixmap.height() // self.tile_size - 1
+        max_col = self.pixmap.width() // self.tile_size - 1
+
+        r_top = max(r_top, 0)
+        r_bottom = min(r_bottom, max_row)
+        c_left = max(c_left, 0)
+        c_right = min(c_right, max_col)
+
+        return r_top, r_bottom, c_left, c_right, max_row, max_col
+
+    def _create_unscaled_rect(
+        self, r_top: int, r_bottom: int, c_left: int, c_right: int
+    ) -> QRect:
+        """Create a QRect for the given tile bounds in unscaled coordinates."""
+        x = c_left * self.tile_size
+        y = r_top * self.tile_size
+        width = (c_right - c_left + 1) * self.tile_size
+        height = (r_bottom - r_top + 1) * self.tile_size
+        return QRect(x, y, width, height)
+
     # ------------------------------------------------------------------------
     # Mode switching
     # ------------------------------------------------------------------------
@@ -140,20 +169,10 @@ class TilesetView(QWidget):
             return
         self.is_selecting = False
 
-        row1, col1 = self.start_tile
-        row2, col2 = self.end_tile
-        r_top, r_bottom = min(row1, row2), max(row1, row2)
-        c_left, c_right = min(col1, col2), max(col1, col2)
-
+        (r_top, r_bottom, c_left, c_right, _, _) = (
+            self._compute_bounded_rectangle(self.start_tile, self.end_tile)
+        )
         self.start_tile = self.end_tile
-
-        # Bound to actual tile count
-        max_row = self.pixmap.height() // self.tile_size - 1
-        max_col = self.pixmap.width() // self.tile_size - 1
-        r_top = max(r_top, 0)
-        r_bottom = min(r_bottom, max_row)
-        c_left = max(c_left, 0)
-        c_right = min(c_right, max_col)
 
         if self.mode in ("add", "remove"):
             for row in range(r_top, r_bottom + 1):
@@ -161,26 +180,21 @@ class TilesetView(QWidget):
                     key = (row, col)
                     if self.mode == "add":
                         if key not in self.selected:
-                            x = col * self.tile_size
-                            y = row * self.tile_size
-                            self.selected[key] = QRect(
-                                x, y, self.tile_size, self.tile_size
+                            rect = self._create_unscaled_rect(
+                                row, row, col, col
                             )
+                            self.selected[key] = rect
                     else:  # remove
                         if key in self.selected:
                             del self.selected[key]
             self.update()
-
         elif self.mode == "pen":
-            # Single tile + offset dialog
-            # Convert endTile to a rectangle
             row, col = self.end_tile
             x = col * self.tile_size
             y = row * self.tile_size
             max_x, max_y = self.pixmap.width(), self.pixmap.height()
 
-            # show your custom OffsetDialog (assuming it returns a QRect):
-            dialog = OffsetDialog(x, y, self.tile_size, max_x, max_y, self)
+            dialog = OffsetDialog((x, y), self.tile_size, (max_x, max_y), self)
             if dialog.exec() == QDialog.DialogCode.Accepted:
                 self.selected[(row, col)] = QRect(*dialog.get_offsets())
             self.update()
@@ -194,49 +208,36 @@ class TilesetView(QWidget):
         """Paint the pixmap and selected rectangles."""
         painter = QPainter(self)
         _, x_off, y_off, scaled_pixmap = self._get_scale_params()
-        # Draw the scaled pixmap centered
         painter.drawPixmap(x_off, y_off, scaled_pixmap)
 
-        # Draw the selected rectangles in green, scaled
         pen = QPen(QColor("green"))
         pen.setWidth(2)
         painter.setPen(pen)
         for rect in self.selected.values():
             painter.drawRect(self._rect_to_scaled_rect(rect))
 
-        # If dragging for add/remove, show a blue rect in scaled coords
-        row1, col1 = self.start_tile
-        row2, col2 = self.end_tile
-        r_top, r_bottom = min(row1, row2), max(row1, row2)
-        c_left, c_right = min(col1, col2), max(col1, col2)
+        (r_top, r_bottom, c_left, c_right, max_row, max_col) = (
+            self._compute_bounded_rectangle(self.start_tile, self.end_tile)
+        )
 
-        # Bound tile coords
-        max_row = self.pixmap.height() // self.tile_size - 1
-        max_col = self.pixmap.width() // self.tile_size - 1
-        r_top = max(r_top, 0)
-        r_bottom = min(r_bottom, max_row)
-        c_left = max(c_left, 0)
-        c_right = min(c_right, max_col)
-
-        # cancel if out
         if r_top > max_row or r_bottom < 0 or c_left > max_col or c_right < 0:
             return
 
-        # Create the unscaled selection rect
-        x_left = c_left * self.tile_size
-        y_top = r_top * self.tile_size
-        width = (c_right - c_left + 1) * self.tile_size
-        height = (r_bottom - r_top + 1) * self.tile_size
-
-        in_selection = self.is_selecting and self.mode in ("add", "remove")
-        pen = QPen(QColor("blue" if in_selection else "yellow"))
+        pen = QPen(
+            QColor(
+                "blue"
+                if self.is_selecting and self.mode in ("add", "remove")
+                else "yellow"
+            )
+        )
         pen.setWidth(2)
         pen.setStyle(Qt.PenStyle.DashLine)
         painter.setPen(pen)
-
-        # Scale and draw it
-        unscaled_rect = QRect(x_left, y_top, width, height)
-        painter.drawRect(self._rect_to_scaled_rect(unscaled_rect))
+        painter.drawRect(
+            self._rect_to_scaled_rect(
+                self._create_unscaled_rect(r_top, r_bottom, c_left, c_right)
+            )
+        )
 
     def get_all_selected(self) -> list[UnnamedMonoAsset]:
         """Get all selected rectangles in texture coordinates."""

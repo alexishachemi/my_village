@@ -10,26 +10,25 @@ class OffsetDialog(QDialog):
 
     def __init__(
         self,
-        left: int,
-        top: int,
+        rect_start: tuple[int, int],
         tile_size: int,
-        max_x: int,
-        max_y: int,
+        rect_max: tuple[int, int],
         parent=None,
     ):
         super().__init__(parent)
-        self.tile_size = tile_size
-        self.max_x = max_x
-        self.max_y = max_y
+        self.rect_max = rect_max
         self.setWindowTitle("Set Offsets")
 
+        self.left_spin = self.create_spinbox(
+            rect_start[0], 0, self.rect_max[0] - 1
+        )
+        self.top_spin = self.create_spinbox(
+            rect_start[1], 0, self.rect_max[1] - 1
+        )
+        self.width_spin = self.create_spinbox(tile_size, 1, self.rect_max[0])
+        self.height_spin = self.create_spinbox(tile_size, 1, self.rect_max[1])
+
         layout = QFormLayout(self)
-
-        self.left_spin = self.create_spinbox(left, 0, max_x - 1)
-        self.top_spin = self.create_spinbox(top, 0, max_y - 1)
-        self.width_spin = self.create_spinbox(tile_size, 1, max_x)
-        self.height_spin = self.create_spinbox(tile_size, 1, max_y)
-
         layout.addRow("Left:", self.left_spin)
         layout.addRow("Top:", self.top_spin)
         layout.addRow("Width:", self.width_spin)
@@ -59,9 +58,11 @@ class OffsetDialog(QDialog):
         """Validate the offsets."""
         valid = (
             self.left_spin.value() + self.width_spin.value()
-        ) <= self.max_x and (
+        ) <= self.rect_max[0] and (
             self.top_spin.value() + self.height_spin.value()
-        ) <= self.max_y
+        ) <= self.rect_max[
+            1
+        ]
         self.button_box.button(QDialogButtonBox.StandardButton.Ok).setEnabled(
             valid
         )
