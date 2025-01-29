@@ -14,6 +14,7 @@ __all__ = [
     "Asset",
     "AssetDict",
     "NamedAssetDict",
+    "UnnamedMonoAsset",
     "DirectionEnum",
     "Prop",
     "PropDict",
