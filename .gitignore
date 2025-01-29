@@ -14,3 +14,7 @@ compile_commands.json
 *.log
 venv/
 !lib/bsp/include/
+
+**/__pycache__/
+*.Identifier
+.venv/
