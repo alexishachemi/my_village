@@ -36,6 +36,7 @@ class TilesetView(QWidget):
         self.isSelecting = False
         self.startTile = (0, 0)
         self.endTile = (0, 0)
+        self.setMouseTracking(True)
 
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
@@ -118,13 +119,18 @@ class TilesetView(QWidget):
 
     def mouseMoveEvent(self, event):
         """Update the selection rectangle while dragging."""
+        img_x, img_y = self._mousePosToImageCoords(event.position())
+        col = int(img_x) // self.tile_size
+        row = int(img_y) // self.tile_size
         if self.isSelecting and self.mode in ("add", "remove"):
-            img_x, img_y = self._mousePosToImageCoords(event.position())
-            col = int(img_x) // self.tile_size
-            row = int(img_y) // self.tile_size
             if row >= 0 and col >= 0:
                 self.endTile = (row, col)
             self.update()
+            return
+        if row >= 0 and col >= 0:
+            self.startTile = (row, col)
+            self.endTile = (row, col)
+        self.update()
 
     def mouseReleaseEvent(self, event):
         """Finish the selection and add/remove tiles."""
@@ -136,6 +142,8 @@ class TilesetView(QWidget):
         row2, col2 = self.endTile
         rTop, rBottom = min(row1, row2), max(row1, row2)
         cLeft, cRight = min(col1, col2), max(col1, col2)
+
+        self.startTile = self.endTile
 
         # Bound to actual tile count
         max_row = self.pixmap.height() // self.tile_size - 1
@@ -172,6 +180,7 @@ class TilesetView(QWidget):
             if dialog.exec() == QDialog.DialogCode.Accepted:
                 self.selected[(row, col)] = QRect(*dialog.get_offsets())
             self.update()
+        
 
     # ------------------------------------------------------------------------
     # Painting
@@ -191,38 +200,38 @@ class TilesetView(QWidget):
             painter.drawRect(self._rectToScaledRect(rect))
 
         # If dragging for add/remove, show a blue rect in scaled coords
-        if self.isSelecting and self.mode in ("add", "remove"):
-            row1, col1 = self.startTile
-            row2, col2 = self.endTile
-            rTop, rBottom = min(row1, row2), max(row1, row2)
-            cLeft, cRight = min(col1, col2), max(col1, col2)
+        row1, col1 = self.startTile
+        row2, col2 = self.endTile
+        rTop, rBottom = min(row1, row2), max(row1, row2)
+        cLeft, cRight = min(col1, col2), max(col1, col2)
 
-            # Bound tile coords
-            max_row = self.pixmap.height() // self.tile_size - 1
-            max_col = self.pixmap.width() // self.tile_size - 1
-            rTop = max(rTop, 0)
-            rBottom = min(rBottom, max_row)
-            cLeft = max(cLeft, 0)
-            cRight = min(cRight, max_col)
+        # Bound tile coords
+        max_row = self.pixmap.height() // self.tile_size - 1
+        max_col = self.pixmap.width() // self.tile_size - 1
+        rTop = max(rTop, 0)
+        rBottom = min(rBottom, max_row)
+        cLeft = max(cLeft, 0)
+        cRight = min(cRight, max_col)
 
-            # cancel if out
-            if rTop > max_row or rBottom < 0 or cLeft > max_col or cRight < 0:
-                return
+        # cancel if out
+        if rTop > max_row or rBottom < 0 or cLeft > max_col or cRight < 0:
+            return
 
-            pen = QPen(QColor("blue"))
-            pen.setWidth(2)
-            pen.setStyle(Qt.PenStyle.DashLine)
-            painter.setPen(pen)
+        # Create the unscaled selection rect
+        xLeft = cLeft * self.tile_size
+        yTop = rTop * self.tile_size
+        width = (cRight - cLeft + 1) * self.tile_size
+        height = (rBottom - rTop + 1) * self.tile_size
 
-            # Create the unscaled selection rect
-            xLeft = cLeft * self.tile_size
-            yTop = rTop * self.tile_size
-            width = (cRight - cLeft + 1) * self.tile_size
-            height = (rBottom - rTop + 1) * self.tile_size
+        in_selection = self.isSelecting and self.mode in ("add", "remove")
+        pen = QPen(QColor("blue" if in_selection else "yellow"))
+        pen.setWidth(2)
+        pen.setStyle(Qt.PenStyle.DashLine)
+        painter.setPen(pen)
 
-            # Scale and draw it
-            unscaledRect = QRect(xLeft, yTop, width, height)
-            painter.drawRect(self._rectToScaledRect(unscaledRect))
+        # Scale and draw it
+        unscaledRect = QRect(xLeft, yTop, width, height)
+        painter.drawRect(self._rectToScaledRect(unscaledRect))
 
     def getAllSelected(self) -> list[UnnamedMonoAsset]:
         """Get all selected rectangles in texture coordinates."""
