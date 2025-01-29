@@ -2,7 +2,13 @@
 Module containing all editable items
 """
 
-from .asset import Asset, AssetDict, DirectionEnum, NamedAssetDict, UnnamedMonoAsset
+from .asset import (
+    Asset,
+    AssetDict,
+    DirectionEnum,
+    NamedAssetDict,
+    UnnamedMonoAsset,
+)
 from .base_item import BaseItem, ItemT
 from .object import RoomObject
 from .prop import Prop, PropDict
