@@ -73,8 +73,8 @@ class TilesetTab(QWidget):
         self.listWidget.currentRowChanged.connect(self.stack.setCurrentIndex)
 
         # Toolbar actions
-        self.actAdd = QAction(QIcon("approuve.png"), "Add")
-        self.actRemove = QAction(QIcon("croix-rouge.png"), "Remove")
+        self.actAdd = QAction(QIcon("assets/approuve.png"), "Add")
+        self.actRemove = QAction(QIcon("assets/croix-rouge.png"), "Remove")
         self.toolbar.addAction(self.actAdd)
         self.toolbar.addAction(self.actRemove)
 
@@ -83,7 +83,7 @@ class TilesetTab(QWidget):
 
         # Optionally pen
         if has_pen:
-            self.actPen = QAction(QIcon("cogwheel.png"), "Pen")
+            self.actPen = QAction(QIcon("assets/cogwheel.png"), "Pen")
             self.toolbar.addAction(self.actPen)
             self.actPen.triggered.connect(self.onPenTriggered)
 
