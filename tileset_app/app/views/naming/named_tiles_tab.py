@@ -1,3 +1,7 @@
+"""
+Module containing a tab to name fastly tiles.
+"""
+
 from pathlib import Path
 from typing import TypedDict
 
@@ -18,6 +22,8 @@ from app.items import UnnamedMonoAsset
 
 
 class NamedTilesTabItem(TypedDict):
+    """Item in the NamedTilesTab."""
+
     widget: QWidget
     line_edit: QLineEdit
     discarded: bool
@@ -25,6 +31,8 @@ class NamedTilesTabItem(TypedDict):
 
 
 class NamedTilesTab(QWidget):
+    """Tab for naming tiles."""
+
     def __init__(
         self, tileset_infos: TilesetInfos, label_for_button: str, parent=None
     ):
@@ -48,7 +56,7 @@ class NamedTilesTab(QWidget):
         self.main_layout.addWidget(scroll)
         self.setLayout(self.main_layout)
 
-    def addOrUpdateItems(self, new_items: list[UnnamedMonoAsset]):
+    def add_or_update_items(self, new_items: list[UnnamedMonoAsset]):
         """Add or update items in this tab."""
         for key in new_items:
             if key in self._items:
@@ -87,10 +95,10 @@ class NamedTilesTab(QWidget):
 
             # 3) "Used for Multi-(...)" button
             multi_button = QPushButton(
-                f"Used for Multi-({self.label_for_button})"
+                f"Used for Multi-{self.label_for_button}"
             )
             multi_button.clicked.connect(
-                lambda _checked, row_key=key: self._discardItem(row_key)
+                lambda _checked, row_key=key: self._discard_item(row_key)
             )
 
             row_layout.addWidget(pix_label)
@@ -107,17 +115,17 @@ class NamedTilesTab(QWidget):
                 "discarded": False,
             }
 
-    def _discardItem(self, key):
+    def _discard_item(self, key):
         """Mark item as discarded, hide row."""
         if key in self._items:
             self._items[key]["discarded"] = True
             # remove from layout visually
             self._items[key]["widget"].setParent(None)
 
-    def getNamedItems(self):
+    def get_named_items(self):
         """
-        Return a list of (user_name, UnnamedMonoAsset) for items that are not discarded
-        and have a non-empty name.
+        Return a list of (user_name, UnnamedMonoAsset)
+        for items that are not discarded and have a non-empty name.
         """
         results = []
         for key, info in self._items.items():
@@ -131,7 +139,7 @@ class NamedTilesTab(QWidget):
                 results.append((text_in, coord))
         return results
 
-    def getDiscardedItems(self):
+    def get_discarded_items(self):
         """
         Return a list of UnnamedMonoAsset for items that have been discarded.
         """
@@ -143,7 +151,7 @@ class NamedTilesTab(QWidget):
                 results.append(coord)
         return results
 
-    def onSelected(self, selected_list):
+    def on_selected(self, selected_list):
         """
         Slot that receives a list of (textureName, x, y, w, h);
         Fed into the items.
@@ -151,4 +159,4 @@ class NamedTilesTab(QWidget):
         coords = []
         for sel in selected_list:
             coords.append(sel)
-        self.addOrUpdateItems(coords)
+        self.add_or_update_items(coords)

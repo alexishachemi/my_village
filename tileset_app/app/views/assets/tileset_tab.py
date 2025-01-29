@@ -47,8 +47,8 @@ class TilesetTab(QWidget):
         content_layout = QHBoxLayout()
         main_layout.addLayout(content_layout)
 
-        self.listWidget = QListWidget()
-        content_layout.addWidget(self.listWidget)
+        self.list_widget = QListWidget()
+        content_layout.addWidget(self.list_widget)
 
         self.stack = QStackedWidget()
         content_layout.addWidget(self.stack)
@@ -60,68 +60,68 @@ class TilesetTab(QWidget):
             self.stack.addWidget(view)
             self.views.append(view)
             # Also add to the list widget
-            self.listWidget.addItem(key)
+            self.list_widget.addItem(key)
             # connect signals
-            view.selected_changed.connect(self.emitSelectedChanged)
+            view.selected_changed.connect(self.emit_selected_changed)
 
         # Make the first item selected by default
         if self.tileset_infos:
-            self.listWidget.setCurrentRow(0)
+            self.list_widget.setCurrentRow(0)
             self.stack.setCurrentIndex(0)
 
         # Hook list changes to stacked widget
-        self.listWidget.currentRowChanged.connect(self.stack.setCurrentIndex)
+        self.list_widget.currentRowChanged.connect(self.stack.setCurrentIndex)
 
         # Toolbar actions
-        self.actAdd = QAction(QIcon("assets/approuve.png"), "Add")
-        self.actRemove = QAction(QIcon("assets/croix-rouge.png"), "Remove")
-        self.toolbar.addAction(self.actAdd)
-        self.toolbar.addAction(self.actRemove)
+        self.act_add = QAction(QIcon("assets/approuve.png"), "Add")
+        self.act_remove = QAction(QIcon("assets/croix-rouge.png"), "Remove")
+        self.toolbar.addAction(self.act_add)
+        self.toolbar.addAction(self.act_remove)
 
-        self.actAdd.triggered.connect(self.onAddTriggered)
-        self.actRemove.triggered.connect(self.onRemoveTriggered)
+        self.act_add.triggered.connect(self.on_add_triggered)
+        self.act_remove.triggered.connect(self.on_remove_triggered)
 
         # Optionally pen
         if has_pen:
-            self.actPen = QAction(QIcon("assets/cogwheel.png"), "Pen")
-            self.toolbar.addAction(self.actPen)
-            self.actPen.triggered.connect(self.onPenTriggered)
+            self.act_pen = QAction(QIcon("assets/cogwheel.png"), "Pen")
+            self.toolbar.addAction(self.act_pen)
+            self.act_pen.triggered.connect(self.on_pen_triggered)
 
-    def onAddTriggered(self):
+    def on_add_triggered(self):
         """Set the mode to add."""
-        view = self.getCurrentView()
+        view = self.get_current_view()
         if view:
-            view.setAddMode()
+            view.set_add_mode()
 
-    def onRemoveTriggered(self):
+    def on_remove_triggered(self):
         """Set the mode to remove."""
-        view = self.getCurrentView()
+        view = self.get_current_view()
         if view:
-            view.setRemoveMode()
+            view.set_remove_mode()
 
-    def onPenTriggered(self):
+    def on_pen_triggered(self):
         """Set the mode to pen."""
-        view = self.getCurrentView()
+        view = self.get_current_view()
         if view:
-            view.setPenMode()
+            view.set_pen_mode()
 
-    def getCurrentView(self) -> TilesetView | None:
+    def get_current_view(self) -> TilesetView | None:
         """Return the current TilesetView."""
         idx = self.stack.currentIndex()
         if idx < 0:
             return None
         return self.views[idx]
 
-    def getAllSelected(self) -> list[UnnamedMonoAsset]:
+    def get_all_selected(self) -> list[UnnamedMonoAsset]:
         """
         Return all rectangles from all TilesetViews in this tab,
         aggregated across all file paths.
         """
         coords = []
         for view in self.views:
-            coords.extend(view.getAllSelected())
+            coords.extend(view.get_all_selected())
         return coords
 
-    def emitSelectedChanged(self):
+    def emit_selected_changed(self):
         """Emit the selected changed signal."""
-        self.selected_changed.emit(self.getAllSelected())
+        self.selected_changed.emit(self.get_all_selected())

@@ -1,3 +1,7 @@
+"""
+Main Module.
+"""
+
 import sys
 from pathlib import Path
 
@@ -10,6 +14,7 @@ from app.views import MainWindow
 
 
 def main():
+    """Main function."""
     app = QApplication(sys.argv)
     if len(sys.argv) < 3:
         print("Usage: python main.py <tile_size> <tileset1> [<tileset2> ...]")
@@ -21,7 +26,7 @@ def main():
         print("Error: No tileset files provided.")
         sys.exit(1)
 
-    tileset_infos = {}
+    tileset_infos: TilesetInfos = {}
     for p in paths:
         path_obj = Path(p)
         short_name = path_obj.stem

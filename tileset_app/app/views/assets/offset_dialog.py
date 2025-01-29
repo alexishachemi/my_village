@@ -45,10 +45,12 @@ class OffsetDialog(QDialog):
 
         self.setLayout(layout)
 
-    def create_spinbox(self, value: int, min: int, max: int) -> QSpinBox:
+    def create_spinbox(
+        self, value: int, min_val: int, max_val: int
+    ) -> QSpinBox:
         """Create a spinbox with a range and value."""
         spinbox = QSpinBox()
-        spinbox.setRange(min, max)
+        spinbox.setRange(min_val, max_val)
         spinbox.setValue(value)
         spinbox.valueChanged.connect(self.validate_offsets)
         return spinbox
